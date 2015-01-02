@@ -31,7 +31,7 @@ __FBSDID("$FreeBSD: src/lib/libc/locale/mbrtowc.c,v 1.7 2004/05/12 14:09:04 tjr 
 #include "mblocal.h"
 
 size_t
-mbrtowc(wchar_t * __restrict pwc, const char * __restrict s,
+mbrtowc(wchar_t_v0 * __restrict pwc, const char * __restrict s,
     size_t n, mbstate_t * __restrict ps)
 {
 	static mbstate_t mbs;

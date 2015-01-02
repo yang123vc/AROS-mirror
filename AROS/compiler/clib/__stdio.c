@@ -1,5 +1,5 @@
 /*
-    Copyright © 1995-2001, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 
     Desc: stdio internals
@@ -20,7 +20,6 @@
 #include <proto/dos.h>
 #include <aros/symbolsets.h>
 #include <aros/debug.h>
-#include "__fdesc.h"
 #include "__stdio.h"
 
 int __smode2oflags(const char *mode)
@@ -109,15 +108,15 @@ int __oflags2sflags(int omode)
     return ret;
 }
 
-int __init_stdio(void)
+int __init_stdio(struct aroscbase *aroscbase)
 {
-    NEWLIST(&__stdio_files);
+    NEWLIST(&aroscbase->acb_stdio_files);
 
     if
     (
-        !(stdin  = fdopen(STDIN_FILENO, NULL))  ||
-    	!(stdout = fdopen(STDOUT_FILENO, NULL)) ||
-    	!(stderr = fdopen(STDERR_FILENO, NULL))
+        !(__get_arosc_userdata()->acud_stdin  = fdopen(STDIN_FILENO, NULL))  ||
+    	!(__get_arosc_userdata()->acud_stdout = fdopen(STDOUT_FILENO, NULL)) ||
+    	!(__get_arosc_userdata()->acud_stderr = fdopen(STDERR_FILENO, NULL))
     )
     {
     	SetIoErr(ERROR_NO_FREE_STORE);
@@ -127,6 +126,6 @@ int __init_stdio(void)
     return 1;
 }
 
-ADD2INIT(__init_stdio, 5);
+ADD2OPENLIB(__init_stdio, 5);
 
 

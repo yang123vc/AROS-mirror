@@ -1,28 +1,50 @@
 /*
-    Copyright © 1995-2002, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 */
 
 #include "__arosc_privdata.h"
 
 #include <aros/symbolsets.h>
-#include <aros/startup.h>
 #include <exec/lists.h>
+#include <proto/exec.h>
+#include <string.h>
 #include "__exitfunc.h"
 
+static void __exitfuncsquirk(struct aroscbase *aroscbase)
+{
+    if (strcmp(FindTask(NULL)->tc_Node.ln_Name, "zsnes") == 0)
+    {
+        /* Run application atexit (which uses TimerIO) before SDL atexit (which frees TimerIO) */
+        struct Node * tmp = REMHEAD((struct List *) &aroscbase->acb_atexit_list);
+        ADDTAIL((struct List *)&aroscbase->acb_atexit_list, tmp);
+    }
+}
 int __addexitfunc(struct AtExitNode *aen)
 {
-    ADDHEAD((struct List *)&__atexit_list, (struct Node *)aen);
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
+    
+    ADDHEAD((struct List *)&aroscbase->acb_atexit_list, (struct Node *)aen);
 
     return 0;
 }
 
+int __init_atexit(struct aroscbase *aroscbase)
+{
+    NEWLIST((struct List *)&aroscbase->acb_atexit_list);
+
+    return 1;
+}
+
 void __callexitfuncs(void)
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
     struct AtExitNode *aen;
 
+    __exitfuncsquirk(aroscbase);
+
     while (
-        (aen = (struct AtExitNode *) REMHEAD((struct List *) &__atexit_list))
+        (aen = (struct AtExitNode *) REMHEAD((struct List *) &aroscbase->acb_atexit_list))
     )
     {
         switch (aen->node.ln_Type)
@@ -32,24 +54,31 @@ void __callexitfuncs(void)
             break;
 
         case AEN_PTR:
-            aen->func.fptr(__aros_startup_error, aen->ptr);
+            {
+                int *errorptr = __arosc_get_errorptr();
+                aen->func.fptr(errorptr != NULL ? *errorptr : 0, aen->ptr);
+            }
             break;
         }
     }
 }
 
-int __init_atexit(void)
-{
-    NEWLIST((struct List *)&__atexit_list);
+ADD2OPENLIB(__init_atexit, 100);
 
-    return 1;
-}
-
+/* ABI_V0 compatibility */
+/*
+ * Older ABI_V0 binaries did not call __arosc_program_end and relied on closing of arosc.library
+ * to run atexit handlers. Example: ltris
+ */
 void __exit_atexit(void)
 {
-    if (!(__get_arosc_privdata()->acpd_flags & ACPD_NEWSTARTUP))
-        __callexitfuncs();
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
+
+    if (!(aroscbase->acb_flags & (VFORK_PARENT | ACPD_NEWSTARTUP)))
+    {
+        if (!(aroscbase->acb_flags & ABNORMAL_EXIT))
+            __callexitfuncs();
+    }
 }
 
-ADD2INIT(__init_atexit, 100);
-ADD2EXIT(__exit_atexit, 100);
+ADD2CLOSELIB(__exit_atexit, 100);

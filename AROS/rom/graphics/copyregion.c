@@ -1,5 +1,5 @@
 /*
-    Copyright © 1995-2001, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2011, The AROS Development Team. All rights reserved.
     $Id$
 
     Desc: (AROS only) Graphics function CopyRegion()
@@ -14,13 +14,13 @@
     NAME */
 #include <proto/graphics.h>
 
-	AROS_LH1(struct Region *, CopyRegion,
+    AROS_LH1(struct Region *, CopyRegion,
 
 /*  SYNOPSIS */
-	AROS_LHA(struct Region *, region, A0),
+    AROS_LHA(struct Region *, region, A0),
 
 /*  LOCATION */
-	struct GfxBase *, GfxBase, 188, Graphics)
+    struct GfxBase *, GfxBase, 188, Graphics)
 
 /*  FUNCTION
     	Make a copy of the given Region.
@@ -32,14 +32,12 @@
 	the copy of the Region, or NULL if not enough memory.
 
     NOTES
-	This function does not exist in AmigaOS.
 
     EXAMPLE
 
     BUGS
 
     SEE ALSO
-	NewRegion(), DisposeRegion()
 
     INTERNALS
 
@@ -50,28 +48,18 @@
 {
     AROS_LIBFUNC_INIT
 
-    struct Region *nreg;
+    struct Region *nreg = NewRegion();
     
-    if ((nreg = NewRegion()))
+    if (nreg)
     {
-        if (region->RegionRectangle)
-        {
-            struct RegionRectangle *new = NULL;
+    	if (OrRegionRegion(region, nreg))
+    	    return nreg;
 
-            nreg->bounds = region->bounds;
-
-            if (!_LinkRegionRectangleList(region->RegionRectangle, &new, GfxBase))
-	    {
-                DisposeRegion(nreg);
-	        nreg = NULL;
-	    }
-
-            nreg->RegionRectangle = &Chunk(new)->FirstChunk->Rects[0].RR;
-        }
+        DisposeRegion(nreg);
     }
     
-    return nreg;
-    
+    return NULL;
+
     AROS_LIBFUNC_EXIT
-    
+
 } /* CopyRegion */

@@ -1,15 +1,14 @@
 /*
-    Copyright © 1995-2007, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2011, The AROS Development Team. All rights reserved.
     $Id$
 
     Desc: AROS Graphics function CreateRastPort()
     Lang: english
 */
-#include "graphics_intern.h"
+
 #include <exec/memory.h>
-#include <graphics/rastport.h>
 #include <proto/exec.h>
-#include "gfxfuncsupport.h"
+#include <proto/graphics.h>
 
 /*****************************************************************************
 
@@ -17,26 +16,26 @@
 #include <graphics/rastport.h>
 #include <proto/graphics.h>
 
-	AROS_LH0(struct RastPort *, CreateRastPort,
+    AROS_LH0(struct RastPort *, CreateRastPort,
 
 /*  SYNOPSIS */
 
 /*  LOCATION */
-	struct GfxBase *, GfxBase, 177, Graphics)
+    struct GfxBase *, GfxBase, 177, Graphics)
 
 /*  FUNCTION
-	This function creates a new RastPort.
+    This function creates a new RastPort.
 
     INPUTS
-	None.
+    None.
 
     RESULT
-	A pointer to a new RastPort or NULL if there was not enough memory
-	to perform the operation.
+    A pointer to a new RastPort or NULL if there was not enough memory
+    to perform the operation.
 
     NOTES
-	This function is AROS specific. For compatibility, there is a
-	function in aros.lib which does the same on Amiga.
+    This function is AROS specific. For compatibility, there is a
+    function in aros.lib which does the same on Amiga.
 
     EXAMPLE
 
@@ -47,36 +46,19 @@
     INTERNALS
 
     HISTORY
-	29-10-95    digulla automatically created from
-			    graphics_lib.fd and clib/graphics_protos.h
+    29-10-95    digulla automatically created from
+                graphics_lib.fd and clib/graphics_protos.h
 
 *****************************************************************************/
 {
     AROS_LIBFUNC_INIT
 
-    struct RastPort * newRP;
-    BOOL    	      ok = FALSE;
-    
-    newRP = AllocMem (sizeof (struct RastPort), MEMF_ANY);
+    struct RastPort *newRP = AllocMem (sizeof (struct RastPort), MEMF_ANY);
 
     if (newRP)
-    {
-	if (InitRastPort(newRP))
-	{
-	    /* Mark the rastport as being cleaned up by the
-	       user itself later on (through FreeRastPort()).
-	       No need for garbage collection */
-	    newRP->Flags |= RPF_SELF_CLEANUP;
-	    ok = TRUE;
-	}
-	   
-	if (!ok)
-	{
-	    FreeMem (newRP, sizeof (struct RastPort));
-	    newRP = NULL;
-	}
-    }
+	InitRastPort(newRP);
 
     return newRP;
+
     AROS_LIBFUNC_EXIT
 } /* CreateRastPort */

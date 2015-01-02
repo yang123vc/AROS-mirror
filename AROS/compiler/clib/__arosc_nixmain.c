@@ -1,5 +1,5 @@
 /* 
-    Copyright © 1995-2003, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 
     Desc: special main function for code which has to use special *nix features.
@@ -10,7 +10,7 @@
     Lang: english
 */
 
-#include "__arosc_privdata.h"
+#include LC_LIBDEFS_FILE
 
 #include <proto/exec.h>
 #include <proto/dos.h>
@@ -18,6 +18,7 @@
 #include <dos/dos.h>
 #include <aros/startup.h>
 
+#define DEBUG 0
 #include <aros/debug.h>
 
 #include <setjmp.h>
@@ -25,6 +26,7 @@
 #include <stdlib.h>
 #include <sys/param.h>
 
+#include "__arosc_privdata.h"
 #include "__upath.h"
 
 static BOOL clone_vars(struct MinList *old_vars);
@@ -32,19 +34,23 @@ static void restore_vars(struct MinList *old_vars);
 static void free_vars(struct MinList *vars);
 static void update_PATH(void);
 
-int __arosc_nixmain(int (*main)(int argc, char *argv[]), int argc, char *argv[])
+int __posixc_nixmain(int (*main)(int argc, char *argv[]), int argc, char *argv[])
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase(), *paroscbase;
+    int *errorptr = __arosc_get_errorptr();
     char *old_argv0 = NULL;
     char *new_argv0 = NULL;
     struct MinList old_vars;
 
+    D(bug("__arosc_nixmain: @begin, Task=%x\n", FindTask(NULL)));
+
     /* Trigger *nix path handling on.  */
-    __doupath = 1;
+    aroscbase->acb_doupath = 1;
 
     /* argv[0] usually contains the name of the program, possibly with the full
        path to it. Here we translate that path, which is an AmigaDOS-style path,
        into an unix-style one.  */
-    if (argv && argv[0] && !__get_arosc_privdata()->acpd_parent_does_upath)
+    if (argv && argv[0])
     {
 	new_argv0 = strdup(__path_a2u(argv[0]));
 	if (new_argv0 == NULL)
@@ -59,12 +65,18 @@ int __arosc_nixmain(int (*main)(int argc, char *argv[]), int argc, char *argv[])
        rather than as a newly created process, then we share our env variables
        with the caller, but we do not want that. It's kind of wasteful to do
        it even if we've been started as a fresh process, though, so if we can
-       we avoid it. */
-    if (!(__get_arosc_privdata()->acpd_flags & DO_NOT_CLONE_ENV_VARS))
+       we avoid it.
+       The cloning does not need to be performed if flags of parent have VFORK_PARENT
+       or EXEC_PARENT flags */
+    paroscbase = __GM_GetBaseParent(aroscbase);
+    D(bug("__arosc_nixmain: paroscbase = %x, Task=%x\n", paroscbase, FindTask(NULL)));
+    if (!paroscbase || !(paroscbase->acb_flags & (VFORK_PARENT | EXEC_PARENT)))
     {
+        D(bug("__arosc_nixmain: Cloning LocalVars"));
         if (!clone_vars(&old_vars))
 	{
-	    __aros_startup_error = RETURN_FAIL;
+            if (errorptr)
+                *errorptr = RETURN_FAIL;
 	    goto err_vars;
 	}
     }
@@ -75,13 +87,22 @@ int __arosc_nixmain(int (*main)(int argc, char *argv[]), int argc, char *argv[])
         update_PATH();
 
     /* Call the real main.  */
-    if (setjmp(__aros_startup_jmp_buf) == 0)
+    jmp_buf exitjmp, dummyjmp;
+    if (setjmp(exitjmp) == 0)
     {
-        __aros_startup_error = (*main)(argc, argv);
+        int ret;
+
+        __arosc_set_exitjmp(exitjmp, dummyjmp);
+
+        ret = (*main)(argc, argv);
+        if (errorptr)
+            *errorptr = ret;
     }
+    else
+        D(bug("__arosc_nixmain: setjmp() != 0\n"));
 
-
-    if (!(__get_arosc_privdata()->acpd_flags & DO_NOT_CLONE_ENV_VARS))
+    D(bug("__arosc_nixmain: paroscbase = %x, Task=%x\n", paroscbase, FindTask(NULL)));
+    if (!paroscbase || !(paroscbase->acb_flags & (VFORK_PARENT | EXEC_PARENT)))
         restore_vars(&old_vars);
 
 err_vars:
@@ -93,7 +114,9 @@ err_vars:
 	argv[0] = (char *)old_argv0;
     }
 
-    return __aros_startup_error;
+    D(bug("__arosc_nixmain: @end, Task=%x\n", FindTask(NULL)));
+
+    return (errorptr != NULL) ? *errorptr : 0;
 }
 
 /* Clone the process' environment variables list. Once this function returns,
@@ -126,32 +149,35 @@ BOOL clone_vars(struct MinList *old_vars)
        be a public function for this?  */
     ForeachNode(&me->pr_LocalVars, lv)
     {
-        size_t copyLength;
-	
-        if (lv->lv_Len == 0)
-	    continue;
-	
-        copyLength = strlen(lv->lv_Node.ln_Name) + 1 + sizeof(struct LocalVar);
+        size_t copyLength = strlen(lv->lv_Node.ln_Name) + 1 + sizeof(struct LocalVar);
 
         newVar = (struct LocalVar *)AllocVec(copyLength, MEMF_PUBLIC);
         if (newVar == NULL)
-	{
-	    free_vars(&l);
-	    return FALSE;
-	}
-
-	memcpy(newVar, lv, copyLength);
-	newVar->lv_Node.ln_Name = (char *)newVar + sizeof(struct LocalVar);
-        newVar->lv_Value        = AllocMem(lv->lv_Len, MEMF_PUBLIC);
-
-        if (newVar->lv_Value == NULL)
         {
-	    FreeVec(newVar);
-	    free_vars(&l);
-	    return FALSE;
-	}
+            free_vars(&l);
+            return FALSE;
+        }
 
-        memcpy(newVar->lv_Value, lv->lv_Value, lv->lv_Len);
+        memcpy(newVar, lv, copyLength);
+        newVar->lv_Node.ln_Name = (char *)newVar + sizeof(struct LocalVar);
+        if (lv->lv_Len)
+        {
+            newVar->lv_Value = AllocMem(lv->lv_Len, MEMF_PUBLIC);
+
+            if (newVar->lv_Value == NULL)
+            {
+                FreeVec(newVar);
+                free_vars(&l);
+                return FALSE;
+            }
+
+            memcpy(newVar->lv_Value, lv->lv_Value, lv->lv_Len);
+        }
+        else
+        {
+            /* lv_Len of 0 is a valid case for empty string, lv_Value is NULL */
+            newVar->lv_Value = NULL;
+        }
 
         ADDTAIL(&l, newVar);
     }
@@ -226,7 +252,7 @@ static void update_PATH(void)
 
 	D(bug("aname = %s\n", aname));
 
-        uname = __path_a2u(aname);
+        uname = __path_a2u((const char *)aname);
 	if (!uname)
 	    continue;
 	uname_len = strlen(uname);
@@ -251,4 +277,25 @@ static void update_PATH(void)
 
         setenv("PATH", PATH, 1);
     }
+}
+
+/* ABI_V0 compatibility:
+ * __arosc_nixmain in V0 was called without passing aroscbase to eax. This means that if
+ * standard call is made via AROS_GM_STACKCALL, the aroscbase in task storage slot becomes
+ * damaged (it is set to "current" eax value). Abusing a reg based call signature allows
+ * removing AROS_GM_STACKCALL from call stack, meaning task storage slot will not be set at
+ * all. The assumtion is that slot is already correctly set during opening of arosc.library
+ */
+
+AROS_LH3(int, __arosc_nixmain_abiv0,
+     AROS_LHA(void *,   main, A0),
+     AROS_LHA(int,      argc, D0),
+     AROS_LHA(char **,  argv, A1),
+     struct aroscbase *, aroscbase, 173, Arosc)
+{
+    AROS_LIBFUNC_INIT
+
+    return __posixc_nixmain(main, argc, argv);
+
+    AROS_LIBFUNC_EXIT
 }

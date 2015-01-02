@@ -1,19 +1,16 @@
 /*
-    Copyright © 2003, The AROS Development Team. All rights reserved.
+    Copyright © 2003-2013, The AROS Development Team. All rights reserved.
     $Id$
 
-    POSIX function rmdir().
+    POSIX.1-2008 function rmdir().
 */
 
-#define remove remove
-
-#include <proto/dos.h>
-#include "__errno.h"
+#include <stdio.h>
 
 /*****************************************************************************
 
     NAME */
-#include <stdio.h>
+#include <unistd.h>
 
 	int rmdir(
 
@@ -28,7 +25,7 @@
 
     RESULT
 	0 on success and -1 on error. In case of an error, errno is set.
-	
+
     NOTES
 
     EXAMPLE
@@ -42,5 +39,6 @@
 
 ******************************************************************************/
 {
+    /* FIXME: Shouldn't we check if pathname is actually a directory ? */
     return remove(pathname);
 } /* rmdir() */

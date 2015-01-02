@@ -1,21 +1,20 @@
 /*
-    Copyright © 1995-2011, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2013, The AROS Development Team. All rights reserved.
     $Id$
 
-    ANSI C function system().
+    C99 function system().
 */
 
 #include "__arosc_privdata.h"
 
 #include <dos/dos.h>
-//#include <dos/filesystem.h>
 #include <proto/dos.h>
 //#include <utility/tagitem.h>
 #include <unistd.h>
+#include <errno.h>
 //#include <sys/types.h>
 #include <sys/wait.h>
 
-#include "__errno.h"
 #include "__fdesc.h"
 #include "__upath.h"
 
@@ -53,11 +52,12 @@ static int system_no_sh(const char *string);
 
 ******************************************************************************/
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
     BPTR lock;
     APTR old_proc_window;
     struct Process *me;
 
-    if (!__doupath)
+    if (!aroscbase->acb_doupath)
         return system_no_sh(string);
     
     if (string == NULL || string[0] == '\0')
@@ -84,6 +84,7 @@ static int system_no_sh(const char *string);
 
 static int system_sh(const char *string)
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
     pid_t pid = vfork();
     int status;
 
@@ -97,7 +98,7 @@ static int system_sh(const char *string)
     }
     else if(pid == 0)
     {
-	execl((__doupath ? "/bin/sh" : "bin:sh"), "sh", "-c", string, (char *) NULL);
+	execl((aroscbase->acb_doupath ? "/bin/sh" : "bin:sh"), "sh", "-c", string, (char *) NULL);
 	_exit(127);
     }
     else
@@ -111,6 +112,7 @@ static int system_no_sh(const char *string)
     const char *apath;
     char *args, *cmd, *fullcmd;
     fdesc *in, *out, *err;
+    BPTR infh, outfh, errfh;
     int ret;
 
     D(bug("system_no_sh(%s)\n", string));
@@ -134,20 +136,34 @@ static int system_no_sh(const char *string)
     in = __getfdesc(STDIN_FILENO);
     out = __getfdesc(STDOUT_FILENO);
     err = __getfdesc(STDERR_FILENO);
-    
+
+    D(bug("[system_no_sh]in: %p, in->fcb->fh: %p\n", in, BADDR(in->fcb->fh)));
+    D(bug("[system_no_sh]out: %p, out->fcb->fh: %p\n", out, BADDR(out->fcb->fh)));
+    D(bug("[system_no_sh]err: %p, err->fcb->fh: %p\n", err, BADDR(err->fcb->fh)));
+
+    infh = in ? in->fcb->handle : BNULL;
+    outfh = out ? out->fcb->handle : BNULL;
+    errfh = err ? err->fcb->handle : BNULL;
+    if (outfh == errfh)
+        errfh = BNULL;
+
+    D(bug("[system_no_sh]infh: %p, outfh: %p, errfh %p\n",
+          BADDR(infh), BADDR(outfh), BADDR(errfh)
+    ));
+
     ret = (int)SystemTags
     (
          fullcmd,
-         SYS_Input, (IPTR)(in ? in->fcb->fh : BNULL),
-         SYS_Output, (IPTR)(out ? out->fcb->fh : BNULL),
-         SYS_Error, (IPTR)(err ? err->fcb->fh : BNULL),
+         SYS_Input, (IPTR)(infh),
+         SYS_Output, (IPTR)(outfh),
+         SYS_Error, (IPTR)(errfh),
          NULL
     );
 
     free(fullcmd);
     
     if (ret == -1)
-        errno = IoErr2errno(IoErr());
+        errno = __stdc_ioerr2errno(IoErr());
 
     return ret;
 } /* system */

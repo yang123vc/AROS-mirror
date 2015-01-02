@@ -1,8 +1,8 @@
 /*
-    Copyright © 1995-2007, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 
-    ANSI C function fflush().
+    C99 function fflush().
 */
 
 #include "__arosc_privdata.h"
@@ -12,7 +12,7 @@
 #include <dos/dosextens.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
-#include "__errno.h"
+#include <errno.h>
 #include "__stdio.h"
 #include "__fdesc.h"
 
@@ -50,12 +50,14 @@
 
 ******************************************************************************/
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
+
     /* flush all streams opened for output */
     if (!stream)
     {
 	FILENODE *fn;
 
-	ForeachNode (&__stdio_files, fn)
+	ForeachNode (&aroscbase->acb_stdio_files, fn)
 	{
 	    if (fn->File.flags & _STDIO_WRITE)
 	    {
@@ -67,9 +69,9 @@
 		    return EOF;
       		}
 
-		if (!Flush((BPTR)fdesc->fcb->fh))
+		if (!Flush((BPTR)fdesc->fcb->handle))
 		{
-		    errno = IoErr2errno(IoErr());
+		    errno = __stdc_ioerr2errno(IoErr());
 		    return EOF;
       		}
             }
@@ -85,11 +87,11 @@
 	    return EOF;
 	}
 
-	if (Flush((BPTR)fdesc->fcb->fh))
+	if (Flush((BPTR)fdesc->fcb->handle))
 	    return 0;
     }
 
-    errno = IoErr2errno(IoErr());
+    errno = __stdc_ioerr2errno(IoErr());
     return EOF;
 } /* fflush */
 

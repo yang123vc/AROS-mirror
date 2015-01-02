@@ -64,7 +64,7 @@
 #define inputFile_path          "Prefs/Input\""
 #define prefssrc_path           "ENV:SYS"
 #define prefs_path              "Prefs/Env-Archive/SYS"
-#define ARCH_PATH               "boot/pc"
+#define ARCH_PATH               "Arch/pc"
 #define GRUB_PATH               "grub"
 
 #define locale_prfs_file        "locale.prefs"  /* please note the suffixed \" */
@@ -149,7 +149,7 @@ char *dest_Path = NULL;         /* DOS DEVICE NAME of part used to store "aros" 
 char *work_Path = NULL;         /* DOS DEVICE NAME of part used to store "work" */
 TEXT *extras_path = NULL;       /* DOS DEVICE NAME of part used to store extras */
 
-char *boot_Device = "ahci.device";
+char *boot_Device = "ata.device";
 ULONG boot_Unit = 0;
 
 Object *check_copytowork = NULL;
@@ -794,7 +794,7 @@ IPTR Install__MUIM_IC_NextStep(Class * CLASS, Object * self, Msg message)
                     tmp_grub = AllocVec(100, MEMF_CLEAR | MEMF_PUBLIC);
 
                     GET(dest_volume, MUIA_String_Contents, &option);
-                    sprintf(tmp_grub, "%s:boot/pc/grub",
+                    sprintf(tmp_grub, "%s:Arch/pc/grub",
                         (CONST_STRPTR) option);
 
                     /* Guess the best disk to install GRUB's bootblock to */
@@ -2008,7 +2008,7 @@ IPTR Install__MUIM_IC_Install(Class * CLASS, Object * self, Msg message)
         TEXT tmp[100];
         BOOL success = FALSE;
         CONST_STRPTR core_dirs[] = {
-            "boot", "boot",
+            "Arch", "Arch",
             "C", "C",
             "Classes", "Classes",
             "Devs", "Devs",
@@ -3204,8 +3204,8 @@ int main(int argc, char *argv[])
         MUIA_Gauge_Current, 0, End);
 
     static char *opt_drivetypes[] = {
-        "AHCI/SATA",
         "IDE",
+        "AHCI/SATA",
         "USB",
         NULL
     };
@@ -3335,7 +3335,7 @@ int main(int argc, char *argv[])
 
     /* Let GRUB text/graphics choice default to same as on boot media */
     source_path[pathend] = '\0';
-    AddPart(source_path, "boot/grub/unicode.pf2", 256);
+    AddPart(source_path, "Arch/pc/grub/unicode.pf2", 256);
     if ((lock = Lock(source_path, SHARED_LOCK)) != BNULL)
     {
         gfx_font_exists = TRUE;
@@ -3770,10 +3770,10 @@ int main(int argc, char *argv[])
     /* Notifications upon selection of drive type */
     DoMethod(cycle_drivetype, MUIM_Notify, (IPTR) MUIA_Cycle_Active, 0,
         (IPTR) dest_device, 3, MUIM_Set,
-        MUIA_String_Contents, "ahci.device");
+        MUIA_String_Contents, "ata.device");
     DoMethod(cycle_drivetype, MUIM_Notify, (IPTR) MUIA_Cycle_Active, 1,
         (IPTR) dest_device, 3, MUIM_Set,
-        MUIA_String_Contents, "ata.device");
+        MUIA_String_Contents, "ahci.device");
     DoMethod(cycle_drivetype, MUIM_Notify, (IPTR) MUIA_Cycle_Active, 2,
         (IPTR) dest_device, 3, MUIM_Set,
         MUIA_String_Contents, "usbscsi.device");

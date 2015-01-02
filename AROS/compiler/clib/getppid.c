@@ -1,9 +1,8 @@
 /*
-    Copyright © 2004, The AROS Development Team. All rights reserved.
+    Copyright © 2004-2012, The AROS Development Team. All rights reserved.
     $Id$
 */
 
-#include <unistd.h>
 #include <sys/types.h>
 
 #include <exec/tasks.h>
@@ -17,6 +16,7 @@
 /*****************************************************************************
 
     NAME */
+#include <unistd.h>
 
 	pid_t getppid(
 
@@ -41,13 +41,14 @@
 
 ******************************************************************************/
 {
+  struct aroscbase *aroscbase = __aros_getbase_aroscbase();
   struct Task *ParentTask;
   struct ETask *eThisTask;
   struct ETask *et;
 
-  if(__get_arosc_privdata()->acpd_flags & PRETEND_CHILD)
+  if(aroscbase->acb_flags & PRETEND_CHILD)
   {
-    struct vfork_data *udata = __get_arosc_privdata()->acpd_vfork_data;
+    struct vfork_data *udata = aroscbase->acb_vfork_data;
     eThisTask = GetETask(udata->child);
   }
   else

@@ -1,16 +1,17 @@
 /*
-    Copyright © 1995-2001, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 
-    Desc: ANSI C function exit()
-    Lang: english
+    C99 function exit()
 */
 
 #include "__arosc_privdata.h"
 
-#include <exec/types.h>
-#include <setjmp.h>
+#include <aros/debug.h>
 #include <aros/startup.h>
+#include <exec/types.h>
+
+#include <assert.h>
 
 /*****************************************************************************
 
@@ -58,11 +59,11 @@
 
 ******************************************************************************/
 {
+    D(bug("[arosc] exit(%d)\n", code));
 
-    __aros_startup_error = code;
-
-    longjmp (__aros_startup_jmp_buf, 1);
+    __arosc_jmp2exit(1, code);
 
     /* never reached */
+    assert(0);
 } /* exit */
 

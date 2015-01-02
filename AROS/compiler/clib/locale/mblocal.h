@@ -43,21 +43,23 @@ int	_GBK_init(_RuneLocale *);
 int	_BIG5_init(_RuneLocale *);
 int	_MSKanji_init(_RuneLocale *);
 
+typedef int wchar_t_v0;
+
 /*
  * Conversion function pointers for current encoding.
  */
-extern size_t (*__mbrtowc)(wchar_t * __restrict, const char * __restrict,
+extern size_t (*__mbrtowc)(wchar_t_v0 * __restrict, const char * __restrict,
     size_t, mbstate_t * __restrict);
 extern int (*__mbsinit)(const mbstate_t *);
-extern size_t (*__mbsnrtowcs)(wchar_t * __restrict, const char ** __restrict,
+extern size_t (*__mbsnrtowcs)(wchar_t_v0 * __restrict, const char ** __restrict,
     size_t, size_t, mbstate_t * __restrict);
-extern size_t (*__wcrtomb)(char * __restrict, wchar_t, mbstate_t * __restrict);
-extern size_t (*__wcsnrtombs)(char * __restrict, const wchar_t ** __restrict,
+extern size_t (*__wcrtomb)(char * __restrict, wchar_t_v0, mbstate_t * __restrict);
+extern size_t (*__wcsnrtombs)(char * __restrict, const wchar_t_v0 ** __restrict,
     size_t, size_t, mbstate_t * __restrict);
 
-extern size_t __mbsnrtowcs_std(wchar_t * __restrict, const char ** __restrict,
+extern size_t __mbsnrtowcs_std(wchar_t_v0 * __restrict, const char ** __restrict,
     size_t, size_t, mbstate_t * __restrict);
-extern size_t __wcsnrtombs_std(char * __restrict, const wchar_t ** __restrict,
+extern size_t __wcsnrtombs_std(char * __restrict, const wchar_t_v0 ** __restrict,
     size_t, size_t, mbstate_t * __restrict);
 
 #endif	/* _MBLOCAL_H_ */

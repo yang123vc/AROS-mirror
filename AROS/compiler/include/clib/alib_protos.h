@@ -9,10 +9,6 @@
     Lang: english
 */
 
-#if defined(RT_ENABLE) && RT_ENABLE
-#include <aros/rt.h>
-#endif
-
 #include <aros/asmcall.h>
 #include <devices/inputevent.h>
 #include <devices/keymap.h>
@@ -38,10 +34,6 @@ struct Locale;
 IPTR CallHookA (struct Hook * hook, APTR obj, APTR param);
 IPTR CallHook (struct Hook * hook, APTR obj, ...) __stackparm;
 UBYTE * ACrypt(UBYTE * buffer, const UBYTE * password, const UBYTE * user);
-
-/* Dos support */
-BPTR ErrorOutput(void);
-BPTR SelectErrorOutput(BPTR fh);
 
 /* Exec support */
 VOID BeginIO (struct IORequest *ioReq);
@@ -85,10 +77,6 @@ LONG ObtainBestPen( struct ColorMap * cm, LONG R, LONG G, LONG B, ULONG tag1, ..
 #ifndef GetRPAttrs
 void GetRPAttrs( struct RastPort * rp, Tag tag1, ...) __stackparm;
 #endif
-
-BOOL AndRectRect(struct Rectangle *rect1, struct Rectangle *rect2, struct Rectangle *intersect);
-struct Region *CopyRegion(struct Region *region);
-struct Region *NewRectRegion(WORD MinX,	WORD MinY, WORD MaxX, WORD MaxY);
 
 /* Intuition */
 #ifndef SetWindowPointer 

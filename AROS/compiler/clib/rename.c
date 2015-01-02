@@ -1,14 +1,14 @@
 /*
-    Copyright © 1995-2003, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 
-    ANSI C function rename().
+    C99 function rename().
 */
 
 #include <proto/dos.h>
 #include <stdlib.h>
 #include <string.h>
-#include "__errno.h"
+#include <errno.h>
 #include "__upath.h"
 
 #define DEBUG 0
@@ -79,7 +79,7 @@
 	    if (!DeleteFile(anewpath))
 	    {
 		LONG ioerr = IoErr();
-		errno = IoErr2errno(ioerr);
+		errno = __stdc_ioerr2errno(ioerr);
 		D(bug("rename(%s, %s) delete errno=%d, IoErr=%d\n",
 			aoldpath, anewpath, errno, ioerr));
 		free(aoldpath);
@@ -92,7 +92,7 @@
     if (!Rename (aoldpath, anewpath))
     {
 	LONG ioerr = IoErr();
-	errno = IoErr2errno(ioerr);
+	errno = __stdc_ioerr2errno(ioerr);
 	D(bug("rename(%s, %s) errno=%d, IoErr=%d\n",
 		aoldpath, anewpath, errno, ioerr));
 	free(aoldpath);

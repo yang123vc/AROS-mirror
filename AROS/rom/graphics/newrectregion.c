@@ -1,8 +1,8 @@
 /*
-    Copyright © 1995-2001, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2011, The AROS Development Team. All rights reserved.
     $Id$
 
-    Desc: (AROS only) Graphics function NewRectRegion()
+    Desc: Graphics function NewRectRegion()
     Lang: english
 */
 #include "graphics_intern.h"
@@ -15,16 +15,16 @@
     NAME */
 #include <proto/graphics.h>
 
-	AROS_LH4(struct Region *, NewRectRegion,
+    AROS_LH4(struct Region *, NewRectRegion,
 
 /*  SYNOPSIS */
-    	AROS_LHA(WORD, MinX, D0),
-	AROS_LHA(WORD, MinY, D1),
-	AROS_LHA(WORD, MaxX, D2),
-	AROS_LHA(WORD, MaxY, D3),
-		
+        AROS_LHA(WORD, MinX, D0),
+    AROS_LHA(WORD, MinY, D1),
+    AROS_LHA(WORD, MaxX, D2),
+    AROS_LHA(WORD, MaxY, D3),
+
 /*  LOCATION */
-	struct GfxBase *, GfxBase, 194, Graphics)
+    struct GfxBase *, GfxBase, 194, Graphics)
 
 /*  FUNCTION
     	Creates a new rectangular Region
@@ -36,8 +36,7 @@
     	Pointer to the newly created Region. NULL on failure.
 
     NOTES
-	This function does not exist in AmigaOS.
-    	It does basically the same as:
+	This function is a shorthand for:
 
 	    struct Rectangle rect;
 	    struct Region *region;
@@ -55,7 +54,6 @@
     BUGS
 
     SEE ALSO
-	NewRegion(), OrRectRegion()
 
     INTERNALS
 
@@ -66,39 +64,20 @@
 {
     AROS_LIBFUNC_INIT
 
-    struct Region   	    *region;
-    struct RegionRectangle  *rr;
-
-    if ((region = NewRegion()))
+    struct Region *region = NewRegion();
+    
+    if (region)
     {
-        struct RegionRectangle *last = NULL;
+    	struct Rectangle rect = {MinX, MinY, MaxX, MaxY};
+    	BOOL res = OrRectRegion(region, &rect);
 
-    	if (ARE_COORDS_EVIL(MinX, MinY, MaxX, MaxY))
-	{
-	    /* Just create an empty region */
-	}
-        else if ((rr = _NewRegionRectangle(&last, GfxBase)))
-	{
-	    region->bounds.MinX = MinX;
-	    region->bounds.MinY = MinY;
-	    region->bounds.MaxX = MaxX;
-	    region->bounds.MaxY = MaxY;
+	if (res)
+	    return region;
 
-	    rr->bounds.MinX = 0;
-	    rr->bounds.MinY = 0;
-	    rr->bounds.MaxX = MaxX - MinX;
-	    rr->bounds.MaxY = MaxY - MinY;
-
-	    region->RegionRectangle = rr;
-	}
-	else
-	{
-	    DisposeRegion(region);
-	    region = NULL;
-	}
+	DisposeRegion(region);
     }
 
-    return region;
+    return NULL;
 
     AROS_LIBFUNC_EXIT
 

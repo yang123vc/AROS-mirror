@@ -1,21 +1,17 @@
 /*
-    Copyright © 1995-2007, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 
-    ANSI C function gets().
+    C99 function gets().
 */
 
-#include <errno.h>
 #include <dos/dos.h>
 #include <dos/dosextens.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
 #include "__fdesc.h"
-#include "__errno.h"
 
 #include <string.h>
-#include <stdio.h>
-#undef gets
 
 /*****************************************************************************
 

@@ -51,7 +51,6 @@ int     rkprintf     (const STRPTR, const STRPTR, int, const UBYTE * fmt, ...);
 void    NastyFreeMem (APTR mem, IPTR size);
 APTR    RemoveSList  (APTR * list, APTR node);
 void    hexdump      (const void * data, IPTR offset, ULONG count);
-int     strrncasecmp (const char *, const char *, int);
 void    RawPutChars  (const UBYTE * string, int len);
 BOOL    IsDosEntryA  (char *Name, ULONG Flags);
 
@@ -86,12 +85,6 @@ BOOL WriteDouble (struct Hook *, DOUBLE data, void * stream);
 BOOL WriteString (struct Hook *, STRPTR data, void * stream);
 BOOL WriteStruct (struct Hook *, APTR   data, void * stream, const IPTR * desc);
 void FreeStruct  (APTR s,  const IPTR * desc);
-
-/* RastPort manipulations */
-struct RastPort *CreateRastPort(void);
-struct RastPort *CloneRastPort(struct RastPort *rp);
-void DeinitRastPort(struct RastPort *rp);
-void FreeRastPort(struct RastPort *rp);
 
 __END_DECLS
 

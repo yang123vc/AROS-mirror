@@ -1,5 +1,5 @@
 /*
-    Copyright © 1995-2010, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 
     POSIX function access().
@@ -8,13 +8,11 @@
 #include <aros/debug.h>
 #include <errno.h>
 #include <proto/dos.h>
-#include <dos/filesystem.h>
 #include <string.h>
 
 #include <aros/debug.h>
 
 #include "__arosc_privdata.h"
-#include "__errno.h"
 #include "__upath.h"
 
 /*****************************************************************************
@@ -59,6 +57,7 @@
 
 ******************************************************************************/
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
     BPTR lock = BNULL;
     struct FileInfoBlock *fib = NULL;
     int result = -1;
@@ -80,7 +79,7 @@
     }
 
     /* POSIX root is (poorly) emulated, its contents is accessible */
-    if (__doupath && (path[0] == '/') && (path[1] == '\0'))
+    if (aroscbase->acb_doupath && (path[0] == '/') && (path[1] == '\0'))
     {
 	if (mode & (W_OK|R_OK)) {
 	    errno = EACCES;
@@ -114,14 +113,14 @@
     lock = Lock(apath, SHARED_LOCK);
     if (lock == BNULL)
     {
-        errno = IoErr2errno(IoErr());
+        errno = __stdc_ioerr2errno(IoErr());
         return -1;
     }
 
     fib = AllocDosObject(DOS_FIB, NULL);
     if (!fib)
     {
-        errno = IoErr2errno(IoErr());
+        errno = __stdc_ioerr2errno(IoErr());
         UnLock(lock);
         return -1;
     }

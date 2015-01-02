@@ -1,9 +1,11 @@
 /*
-    Copyright © 1995-2009, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 
-    POSIX function opendir().
+    POSIX.1-2008 function opendir().
 */
+
+#include "__arosc_privdata.h"
 
 #include <dos/dos.h>
 #include <proto/dos.h>
@@ -17,8 +19,8 @@
 #include <fcntl.h>
 
 #include "__fdesc.h"
-#include "__errno.h"
 #include "__upath.h"
+#include "__dirdesc.h"
 
 #define DEBUG 0
 #include <aros/debug.h>
@@ -50,12 +52,13 @@
 
     SEE ALSO
  	open(), readdir(), closedir(), rewinddir(), seekdir(),
-	telldir(), scandir()
+	telldir()
 
     INTERNALS
 
 ******************************************************************************/
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
     DIR *dir;
     int fd;
     fcb *cblock;
@@ -91,7 +94,7 @@
     lock = Lock(aname, SHARED_LOCK);
     if (!lock)
     {
-	errno = IoErr2errno(IoErr());
+	errno = __stdc_ioerr2errno(IoErr());
 	goto err3;
     }
 
@@ -111,7 +114,7 @@
 
     if (!Examine(lock, dir->priv))
     {
-	errno = IoErr2errno(IoErr());
+	errno = __stdc_ioerr2errno(IoErr());
 	goto err4;
     }
 
@@ -135,13 +138,17 @@
     }
     desc->fdflags = 0;
     desc->fcb = cblock;
-    desc->fcb->fh = lock;
+    desc->fcb->handle = lock;
     desc->fcb->flags = O_RDONLY;
     desc->fcb->opencount = 1;
-    desc->fcb->isdir = 1;
+    desc->fcb->privflags |= _FCB_ISDIR;
+
+    LOCKACB
 
     fd = __getfdslot(__getfirstfd(3));
     __setfdesc(fd, desc);
+
+    UNLOCKACB
 
     dir->fd = fd;
     dir->pos = 0;

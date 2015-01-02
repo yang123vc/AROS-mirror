@@ -9,6 +9,7 @@
     Lang: english
 */
 
+/* ABI_V0 compatibility */
 int __spawnv(int mode, const char *filename, int searchpath, char *const argv[]);
 
 #endif

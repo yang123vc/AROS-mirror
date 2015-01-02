@@ -6,20 +6,15 @@ include $(TOP)/config/make.cfg
 
 FILES	:= \
     calcchecksum \
-    clonerastport \
     createbstr \
-    createrastport \
     createseglist \
     debugmem \
-    deinitrastport \
-    freerastport \
     freestruct \
     hexdump \
     isdosentrya \
     kprintf \
     rkprintf \
     nastyfreemem \
-    purify \
     libfindtagitem \
     libgettagdata \
     libnexttagitem \
@@ -32,11 +27,6 @@ FILES	:= \
     readstruct \
     readword \
     removeslist \
-    rt \
-    rt_dos \
-    rt_exec \
-    rt_intuition \
-    strrncasecmp \
     writebyte \
     writedouble \
     writefloat \

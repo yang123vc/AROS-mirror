@@ -1,5 +1,5 @@
 /*
-    Copyright © 1995-2003, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 
     POSIX function readdir().
@@ -13,9 +13,9 @@
 #include <string.h>
 #include <errno.h>
 
-#include "__errno.h"
 #include "__fdesc.h"
 #include "__upath.h"
+#include "__dirdesc.h"
 
 #define DEBUG 0
 #include <aros/debug.h>
@@ -58,12 +58,13 @@
 
     SEE ALSO
  	read(), opendir(), closedir(), rewinddir(), seekdir(),
-	telldir(), scandir()
+	telldir()
 
     INTERNALS
 
 ******************************************************************************/
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
     int const max = MAXFILENAMELENGTH > NAME_MAX ? NAME_MAX : MAXFILENAMELENGTH;
     fdesc *desc;
 
@@ -84,7 +85,7 @@
     	return NULL;
     }
 
-    if (__doupath && dir->pos == 0)
+    if (aroscbase->acb_doupath && dir->pos == 0)
     {
         dir->ent.d_type = DT_DIR;
         dir->ent.d_name[0]='.';
@@ -92,7 +93,7 @@
         dir->ent.d_reclen = 1;
     } 
     else
-    if (__doupath && dir->pos == 1)
+    if (aroscbase->acb_doupath && dir->pos == 1)
     {
         dir->ent.d_type = DT_DIR;
         dir->ent.d_name[0]='.';
@@ -104,12 +105,12 @@
     {
         struct FileInfoBlock *fib = (struct FileInfoBlock *)dir->priv;
 
-        if (!ExNext(desc->fcb->fh, fib))
+        if (!ExNext(desc->fcb->handle, fib))
         {
 	    dir->pos--;
 	    if (IoErr() != ERROR_NO_MORE_ENTRIES)
 	    {
-    	        errno = IoErr2errno(IoErr());
+    	        errno = __stdc_ioerr2errno(IoErr());
 		D(bug(") errno=%d\n", (int)errno));
             }
 	    D(else
@@ -121,7 +122,7 @@
         while (TRUE)
         {
 
-            if (__doupath && name[0] == '.')
+            if (aroscbase->acb_doupath && name[0] == '.')
             { 
                 if (name[1] == '.')
                 {      

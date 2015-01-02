@@ -22,7 +22,7 @@ enum optionbit { BIT_NOAUTOLIB, BIT_NOEXPUNGE, BIT_NORESIDENT,
                  BIT_DUPBASE, BIT_PERTASKBASE, BIT_INCLUDES, BIT_NOINCLUDES,
                  BIT_STUBS, BIT_NOSTUBS, BIT_AUTOINIT, BIT_NOAUTOINIT,
                  BIT_RESAUTOINIT, BIT_NOOPENCLOSE, BIT_SELFINIT,
-                 BIT_STACKCALL
+                 BIT_STACKCALL, BIT_RELLINKLIB
 };
 enum optionflags
 {
@@ -41,6 +41,7 @@ enum optionflags
     OPTION_NOOPENCLOSE = 1<<BIT_NOOPENCLOSE,
     OPTION_SELFINIT = 1<<BIT_SELFINIT,
     OPTION_STACKCALL = 1<<BIT_STACKCALL,
+    OPTION_RELLINKLIB = 1<<BIT_RELLINKLIB,
 };
 
 enum coptionbit { CBIT_PRIVATE };
@@ -163,11 +164,6 @@ struct config
     int residentpri;
     unsigned int majorversion, minorversion;
     char *addromtag;
-
-    /* In forcelist a list of basenames is present that need to be present in the
-     * static link library so that certain libraries are opened by a program
-     */
-    struct stringlist *forcelist;
 
     /* Code to add to the generated files */
     struct stringlist *cdeflines, *cdefprivatelines, *startuplines;

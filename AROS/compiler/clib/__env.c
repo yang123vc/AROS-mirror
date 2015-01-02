@@ -1,5 +1,5 @@
 /*
-    Copyright © 1995-2003, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 
     Internal functions for environment variables handling.
@@ -8,13 +8,61 @@
 #include "__arosc_privdata.h"
 
 #include <stdlib.h>
-#include <strings.h>
+#include <string.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
 #include <proto/utility.h>
 #include <dos/var.h>
 
 #include "__env.h"
+
+#if AROS_AMIGAOS_COMPLIANCE && (AROS_AMIGAOS_COMPLIANCE >= 30)
+/* ScanVars is a Morphos addition in dos.library v50, so we
+ * have this stub here for arosc.library compatability with
+ * dos.library v30..v39.
+ */
+static LONG v30_ScanVars(struct Hook *hook, ULONG flags, APTR userdata)
+{
+    /* We scan through the process->pr_LocalVars list */
+    struct Process  *pr;
+    struct LocalVar *var;
+    struct ScanVarsMsg msg;
+    LONG res = 0;
+    APTR UtilityBase;
+    
+    UtilityBase = OpenLibrary("utility.library", 0);
+    if (UtilityBase == NULL)
+        return 0;
+
+    msg.sv_SVMSize = sizeof(struct ScanVarsMsg);
+    msg.sv_Flags = flags;
+    pr  = (struct Process *)FindTask(NULL);
+
+    /* We know that the callers of this routine
+     * will be asking for GVF_LOCAL_ONLY
+     */
+    var = (struct LocalVar *)pr->pr_LocalVars.mlh_Head;
+    
+    ForeachNode(&pr->pr_LocalVars, var)
+    {
+        if (var->lv_Node.ln_Type == LV_VAR)
+        {
+            msg.sv_Name = var->lv_Node.ln_Name;
+            msg.sv_Var = var->lv_Value;
+            msg.sv_VarLen = var->lv_Len;
+            msg.sv_GDir = "";
+            res = CallHookPkt(hook, userdata, &msg);
+            if(res != 0) 
+                break;
+        }
+    }
+
+    CloseLibrary(UtilityBase);
+    return res;
+}
+#undef ScanVars
+#define ScanVars(a,b,c) v30_ScanVars(a,b,c)
+#endif
 
 static __env_item *__env_newvar(const char *name, int valuesize)
 {
@@ -43,11 +91,12 @@ err1:
 
 static __env_item **internal_findvar(register const char *name)
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
 
    __env_item **curr;
 
    for (
-       curr = &__env_list;
+       curr = &aroscbase->acb_env_list;
        *curr && strcmp((*curr)->name, name);
        curr = &((*curr)->next)
    );

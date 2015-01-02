@@ -1,141 +1,28 @@
 /*
-    Copyright © 1995-2010, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 */
+
+/* Move these symbols out of the way, because
+ * we're going to be using a slighty different
+ * definition of these for the static library
+ * (a const *)
+ */
+#define __ctype_b __ctype_b_external
+#define __ctype_toupper __ctype_toupper_external
+#define __ctype_tolower __ctype_tolower_external
 
 #include <aros/symbolsets.h>
 #include <ctype.h>
 
-const unsigned short int __ctype_b_array[384] =
+#include "__arosc_privdata.h"
+
+#undef __ctype_b
+#undef __ctype_toupper
+#undef __ctype_tolower
+
+static const unsigned short int __ctype_b_array[256] =
 {
-    0, /* -128 */
-    0, /* -127 */
-    0, /* -126 */
-    0, /* -125 */
-    0, /* -124 */
-    0, /* -123 */
-    0, /* -122 */
-    0, /* -121 */
-    0, /* -120 */
-    0, /* -119 */
-    0, /* -118 */
-    0, /* -117 */
-    0, /* -116 */
-    0, /* -115 */
-    0, /* -114 */
-    0, /* -113 */
-    0, /* -112 */
-    0, /* -111 */
-    0, /* -110 */
-    0, /* -109 */
-    0, /* -108 */
-    0, /* -107 */
-    0, /* -106 */
-    0, /* -105 */
-    0, /* -104 */
-    0, /* -103 */
-    0, /* -102 */
-    0, /* CSI */
-    0, /* -100 */
-    0, /* -99 */
-    0, /* -98 */
-    0, /* -97 */
-    0, /* NBSpace */
-    0, /* ¡ */
-    0, /* ¢ */
-    0, /* £ */
-    0, /* ¤ */
-    0, /* ¥ */
-    0, /* ¦ */
-    0, /* § */
-    0, /* ¨ */
-    0, /* © */
-    0, /* ª */
-    0, /* « */
-    0, /* ¬ */
-    0, /* ­ */
-    0, /* ® */
-    0, /* ¯ */
-    0, /* ° */
-    0, /* ± */
-    0, /* ² */
-    0, /* ³ */
-    0, /* ´ */
-    0, /* µ */
-    0, /* ¶ */
-    0, /* · */
-    0, /* ¸ */
-    0, /* ¹ */
-    0, /* º */
-    0, /* » */
-    0, /* ¼ */
-    0, /* ½ */
-    0, /* ¾ */
-    0, /* ¿ */
-    0, /* À */
-    0, /* Á */
-    0, /* Â */
-    0, /* Ã */
-    0, /* Ä */
-    0, /* Å */
-    0, /* Æ */
-    0, /* Ç */
-    0, /* È */
-    0, /* É */
-    0, /* Ê */
-    0, /* Ë */
-    0, /* Ì */
-    0, /* Í */
-    0, /* Î */
-    0, /* Ï */
-    0, /* Ð */
-    0, /* Ñ */
-    0, /* Ò */
-    0, /* Ó */
-    0, /* Ô */
-    0, /* Õ */
-    0, /* Ö */
-    0, /* × */
-    0, /* Ø */
-    0, /* Ù */
-    0, /* Ú */
-    0, /* Û */
-    0, /* Ü */
-    0, /* Ý */
-    0, /* Þ */
-    0, /* ß */
-    0, /* à */
-    0, /* á */
-    0, /* â */
-    0, /* ã */
-    0, /* ä */
-    0, /* å */
-    0, /* æ */
-    0, /* ç */
-    0, /* è */
-    0, /* é */
-    0, /* ê */
-    0, /* ë */
-    0, /* ì */
-    0, /* í */
-    0, /* î */
-    0, /* ï */
-    0, /* ð */
-    0, /* ñ */
-    0, /* ò */
-    0, /* ó */
-    0, /* ô */
-    0, /* õ */
-    0, /* ö */
-    0, /* ÷ */
-    0, /* ø */
-    0, /* ù */
-    0, /* ú */
-    0, /* û */
-    0, /* ü */
-    0, /* ý */
-    0, /* þ */
-    0, /* ÿ */
     _IScntrl, /* 0 */
     _IScntrl, /* 1 */
     _IScntrl, /* 2 */
@@ -394,26 +281,9 @@ const unsigned short int __ctype_b_array[384] =
     0, /* ÿ */
 };
 
-const int __ctype_toupper_array[384] =
+/* ABI_V0 compatibility */
+static const int __ctype_toupper_array[256] =
 {
-    /* -128 */
-    128,129,130,131, 132,133,134,135,
-    136,137,138,139, 140,141,142,143,
-    144,145,146,147, 148,149,150,151,
-    152,153,154,155, 156,157,158,159,
-    160,161,162,163, 164,165,166,167,
-    168,169,170,171, 172,173,174,175,
-    176,177,178,179, 180,181,182,183,
-    184,185,186,187, 188,189,190,191,
-    192,193,194,195, 196,197,198,199,
-    200,201,202,203, 204,205,206,207,
-    208,209,210,211, 212,213,214,215,
-    216,217,218,219, 220,221,222,223,
-    224,225,226,227, 228,229,230,231,
-    232,233,234,235, 236,237,238,239,
-    240,241,242,243, 244,245,246,247,
-    248,249,250,251, 252,253,254,255,
-
       0,  1,  2,  3,   4,  5,  6,  7,
       8,  9, 10, 11,  12, 13, 14, 15,
      16, 17, 18, 19,  20, 21, 22, 23,
@@ -449,25 +319,9 @@ const int __ctype_toupper_array[384] =
     248,249,250,251, 252,253,254,255,
 };
 
-const int __ctype_tolower_array[384] =
+/* ABI_V0 compatibility */
+static const int __ctype_tolower_array[256] =
 {
-    128,129,130,131, 132,133,134,135,
-    136,137,138,139, 140,141,142,143,
-    144,145,146,147, 148,149,150,151,
-    152,153,154,155, 156,157,158,159,
-    160,161,162,163, 164,165,166,167,
-    168,169,170,171, 172,173,174,175,
-    176,177,178,179, 180,181,182,183,
-    184,185,186,187, 188,189,190,191,
-    192,193,194,195, 196,197,198,199,
-    200,201,202,203, 204,205,206,207,
-    208,209,210,211, 212,213,214,215,
-    216,217,218,219, 220,221,222,223,
-    224,225,226,227, 228,229,230,231,
-    232,233,234,235, 236,237,238,239,
-    240,241,242,243, 244,245,246,247,
-    248,249,250,251, 252,253,254,255,
-
       0,  1,  2,  3,   4,  5,  6,  7,
       8,  9, 10, 11,  12, 13, 14, 15,
      16, 17, 18, 19,  20, 21, 22, 23,
@@ -504,18 +358,37 @@ const int __ctype_tolower_array[384] =
 };
 
 #ifdef AROSC_SHARED
+const unsigned short int *__ctype_b = &__ctype_b_array[0];
+/* ABI_V0 compatibility */
+const int *__ctype_toupper = &__ctype_toupper_array[0];
+const int *__ctype_tolower = &__ctype_tolower_array[0];
 
-static int __ctype_init(void)
+const unsigned short int * const * const __ctype_b_ptr = &__ctype_b;
+const int * const * const __ctype_toupper_ptr = &__ctype_toupper;
+const int * const * const __ctype_tolower_ptr = &__ctype_tolower;
+
+const struct arosc_ctype *__get_arosc_ctype(void)
 {
-    __ctype_b       = &__ctype_b_array[128];
-    __ctype_toupper = &__ctype_toupper_array[128];
-    __ctype_tolower = &__ctype_tolower_array[128];
+    return &__get_arosc_userdata()->acud_ctype;
+}
+
+static int __ctype_init(struct ExecBase *SysBase)
+{
+    struct arosc_userdata *acud = __get_arosc_userdata();
+
+    acud->acud_ctype.b       = __ctype_b;
+    acud->acud_ctype.toupper = __ctype_toupper;
+    acud->acud_ctype.tolower = __ctype_tolower;
 
     return 1;
 }
 
 ADD2INIT(__ctype_init, 20);
-
+#else
+const unsigned short * const __ctype_b = &__ctype_b_array[0];
+/* ABI_V0 compatibility */
+const int * const __ctype_toupper = &__ctype_toupper_array[0];
+const int * const __ctype_tolower = &__ctype_tolower_array[0];
 #endif
 
 /*****************************************************************************

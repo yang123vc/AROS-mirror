@@ -1,19 +1,17 @@
 /*
-    Copyright © 1995-2010, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 
-    ANSI C function readlink().
+    POSIX.1-2008 function readlink().
 */
 
 #include <aros/debug.h>
 
-#include <dos/filesystem.h>
 #include <proto/dos.h>
 
 #include <errno.h>
 
 #include "__arosc_privdata.h"
-#include "__errno.h"
 #include "__filesystem_support.h"
 #include "__upath.h"
 
@@ -44,14 +42,14 @@
 	global variable errno.
 */
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
     ssize_t          res = -1;
-    struct IOFileSys iofs;
     struct DevProc   *dvp = NULL;
     LONG             error;
     struct Process   *me = (struct Process *)FindTask(NULL);
 
     /* check for empty path before potential conversion from "." to "" */
-    if (__doupath && path && *path == '\0')
+    if (aroscbase->acb_doupath && path && *path == '\0')
     {
         errno = ENOENT;
         return res;
@@ -61,54 +59,21 @@
     if (path == NULL)
         return res;
 
-    /* we need to know if it is really a soft link */
-    InitIOFS(&iofs, FSA_OPEN, DOSBase);
-    iofs.io_Union.io_OPEN.io_FileMode = FMF_READ;
-    iofs.io_Union.io_OPEN.io_Filename = StripVolume(path);
+    dvp = GetDeviceProc(path, NULL);
 
-    do
-    {
-        if ((dvp = GetDeviceProc(path, dvp)) == NULL)
-        {
-            error = IoErr();
-            break;
-        }
-
-        error = DoIOFS(&iofs, dvp, NULL, DOSBase);
-    }
-    while (error == ERROR_OBJECT_NOT_FOUND);
-
-    if (error == ERROR_NO_MORE_ENTRIES)
-        error = me->pr_Result2 = ERROR_OBJECT_NOT_FOUND;
-    else if (error == 0)
-    {
-        /* open I/O request successful, but this is not*/
-        /* what we want, don't forget to close again */
-        InitIOFS(&iofs, FSA_CLOSE, DOSBase);
-        DoIO((struct IORequest *) &iofs);
-        /* set an error that translates to EINVAL */
-        error = me->pr_Result2 = ERROR_OBJECT_WRONG_TYPE;
-    }
-    else if (error == ERROR_IS_SOFT_LINK)
-    {
-        /* it is a soft link, try to read it */
-        res = ReadLink(dvp->dvp_Port, dvp->dvp_Lock, path, buf, bufsize);
-        if (res == -1)
-            error = IoErr();
-        else
-        {
-            if (res == -2)
-                res = bufsize;
-            
-            /* clear the soft link error */
-            error = me->pr_Result2 = 0;
-        }
+    res = ReadLink(dvp->dvp_Port, dvp->dvp_Lock, path, buf, bufsize);
+    if (res == -1) {
+        error = IoErr();
+    } else {
+        if (res == -2)
+            res = bufsize;
+        error = me->pr_Result2 = 0;
     }
     
     FreeDeviceProc(dvp);
 
     if (error)
-        errno = IoErr2errno(error);
+        errno = __stdc_ioerr2errno(error);
 
     return res;
 }

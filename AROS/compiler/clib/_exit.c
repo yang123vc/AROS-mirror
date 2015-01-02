@@ -5,10 +5,13 @@
     POSIX function _exit().
 */
 
+#include <aros/debug.h>
+
 #include "__arosc_privdata.h"
 
 #include <exec/types.h>
 #include <setjmp.h>
+#include <assert.h>
 #include <aros/startup.h>
 
 /*****************************************************************************
@@ -50,12 +53,9 @@
 
 ******************************************************************************/
 {
-    __aros_startup_error = code;
-
-    longjmp (__aros_startup_jmp_buf, 1);
-
-    /* TODO: _exit() is not properly implemented */
+    __arosc_jmp2exit(0, code);
 
     /* never reached */
+    assert(0);
 } /* _exit */
 

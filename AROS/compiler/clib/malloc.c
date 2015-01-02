@@ -1,8 +1,8 @@
 /*
-    Copyright © 1995-2009, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 
-    ANSI C function malloc().
+    C99 function malloc().
 */
 
 #include "__arosc_privdata.h"
@@ -19,7 +19,6 @@
 /*****************************************************************************
 
     NAME */
-#include <sys/types.h>
 #include <stdlib.h>
 
 	void *malloc (
@@ -54,10 +53,11 @@
 
 ******************************************************************************/
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
     UBYTE *mem = NULL;
 
     /* Allocate the memory */
-    mem = AllocPooled (__mempool, size + AROS_ALIGN(sizeof(size_t)));
+    mem = AllocPooled (aroscbase->acb_mempool, size + AROS_ALIGN(sizeof(size_t)));
     if (mem)
     {
 	*((size_t *)mem) = size;
@@ -71,17 +71,17 @@
 } /* malloc */
 
 
-int __init_memstuff(void)
+int __init_memstuff(struct aroscbase *aroscbase)
 {
-    D(bug("__init_memstuff: task(%x), privdata(%x)\n",
-          FindTask(NULL), __get_arosc_privdata()
+    D(bug("__init_memstuff: task(%x), aroscbase(%x)\n",
+          FindTask(NULL), aroscbase
     ));
 
-    __mempool = CreatePool(MEMF_ANY | MEMF_SEM_PROTECTED, 65536L, 4096L);
+    aroscbase->acb_mempool = CreatePool(MEMF_ANY | MEMF_SEM_PROTECTED, 65536L, 4096L);
 
-    D(bug("__init_memstuff: __mempool(%x)\n", __mempool));
+    D(bug("__init_memstuff: aroscbase->acb_mempool(%x)\n", aroscbase->acb_mempool));
 
-    if (!__mempool)
+    if (!aroscbase->acb_mempool)
     {
 	return 0;
     }
@@ -90,17 +90,17 @@ int __init_memstuff(void)
 }
 
 
-void __exit_memstuff(void)
+void __exit_memstuff(struct aroscbase *aroscbase)
 {
-    D(bug("__exit_memstuff: task(%x), privdata(%x), __mempool(%x)\n",
-          FindTask(NULL), __get_arosc_privdata(), __mempool
+    D(bug("__exit_memstuff: task(%x), aroscbase(%x), acb_mempool(%x)\n",
+          FindTask(NULL), aroscbase, aroscbase->acb_mempool
     ));
 
-    if (__mempool)
+    if (aroscbase->acb_mempool)
     {
-	DeletePool(__mempool);
+	DeletePool(aroscbase->acb_mempool);
     }
 }
 
-ADD2INIT(__init_memstuff, 0);
-ADD2EXIT(__exit_memstuff, 0);
+ADD2OPENLIB(__init_memstuff, 0);
+ADD2CLOSELIB(__exit_memstuff, 0);

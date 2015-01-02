@@ -1,5 +1,5 @@
 /*
-    Copyright © 1995-2009, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 */
 
@@ -10,7 +10,6 @@
 #include <errno.h>
 
 #include "__arosc_privdata.h"
-#include "__errno.h"
 #include "__upath.h"
 
 /*****************************************************************************
@@ -51,13 +50,14 @@
 
 ******************************************************************************/
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
     int                  res     = -1;
     BPTR                 lock    = BNULL;
     struct FileInfoBlock *fib    = NULL;
     BOOL                 changed = TRUE;
 
     /* check for empty path before potential conversion from "." to "" */
-    if (__doupath && path && *path == '\0')
+    if (aroscbase->acb_doupath && path && *path == '\0')
     {
         errno = ENOENT;
         goto out;
@@ -72,13 +72,13 @@
     {
         if (!(fib = AllocDosObject(DOS_FIB, NULL)))
         {
-            errno = IoErr2errno(IoErr());
+            errno = __stdc_ioerr2errno(IoErr());
             goto out;
         }
     
         if (!(lock = Lock(path, SHARED_LOCK)) || !Examine(lock, fib))
         {
-            errno = IoErr2errno(IoErr());
+            errno = __stdc_ioerr2errno(IoErr());
             goto out;
         }
 
@@ -101,7 +101,7 @@
 
     if (changed && !SetOwner(path, owner << 16 | group))
     {
-        errno = IoErr2errno(IoErr());
+        errno = __stdc_ioerr2errno(IoErr());
         goto out;
     }
 

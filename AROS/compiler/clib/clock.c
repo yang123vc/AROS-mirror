@@ -1,5 +1,5 @@
 /*
-    Copyright © 1995-2003, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 
     Returns time passed since start of program.
@@ -46,34 +46,16 @@
 
 ******************************************************************************/
 {
-    struct DateStamp 	t;
-    clock_t		retval;
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
 
-    DateStamp (&t); /* Get timestamp */
-
-    /* Day difference */
-    retval =  (t.ds_Days - __datestamp.ds_Days);
-
-    /* Convert into minutes */
-    retval *= (24 * 60);
-
-    /* Minute difference */
-    retval += (t.ds_Minute - __datestamp.ds_Minute);
-
-    /* Convert into CLOCKS_PER_SEC (which is the same as TICKS_PER_SECOND) units */
-    retval *= (60 * TICKS_PER_SECOND);
-
-    /* Add tick difference */
-    retval += (t.ds_Tick - __datestamp.ds_Tick);
-
-    return retval;
-
+    return (clock_t)time(NULL) - aroscbase->acb_starttime;
 } /* clock */
 
-int __init_clock(void)
+int __init_clock(struct aroscbase *aroscbase)
 {
-    DateStamp(&__datestamp);
+    aroscbase->acb_starttime = (clock_t)time(NULL);
+
     return 1;
 }
 
-ADD2INIT(__init_clock, 20);
+ADD2OPENLIB(__init_clock, 20);

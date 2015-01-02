@@ -1,5 +1,5 @@
 /*
-    Copyright © 2004, The AROS Development Team. All rights reserved.
+    Copyright © 2004-2013, The AROS Development Team. All rights reserved.
     $Id$
     
     SVID function putw().
@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 
-	int putw(
+	int putw_abiv0(
 
 /*  SYNOPSIS */
 	int word,

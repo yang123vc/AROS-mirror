@@ -1,5 +1,5 @@
 /*
-    Copyright © 1995-2009, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 */
 
@@ -8,15 +8,13 @@
 
 #include <errno.h>
 
-#include "__time.h"
-#include "__errno.h"
 #include "__stat.h"
 #include "__upath.h"
+#include "__arosc_privdata.h"
 
 /*****************************************************************************
 
     NAME */
-
 #include <sys/stat.h>
 
 	int stat(
@@ -77,11 +75,12 @@
 
 ******************************************************************************/
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
     int res = 0;
     BPTR lock;
 
     /* check for empty path before potential conversion from "." to "" */
-    if (__doupath && path && *path == '\0')
+    if (aroscbase->acb_doupath && path && *path == '\0')
     {
         errno = ENOENT;
         return -1;
@@ -104,11 +103,11 @@
             return __stat_from_path(path, sb);
         }
 
-	errno = IoErr2errno(IoErr());
+	errno = __stdc_ioerr2errno(IoErr());
 	return -1;
     }
     else
-        res = __stat(lock, sb);
+        res = __stat(lock, sb, FALSE);
 
     UnLock(lock);
 

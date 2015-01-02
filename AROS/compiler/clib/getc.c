@@ -1,8 +1,8 @@
 /*
-    Copyright © 1995-2007, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 
-    ANSI C function getc().
+    C99 function getc().
 */
 
 #include <errno.h>
@@ -10,7 +10,6 @@
 #include <dos/dosextens.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
-#include "__errno.h"
 #include "__fdesc.h"
 
 #include <stdio.h>

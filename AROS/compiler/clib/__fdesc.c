@@ -1,9 +1,11 @@
 /*
-    Copyright © 1995-2011, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2013, The AROS Development Team. All rights reserved.
     $Id$
 
     File descriptors handling internals.
 */
+
+#include LC_LIBDEFS_FILE
 
 #include "__arosc_privdata.h"
 
@@ -20,35 +22,69 @@
 #include <exec/memory.h>
 #include <exec/semaphores.h>
 #include <dos/dos.h>
-#include <dos/filesystem.h>
+#include <dos/stdio.h>
 #include <aros/symbolsets.h>
 #include <aros/debug.h>
-#include "__errno.h"
 #include "__fdesc.h"
 #include "__upath.h"
 
+/* TODO: Add locking to make filedesc usage thread safe
+   Using vfork()+exec*() filedescriptors may be shared between different
+   tasks. Only one DOS file handle is used between shared file descriptors.
+   DOS file handles are not thread safe so we should add it here to make it
+   thread safe.
+   Possible implementation should look carefully at performance impact.
+*/
+
+void __getfdarray(APTR *arrayptr, int *slotsptr)
+{
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
+
+    *arrayptr = aroscbase->acb_fd_array;
+    *slotsptr = aroscbase->acb_numslots;
+}
+
+void __setfdarray(APTR array, int slots)
+{
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
+    aroscbase->acb_fd_array = array;
+    aroscbase->acb_numslots = slots;
+}
+
+void __setfdarraybase(struct aroscbase *aroscbase2)
+{
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
+
+    aroscbase->acb_fd_array = aroscbase2->acb_fd_array;
+    aroscbase->acb_numslots = aroscbase2->acb_numslots;
+}
+
 int __getfdslots(void)
 {
-    return __numslots;
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
+    return aroscbase->acb_numslots;
 }
 
 fdesc *__getfdesc(register int fd)
 {
-    return ((__numslots>fd) && (fd>=0))?__fd_array[fd]:NULL;
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
+    return ((aroscbase->acb_numslots>fd) && (fd>=0))?aroscbase->acb_fd_array[fd]:NULL;
 }
 
 void __setfdesc(register int fd, fdesc *desc)
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
     /* FIXME: Check if fd is in valid range... */
-    __fd_array[fd] = desc;
+    aroscbase->acb_fd_array[fd] = desc;
 }
 
 int __getfirstfd(register int startfd)
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
     /* FIXME: Check if fd is in valid range... */
     for (
 	;
-	startfd < __numslots && __fd_array[startfd];
+	startfd < aroscbase->acb_numslots && aroscbase->acb_fd_array[startfd];
 	startfd++
     );
 
@@ -57,32 +93,37 @@ int __getfirstfd(register int startfd)
 
 int __getfdslot(int wanted_fd)
 {
-    if (wanted_fd>=__numslots)
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
+    if (wanted_fd>=aroscbase->acb_numslots)
     {
         void *tmp;
         
-        tmp = AllocPooled(__fd_mempool, (wanted_fd+1)*sizeof(fdesc *));
+        tmp = AllocPooled(aroscbase->acb_internalpool, (wanted_fd+1)*sizeof(fdesc *));
         
         if (!tmp) return -1;
 
-        if (__fd_array)
+        if (aroscbase->acb_fd_array)
         {
-            size_t size = __numslots*sizeof(fdesc *);
-            CopyMem(__fd_array, tmp, size);
-            FreePooled(__fd_mempool, __fd_array, size);
+            size_t size = aroscbase->acb_numslots*sizeof(fdesc *);
+            CopyMem(aroscbase->acb_fd_array, tmp, size);
+            FreePooled(aroscbase->acb_internalpool, aroscbase->acb_fd_array, size);
         }
 
-        __fd_array = tmp;
+        aroscbase->acb_fd_array = tmp;
 
-        bzero(__fd_array + __numslots, (wanted_fd - __numslots + 1) * sizeof(fdesc *));
-        __numslots = wanted_fd+1;
+        memset(
+            aroscbase->acb_fd_array + aroscbase->acb_numslots,
+            0,
+            (wanted_fd - aroscbase->acb_numslots + 1) * sizeof(fdesc *)
+        );
+        aroscbase->acb_numslots = wanted_fd+1;
     }
     else if (wanted_fd < 0)
     {
         errno = EINVAL;
         return -1;
     }
-    else if (__fd_array[wanted_fd])
+    else if (aroscbase->acb_fd_array[wanted_fd])
     {
         close(wanted_fd);
     }
@@ -92,7 +133,7 @@ int __getfdslot(int wanted_fd)
 
 LONG __oflags2amode(int flags)
 {
-    LONG openmode = 0;
+    LONG openmode = -1;
 
     /* filter out invalid modes */
     switch (flags & (O_CREAT|O_TRUNC|O_EXCL))
@@ -102,25 +143,34 @@ LONG __oflags2amode(int flags)
             return -1;
     }
 
-    if (flags & O_WRITE)    openmode |= FMF_WRITE;
-    if (flags & O_READ)     openmode |= FMF_READ;
-    if (flags & O_EXEC)     openmode |= FMF_EXECUTE;
-    if (flags & O_CREAT)    openmode |= FMF_CREATE;
-    if (flags & O_NONBLOCK) openmode |= FMF_NONBLOCK;
-    if (flags & O_APPEND)   openmode |= FMF_APPEND;
+    /* Sorted in 'trumping' order. Ie if 
+     * O_WRITE is on, that overrides O_READ.
+     * Similarly, O_CREAT overrides O_WRITE.
+     */
+    if (flags & O_RDONLY)   openmode = MODE_OLDFILE;
+    if (flags & O_WRONLY)   openmode = MODE_OLDFILE;
+    if (flags & O_RDWR)     openmode = MODE_OLDFILE;
+    if (flags & O_READ)     openmode = MODE_OLDFILE;
+    if (flags & O_WRITE)    openmode = MODE_READWRITE;
+    if (flags & O_CREAT)    /* Handled later */; /* ABI_V0 compatibility */
+    if (flags & O_APPEND)   /* Handled later */;
+    if (flags & O_TRUNC)    /* Handled later */;
+    if (flags & O_EXEC)     /* Ignored */;
+    if (flags & O_NONBLOCK) /* Ignored */;
 
     return openmode;
 }
 
 int __open(int wanted_fd, const char *pathname, int flags, int mode)
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
     BPTR fh = BNULL, lock = BNULL;
     fdesc *currdesc = NULL;
     fcb *cblock = NULL;
     struct FileInfoBlock *fib = NULL;
     LONG  openmode = __oflags2amode(flags);
 
-    if (__doupath && pathname[0] == '\0')
+    if (aroscbase->acb_doupath && pathname[0] == '\0')
     {
         /* On *nix "" is not really a valid file name.  */
         errno = ENOENT;
@@ -149,114 +199,149 @@ int __open(int wanted_fd, const char *pathname, int flags, int mode)
     wanted_fd = __getfdslot(wanted_fd);
     if (wanted_fd == -1) { D(bug("__open: no free fd\n")); goto err; }
 
-    lock = Lock((char *)pathname, SHARED_LOCK);
-    if (!lock)
+    /*
+     * In case of file system, test existance of file. Non-file system handlers (i.e CON:)
+     * support opening a file while not supporting locking.
+     */
+    if(IsFileSystem(pathname) == DOSTRUE)
     {
-        if (IoErr() == ERROR_OBJECT_WRONG_TYPE)
+        lock = Lock((char *)pathname, SHARED_LOCK);
+        if (!lock)
         {
-            /*
-               Needed for sfs file system which reports this error number on a
-               Lock aaa/bbb/ccc with bbb being a file instead of a directory.
-            */
-            errno = ENOTDIR;
-            goto err;
-        }
-
-        if
-        (
-            (IoErr() != ERROR_OBJECT_NOT_FOUND) ||
-            /* If the file doesn't exist and the flag O_CREAT is not set return an error */
-            (IoErr() == ERROR_OBJECT_NOT_FOUND && !(flags & O_CREAT))
-        )
-        {
-            errno = IoErr2errno(IoErr());
-            goto err;
-        }
-    }
-    else
-    {
-        /* If the file exists, but O_EXCL is set, then return an error */
-        if (flags & O_EXCL)
-    	{
-            errno = EEXIST;
-            goto err;
-        }
-
-        fib = AllocDosObject(DOS_FIB, NULL);
-        if (!fib)
-        {
-           errno = IoErr2errno(IoErr());
-           goto err;
-        }
-        
-        if (!Examine(lock, fib))
-        {
-            /*
-                The filesystem in which the file resides doesn't support
-                the EXAMINE action. It might be broken or might also not
-                be a filesystem at all. So let's assume the file is not a
-                diretory.
-           */
-           fib->fib_DirEntryType = 0;
-        }
-
-	/* FIXME: implement softlink handling */
-
-        /* Check if it's a directory or a softlink.
-           Softlinks are not handled yet, though */
-        if (fib->fib_DirEntryType > 0)
-        {
-            /* A directory cannot be opened for writing */
-            if (openmode & FMF_WRITE)
+            if (IoErr() == ERROR_OBJECT_WRONG_TYPE)
             {
-                errno = EISDIR;
+                /*
+                   Needed for sfs file system which reports this error number on a
+                   Lock aaa/bbb/ccc with bbb being a file instead of a directory.
+                */
+                errno = ENOTDIR;
                 goto err;
             }
-            
-            fh = lock;
-            FreeDosObject(DOS_FIB, fib);
-            currdesc->fcb->isdir = 1;
-            
-            goto success;
+
+            if
+            (
+                (IoErr() != ERROR_OBJECT_NOT_FOUND) ||
+                /* If the file doesn't exist and the flag O_CREAT is not set return an error */
+                (IoErr() == ERROR_OBJECT_NOT_FOUND && !(flags & O_CREAT))
+            )
+            {
+                errno = __stdc_ioerr2errno(IoErr());
+                goto err;
+            }
         }
-        FreeDosObject(DOS_FIB, fib);
-        fib = NULL;
+        else
+        {
+            /* If the file exists, but O_EXCL is set, then return an error */
+            if (flags & O_EXCL)
+            {
+                errno = EEXIST;
+                goto err;
+            }
+
+            fib = AllocDosObject(DOS_FIB, NULL);
+            if (!fib)
+            {
+               errno = __stdc_ioerr2errno(IoErr());
+               goto err;
+            }
+
+            if (!Examine(lock, fib))
+            {
+                /*
+                    The filesystem in which the file resides doesn't support
+                    the EXAMINE action. It might be broken or might also not
+                    be a filesystem at all. So let's assume the file is not a
+                    diretory.
+               */
+               fib->fib_DirEntryType = 0;
+            }
+
+            /* FIXME: implement softlink handling */
+
+            /* Check if it's a directory or a softlink.
+               Softlinks are not handled yet, though */
+            if (fib->fib_DirEntryType > 0)
+            {
+                /* A directory cannot be opened for writing */
+                if (openmode != MODE_OLDFILE)
+                {
+                    errno = EISDIR;
+                    goto err;
+                }
+
+                fh = lock;
+                FreeDosObject(DOS_FIB, fib);
+                currdesc->fcb->privflags |= _FCB_ISDIR;
+
+                goto success;
+            }
+            FreeDosObject(DOS_FIB, fib);
+            fib = NULL;
+        }
     }
 
     /* the file exists and it's not a directory or the file doesn't exist */
 
     if (lock)
     {
-	UnLock(lock);
-	lock = BNULL;
+        UnLock(lock);
+        lock = BNULL;
     }
-
-    if (openmode & (FMF_APPEND | FMF_WRITE))
-	openmode |= FMF_READ; /* force filesystem ACTION_FINDUPDATE */
+    else
+    {
+        /* ABI_V0 compatibility */
+        /* Handle O_CREAT (creates the file only if it does not exit) */
+        if (flags & O_CREAT)
+        {
+            BPTR tmp = Open((char *)pathname, MODE_NEWFILE);
+            if (tmp != BNULL) Close(tmp);
+            /* File is closed as O_CREAT does not define access
+             * mode. This is handled by R/W modes.
+             */
+        }
+    }
 
     if (!(fh = Open ((char *)pathname, openmode)) )
     {
 	ULONG ioerr = IoErr();
-	D(bug("[clib] Open ioerr=%d\n", ioerr));
-	errno = IoErr2errno(ioerr);
+	D(bug("__open: Open ioerr=%d\n", ioerr));
+	errno = __stdc_ioerr2errno(ioerr);
         goto err;
     }
-    
+
+    /* ABI_V0 compatibility */
+    if (!strcasecmp(pathname, "NIL:"))
+        goto success;
+   
+    /* Handle O_TRUNC */
     if((flags & O_TRUNC) && (flags & (O_RDWR | O_WRONLY)))
     {
 	if(SetFileSize(fh, 0, OFFSET_BEGINNING) != 0)
 	{
-	    /* Ignore error if FSA_SET_FILE_SIZE is not implemented */
-	    if(IoErr() != ERROR_NOT_IMPLEMENTED)
+	    ULONG ioerr = IoErr();
+	    /* Ignore error if ACTION_SET_FILE_SIZE is not implemented */
+	    if(ioerr != ERROR_NOT_IMPLEMENTED &&
+	       ioerr != ERROR_ACTION_NOT_KNOWN)
 	    {
-	        errno = IoErr2errno(IoErr());
-                goto err;	    
+		D(bug("__open: SetFileSize ioerr=%d\n", ioerr));
+	        errno = __stdc_ioerr2errno(ioerr);
+                goto err;
 	    }
 	}
     }
 
+    /* Handle O_APPEND */
+    if((flags & O_APPEND) && (flags & (O_RDWR | O_WRONLY)))
+    {
+        if(Seek(fh, 0, OFFSET_END) != 0) {
+            errno = __stdc_ioerr2errno(IoErr());
+            goto err;
+        }
+    }
+
+
 success:
-    currdesc->fcb->fh        = fh;
+    currdesc->fcb->handle    = fh;
     currdesc->fcb->flags     = flags;
     currdesc->fcb->opencount = 1;
 
@@ -268,7 +353,7 @@ success:
 
 err:
     if (fib) FreeDosObject(DOS_FIB, fib);
-    if (cblock) FreeVec(cblock);
+    FreeVec(cblock);
     if (currdesc) __free_fdesc(currdesc);
     if (fh && fh != lock) Close(fh);
     if (lock) UnLock(lock);
@@ -280,69 +365,43 @@ err:
 
 fdesc *__alloc_fdesc(void)
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
     fdesc * desc;
     
-    desc = AllocPooled(__fd_mempool, sizeof(fdesc));
+    desc = AllocPooled(aroscbase->acb_internalpool, sizeof(fdesc));
     
-    D(bug("Allocated fdesc %x from %x pool\n", desc, __fd_mempool));
+    D(bug("Allocated fdesc %x from %x pool\n", desc, aroscbase->acb_internalpool));
     
     return desc;
 }
 
 void __free_fdesc(fdesc *desc)
 {
-    D(bug("Freeing fdesc %x from %x pool\n", desc, __fd_mempool));
-    FreePooled(__fd_mempool, desc, sizeof(fdesc));
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
+    D(bug("Freeing fdesc %x from %x pool\n", desc, aroscbase->acb_internalpool));
+    FreePooled(aroscbase->acb_internalpool, desc, sizeof(fdesc));
 }
 
-
-struct __reg_fdarray {
-    struct MinNode node;
-    struct Task *task;
-    fdesc **fdarray;
-    int numslots;
-};
-
-/* Some local variables for register_init_fdarray */
-static int __fdinit = 0;
-static struct SignalSemaphore __fdsem;
-static struct MinList __fdreglist;
-    
-int __init_vars(void)
+static void stderrlogic(struct Process *me, fcb *fcb)
 {
-    InitSemaphore(&__fdsem);
-    NEWLIST(&__fdreglist);
-    
-    return TRUE;
-}
-
-int __register_init_fdarray(struct arosc_privdata *priv)
-{
-    /* arosc privdata should not be used inside this function,
-     * this function is called before aroscbase is initialized
-     */
-    struct __reg_fdarray *regnode = AllocVec(sizeof(struct __reg_fdarray), MEMF_ANY|MEMF_CLEAR);
-
-    if (regnode == NULL)
-        return 0;
-
-    regnode->task = FindTask(NULL);
-    regnode->fdarray = priv->acpd_fd_array;
-    regnode->numslots = priv->acpd_numslots;
-    
-    D(bug("Allocated regnode: %p, fdarray: %p, numslots: %d\n",
-          regnode, regnode->fdarray, regnode->numslots
-    ));
-    
-    ObtainSemaphore(&__fdsem);
-    AddHead((struct List *)&__fdreglist, (struct Node *)regnode);
-    ReleaseSemaphore(&__fdsem);
-    
-    return 1;
+    if ((fcb->handle != BNULL) && !(fcb->privflags & _FCB_DONTCLOSE_FH))
+        Close(fcb->handle);
+    if (ErrorOutput() != BNULL)
+    {
+        fcb->handle = ErrorOutput();
+        fcb->privflags |= _FCB_DONTCLOSE_FH;
+    }
+    else
+    {
+        fcb->handle = Open("NIL:", MODE_OLDFILE);
+        fcb->privflags &= ~_FCB_DONTCLOSE_FH;
+    }
+    /* stderr is expected to be unbuffered for POSIX. */
+    SetVBuf(fcb->handle, NULL, BUF_NONE, -1);
 }
 
 /* FIXME: perhaps this has to be handled in a different way...  */
-int __init_stdfiles(void)
+int __init_stdfiles(struct aroscbase *aroscbase)
 {
     struct Process *me;
     fcb *infcb = NULL, *outfcb = NULL, *errfcb = NULL;
@@ -360,51 +419,63 @@ int __init_stdfiles(void)
 	!(errdesc = __alloc_fdesc())
     )
     {
-        if(infcb)
-            FreeVec(infcb);
+        FreeVec(infcb);
         if(indesc)
             __free_fdesc(indesc);
-        if(outfcb)
-            FreeVec(outfcb);
+        FreeVec(outfcb);
         if(outdesc)
             __free_fdesc(outdesc);
-        if(errfcb)
-            FreeVec(errfcb);
+        FreeVec(errfcb);
         if(errdesc)
             __free_fdesc(errdesc);
     	SetIoErr(ERROR_NO_FREE_STORE);
     	return 0;
     }
 
-    indesc->fdflags = 0;
-    outdesc->fdflags = 0;
-    errdesc->fdflags = 0;
-
-    indesc->fcb = infcb;
-    outdesc->fcb = outfcb;
-    errdesc->fcb = errfcb;
-
     me = (struct Process *)FindTask (NULL);
-    indesc->fcb->fh  = Input();
-    outdesc->fcb->fh = Output();
-    errdesc->fcb->fh = me->pr_CES ? me->pr_CES : me->pr_COS;
 
-    indesc->fcb->flags  = O_RDONLY;
-    outdesc->fcb->flags = O_WRONLY | O_APPEND;
-    errdesc->fcb->flags = O_WRONLY | O_APPEND;
+    infcb->handle  = Input();
+    infcb->flags  = O_RDONLY;
+    infcb->opencount = 1;
+    /* Remove (remaining) command line args on first read */
+    infcb->privflags = _FCB_FLUSHONREAD;
+    infcb->privflags |= _FCB_DONTCLOSE_FH;
+    indesc->fcb = infcb;
+    indesc->fdflags = 0;
+    D(bug("[__init_stdfiles]Input(): %p, infcb->fh: %p\n",
+          BADDR(Input()), BADDR(infcb->fh)
+    ));
 
-    indesc->fcb->opencount = outdesc->fcb->opencount = errdesc->fcb->opencount = 1;
-    indesc->fcb->privflags = outdesc->fcb->privflags = errdesc->fcb->privflags = _FCB_DONTCLOSE_FH;
+    outfcb->handle = Output();
+    outfcb->flags = O_WRONLY | O_APPEND;
+    outfcb->opencount = 1;
+    outfcb->privflags = _FCB_DONTCLOSE_FH;
+    outdesc->fcb = outfcb;
+    outdesc->fdflags = 0;
+    D(bug("[__init_stdfiles]Output(): %p, outfcb->fh: %p\n",
+          BADDR(Output()), BADDR(outfcb->fh)
+    ));
 
-    __fd_array[STDIN_FILENO]  = indesc;
-    __fd_array[STDOUT_FILENO] = outdesc;
-    __fd_array[STDERR_FILENO] = errdesc;
+    errfcb->privflags = 0;
+    stderrlogic(me, errfcb);
+    errfcb->flags = O_WRONLY | O_APPEND;
+    errfcb->opencount = 1;
+    errdesc->fcb = errfcb;
+    errdesc->fdflags = 0;
+    D(bug("[__init_stdfiles]ErrorOutput(): %p, errfcb->fh: %p\n",
+          BADDR(ErrorOutput()), BADDR(errfcb->fh)
+    ));
+
+    aroscbase->acb_fd_array[STDIN_FILENO]  = indesc;
+    aroscbase->acb_fd_array[STDOUT_FILENO] = outdesc;
+    aroscbase->acb_fd_array[STDERR_FILENO] = errdesc;
 
     return 1;
 }
 
 static int __copy_fdarray(fdesc **__src_fd_array, int numslots)
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
     int i;
     
     for(i = numslots - 1; i >= 0; i--)
@@ -414,75 +485,79 @@ static int __copy_fdarray(fdesc **__src_fd_array, int numslots)
             if(__getfdslot(i) != i)
                 return 0;
             
-            if((__fd_array[i] = __alloc_fdesc()) == NULL)
+            if((aroscbase->acb_fd_array[i] = __alloc_fdesc()) == NULL)
                 return 0;
 
-            __fd_array[i]->fdflags = __src_fd_array[i]->fdflags;
-            __fd_array[i]->fcb = __src_fd_array[i]->fcb;
-            __fd_array[i]->fcb->opencount++;
+            aroscbase->acb_fd_array[i]->fdflags = __src_fd_array[i]->fdflags;
+            aroscbase->acb_fd_array[i]->fcb = __src_fd_array[i]->fcb;
+            aroscbase->acb_fd_array[i]->fcb->opencount++;
         }
     }
     
     return 1;
 }
 
-int __init_fd(void)
+int __init_fd(struct aroscbase *aroscbase)
 {
-    struct __reg_fdarray *regnodeit, *regnode = NULL;
-    struct Task *self = FindTask(NULL);
+    struct aroscbase *paroscbase = __GM_GetBaseParent(aroscbase);
 
-    if (!__fdinit)
-    {
-        __init_vars();
-        __fdinit = 1;
-    }
+    D(bug("Found parent aroscbase %p with flags 0x%x\n",
+          paroscbase, paroscbase ? paroscbase->acb_flags : 0
+    ));
 
-    __fd_mempool = CreatePool(MEMF_PUBLIC, 16*sizeof(fdesc), 16*sizeof(fdesc));
-    
-    ObtainSemaphore(&__fdsem);
-    ForeachNode(&__fdreglist, regnodeit)
+    if (paroscbase && (paroscbase->acb_flags & (VFORK_PARENT | EXEC_PARENT)))
     {
-        if (regnodeit->task == self)
-        {
-            regnode = regnodeit;
-    
-            D(bug("Found regnode: %p, fdarray: %p, numslots: %d\n",
-                  regnode, regnode->fdarray, regnode->numslots
-            ));
-            Remove((struct Node *)regnode);
-            break;
-        }
+        /* VFORK_PARENT use case - child manipulates file descriptors prior to calling exec* */
+        int res = __copy_fdarray(paroscbase->acb_fd_array, paroscbase->acb_numslots);
+
+        if (paroscbase->acb_flags & EXEC_PARENT)
+            /* EXEC_PARENT called through RunCommand which injected parameters to Input() */
+            paroscbase->acb_fd_array[STDIN_FILENO]->fcb->privflags |= _FCB_FLUSHONREAD;
+
+        return res;
     }
-    ReleaseSemaphore(&__fdsem);
-    
-    if (regnode == NULL)
-        return __init_stdfiles();
     else
+        return __init_stdfiles(aroscbase);
+}
+
+void __exit_fd(struct aroscbase *aroscbase)
+{
+    int i = aroscbase->acb_numslots;
+    while (i)
     {
-        int ok = __copy_fdarray(regnode->fdarray, regnode->numslots);
-        
-        FreeVec(regnode);
-        
-        return ok;
+	if (aroscbase->acb_fd_array[--i])
+	    close(i);
     }
 }
 
-void __exit_fd(void)
+void __close_on_exec_fdescs(void)
 {
-    int i = __numslots;
-    while (i)
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
+
+    int i;
+    fdesc *fd;
+
+    for (i = aroscbase->acb_numslots - 1; i >= 0; i--)
     {
-	if (__fd_array[--i])
-	    close(i);
+        if ((fd = __getfdesc(i)) != NULL)
+        {
+            D(bug("__close_fdesc_on_exec: checking fd %d\n", i));
+            if (fd->fdflags & FD_CLOEXEC)
+            {
+                D(bug("__close_fdesc_on_exec: closing fd %d\n", i));
+                close(i);
+            }
+        }
     }
-    DeletePool(__fd_mempool);
 }
 
 #include <stdio.h>
 
 void __updatestdio(void)
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
     struct Process *me;
+    fcb *fcb = NULL;
 
     me = (struct Process *)FindTask(NULL);
 
@@ -490,14 +565,16 @@ void __updatestdio(void)
     fflush(stdout);
     fflush(stderr);
 
-    __fd_array[STDIN_FILENO]->fcb->fh  = Input();
-    __fd_array[STDOUT_FILENO]->fcb->fh = Output();
-    __fd_array[STDERR_FILENO]->fcb->fh = me->pr_CES ? me->pr_CES : me->pr_COS;
+    fcb = aroscbase->acb_fd_array[STDIN_FILENO]->fcb;
+    fcb->handle = Input();
 
-    __fd_array[STDIN_FILENO]->fcb->privflags =
-        __fd_array[STDOUT_FILENO]->fcb->privflags =
-        __fd_array[STDERR_FILENO]->fcb->privflags = _FCB_DONTCLOSE_FH;
+    fcb = aroscbase->acb_fd_array[STDOUT_FILENO]->fcb;
+    fcb->handle = Output();
+
+    fcb = aroscbase->acb_fd_array[STDERR_FILENO]->fcb;
+    stderrlogic(me, fcb);
 }
 
-ADD2INIT(__init_fd, 2);
-ADD2EXIT(__exit_fd, 2);
+ADD2OPENLIB(__init_fd, 2);
+ADD2CLOSELIB(__exit_fd, 2);
+

@@ -718,7 +718,7 @@ static void readsectionconfig(struct config *cfg, struct classinfo *cl, struct i
             const char *names[] =
             {
                 "basename", "libbase", "libbasetype", "libbasetypeextern",
-                "version", "date", "copyright", "libcall", "forcebase", "superclass",
+                "version", "date", "copyright", "libcall", "___", "superclass",
                 "superclass_field", "residentpri", "options", "sysbase_field",
                 "seglist_field", "rootbase_field", "classptr_field", "classptr_var",
                 "classid", "classdatatype", "beginio_func", "abortio_func", "dispatcher",
@@ -812,12 +812,6 @@ static void readsectionconfig(struct config *cfg, struct classinfo *cl, struct i
                 fprintf(stderr, "libcall specification is deprecated and ignored\n");
                 break;
 
-            case 9: /* forcebase */
-                if (inclass)
-                    exitfileerror(20, "forcebase not valid config option when in a class section\n");
-                slist_append(&cfg->forcelist, s);
-                break;
-
             case 10: /* superclass */
                 if (cl == NULL)
                     exitfileerror(20, "superclass specified when not a BOOPSI class\n");
@@ -856,7 +850,7 @@ static void readsectionconfig(struct config *cfg, struct classinfo *cl, struct i
                         "noautolib", "noexpunge", "noresident", "peropenerbase",
                         "pertaskbase", "includes", "noincludes", "nostubs",
                         "autoinit", "noautoinit", "resautoinit", "noopenclose",
-                        "selfinit"
+                        "selfinit", "rellinklib"
                     };
                     const unsigned int optionnums = sizeof(optionnames)/sizeof(char *);
                     int optionnum;
@@ -933,6 +927,9 @@ static void readsectionconfig(struct config *cfg, struct classinfo *cl, struct i
                                 if (cfg->options & OPTION_RESAUTOINIT)
                                         exitfileerror(20, "option resautoinit and selfinit are incompatible\n");
                             cfg->options |= OPTION_SELFINIT;
+                            break;
+                        case 14: /* rellinklib */
+                            cfg->options |= OPTION_RELLINKLIB;
                             break;
                         }
                         while (isspace(*s)) s++;
@@ -1606,6 +1603,13 @@ static void readsectionfunctionlist(const char *type, struct functionhead **func
                     exitfileerror(20, ".private has to come after a function declaration\n");
 
                 (*funclistptr)->priv = 1;
+            }
+            else if (strncmp(s, "hidden", 6)==0)
+            {
+                if (*funclistptr == NULL)
+                    exitfileerror(20, ".hidden has to come after a function declaration\n");
+
+                (*funclistptr)->hidden = 1;
             }
             else if (strncmp(s, "novararg", 8)==0)
             {

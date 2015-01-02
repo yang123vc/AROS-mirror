@@ -1,5 +1,5 @@
 /*
-    Copyright © 1995-2001, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 */
 
@@ -8,6 +8,8 @@
 #include <aros/symbolsets.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#include LC_LIBDEFS_FILE
 
 /*****************************************************************************
 
@@ -25,6 +27,7 @@
     RESULT
 
     NOTES
+        umask is currently remembered but not used in any function
 
     EXAMPLE
 
@@ -36,25 +39,31 @@
 
 ******************************************************************************/
 {
-    mode_t oumask = __umask;
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
+    mode_t oumask = aroscbase->acb_umask;
 
-    __umask = numask;
+    aroscbase->acb_umask = numask;
 
     return oumask;
 }
 
-static int __umask_init(void)
+static int __umask_init(struct aroscbase *aroscbase)
 {
-    struct arosc_privdata *privdata = __get_arosc_privdata();
+    struct aroscbase *paroscbase;
 
-    /* FIXME: Implement umask() properly */
+    paroscbase = __GM_GetBaseParent(aroscbase);
 
-    if (privdata->acpd_oldprivdata)
-        privdata->acpd_umask = privdata->acpd_oldprivdata->acpd_umask;
+    /* TODO: Implement umask() properly
+       Currently information is not used in any of the related functions
+    */
+
+     /* Child of exec*()/vfork() functions inherit umask of parent */
+    if (paroscbase && (paroscbase->acb_flags & (VFORK_PARENT | EXEC_PARENT)))
+        aroscbase->acb_umask = paroscbase->acb_umask;
     else
-        privdata->acpd_umask = S_IWGRP|S_IWOTH;
+        aroscbase->acb_umask = S_IWGRP|S_IWOTH;
 
     return 1;
 }
 
-ADD2INIT(__umask_init, 0);
+ADD2OPENLIB(__umask_init, 0);

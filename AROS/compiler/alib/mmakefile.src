@@ -16,7 +16,6 @@ FILES	:= \
     allocdosobjecttags \
     allocnamedobject \
     allocspritedata \
-    andrectrect \
     argarraydone \
     argarrayinit \
     argint \
@@ -35,7 +34,6 @@ FILES	:= \
     changeextsprite \
     checkrexxmsg \
     coercemethod \
-    copyregion \
     closeworkbenchobject \
     createextio \
     creategadget \
@@ -55,7 +53,6 @@ FILES	:= \
     dosupernew \
     drawbevelbox \
     easyrequest \
-    erroroutput \
     extendfonttags \
     fastrand \
     freeievents \
@@ -85,7 +82,6 @@ FILES	:= \
     newloadsegtags \
     newobject \
     newrawdofmt \
-    newrectregion \
     obtainbestpen \
     obtaininfo \
     openamigaguide \
@@ -99,7 +95,6 @@ FILES	:= \
     refreshdtobjects \
     releaseinfo \
     removeamigaguidehost \
-    selecterroroutput \
     sendamigaguidecmd \
     sendamigaguidecontext \
     setamigaguideattrs \

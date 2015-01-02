@@ -1,18 +1,17 @@
 /*
-    Copyright © 1995-2007, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2012, The AROS Development Team. All rights reserved.
     $Id$
 
-    ANSI C function fclose().
+    C99 function fclose().
 */
 
 #include <proto/exec.h>
 #include <proto/dos.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <errno.h>
-#include "__errno.h"
 #include "__stdio.h"
 
+#include "__arosc_privdata.h"
 
 /*****************************************************************************
 
@@ -50,6 +49,7 @@
 
 ******************************************************************************/
 {
+    struct aroscbase *aroscbase = __aros_getbase_aroscbase();
     FILENODE * fn;
 
     if (close(stream->fd) == -1)
@@ -58,7 +58,7 @@
     fn = FILE2FILENODE (stream);
     Remove ((struct Node *)fn);
 
-    free(fn);
+    FreePooled(aroscbase->acb_internalpool, fn, sizeof(FILENODE));
 
     return 0;
 } /* fclose */

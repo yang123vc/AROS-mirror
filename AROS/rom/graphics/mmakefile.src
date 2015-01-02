@@ -24,14 +24,13 @@ FUNCTIONS := \
 	addanimob \
 	addbob \
 	adddisplaydrivera \
-	adddisplaydata \
-	adddisplayinfodata \
 	addfont \
 	addvsprite \
 	allocbitmap \
 	allocdbufinfo \
 	allocraster \
 	allocspritedataa \
+	andrectrect \
 	andrectregion \
         andrectregionnd \
 	andregionregion \
@@ -68,12 +67,16 @@ FUNCTIONS := \
 	clearregion \
 	clearscreen \
 	clipblit \
+	clonerastport \
 	closefont \
 	closemonitor \
 	cmove \
 	coercemode \
+	copyregion \
 	copysbitmap \
+	createrastport \
 	cwait \
+	deinitrastport \
 	disownblitter \
 	disposeregion \
 	docollision \
@@ -93,6 +96,7 @@ FUNCTIONS := \
 	freedbufinfo \
 	freegbuffers \
 	freeraster \
+	freerastport \
 	freesprite \
 	freespritedata \
 	freevportcoplists \
@@ -133,6 +137,7 @@ FUNCTIONS := \
 	move \
 	movesprite \
 	mrgcop \
+	newrectregion \
 	newregion \
 	nextdisplayinfo \
 	obtainbestpena \
@@ -166,7 +171,6 @@ FUNCTIONS := \
 	setchiprev \
 	setcollision \
 	setdisplaydrivercallback \
-	setdisplayinfodata \
 	setdrmd \
 	setfont \
 	setmaxpen \

@@ -47,15 +47,15 @@ __FBSDID("$FreeBSD: src/lib/libc/locale/none.c,v 1.15 2007/10/13 16:28:22 ache E
 #include <wchar.h>
 #include "mblocal.h"
 
-static size_t	_none_mbrtowc(wchar_t * __restrict, const char * __restrict,
+static size_t	_none_mbrtowc(wchar_t_v0 * __restrict, const char * __restrict,
 		    size_t, mbstate_t * __restrict);
 static int	_none_mbsinit(const mbstate_t *);
-static size_t	_none_mbsnrtowcs(wchar_t * __restrict dst,
+static size_t	_none_mbsnrtowcs(wchar_t_v0 * __restrict dst,
 		    const char ** __restrict src, size_t nms, size_t len,
 		    mbstate_t * __restrict ps __unused);
-static size_t	_none_wcrtomb(char * __restrict, wchar_t,
+static size_t	_none_wcrtomb(char * __restrict, wchar_t_v0,
 		    mbstate_t * __restrict);
-static size_t	_none_wcsnrtombs(char * __restrict, const wchar_t ** __restrict,
+static size_t	_none_wcsnrtombs(char * __restrict, const wchar_t_v0 ** __restrict,
 		    size_t, size_t, mbstate_t * __restrict);
 
 #ifndef __AROS__
@@ -75,7 +75,7 @@ _none_init(_RuneLocale *rl)
 	__wcrtomb = _none_wcrtomb;
 	__wcsnrtombs = _none_wcsnrtombs;
 	_CurrentRuneLocale = rl;
-	__mb_cur_max = 1;
+//	__mb_cur_max = 1;
 	__mb_sb_limit = 256;
 	return(0);
 }
@@ -92,7 +92,7 @@ _none_mbsinit(const mbstate_t *ps __unused)
 }
 
 static size_t
-_none_mbrtowc(wchar_t * __restrict pwc, const char * __restrict s, size_t n,
+_none_mbrtowc(wchar_t_v0 * __restrict pwc, const char * __restrict s, size_t n,
     mbstate_t * __restrict ps __unused)
 {
 
@@ -108,7 +108,7 @@ _none_mbrtowc(wchar_t * __restrict pwc, const char * __restrict s, size_t n,
 }
 
 static size_t
-_none_wcrtomb(char * __restrict s, wchar_t wc,
+_none_wcrtomb(char * __restrict s, wchar_t_v0 wc,
     mbstate_t * __restrict ps __unused)
 {
 
@@ -124,7 +124,7 @@ _none_wcrtomb(char * __restrict s, wchar_t wc,
 }
 
 static size_t
-_none_mbsnrtowcs(wchar_t * __restrict dst, const char ** __restrict src,
+_none_mbsnrtowcs(wchar_t_v0 * __restrict dst, const char ** __restrict src,
     size_t nms, size_t len, mbstate_t * __restrict ps __unused)
 {
 	const char *s;
@@ -149,10 +149,10 @@ _none_mbsnrtowcs(wchar_t * __restrict dst, const char ** __restrict src,
 }
 
 static size_t
-_none_wcsnrtombs(char * __restrict dst, const wchar_t ** __restrict src,
+_none_wcsnrtombs(char * __restrict dst, const wchar_t_v0 ** __restrict src,
     size_t nwc, size_t len, mbstate_t * __restrict ps __unused)
 {
-	const wchar_t *s;
+	const wchar_t_v0 *s;
 	size_t nchr;
 
 	if (dst == NULL) {
@@ -184,13 +184,13 @@ _none_wcsnrtombs(char * __restrict dst, const wchar_t ** __restrict src,
 
 /* setup defaults */
 
-size_t (*__mbrtowc)(wchar_t * __restrict, const char * __restrict, size_t,
+size_t (*__mbrtowc)(wchar_t_v0 * __restrict, const char * __restrict, size_t,
     mbstate_t * __restrict) = _none_mbrtowc;
 int (*__mbsinit)(const mbstate_t *) = _none_mbsinit;
-size_t (*__mbsnrtowcs)(wchar_t * __restrict, const char ** __restrict,
+size_t (*__mbsnrtowcs)(wchar_t_v0 * __restrict, const char ** __restrict,
     size_t, size_t, mbstate_t * __restrict) = _none_mbsnrtowcs;
-size_t (*__wcrtomb)(char * __restrict, wchar_t, mbstate_t * __restrict) =
+size_t (*__wcrtomb)(char * __restrict, wchar_t_v0, mbstate_t * __restrict) =
     _none_wcrtomb;
-size_t (*__wcsnrtombs)(char * __restrict, const wchar_t ** __restrict,
+size_t (*__wcsnrtombs)(char * __restrict, const wchar_t_v0 ** __restrict,
     size_t, size_t, mbstate_t * __restrict) = _none_wcsnrtombs;
 
