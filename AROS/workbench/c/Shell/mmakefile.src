@@ -1,0 +1,45 @@
+#   $Id$
+#
+#   Makefile for the shell
+
+include $(TOP)/config/make.cfg
+
+FILES := \
+	Shell \
+	buffer \
+	cliEcho \
+	cliLen \
+	cliNan \
+	cliPrompt \
+	cliVarNum \
+	convertArg \
+	convertBackTicks \
+	convertLineDot \
+	convertRedir \
+	convertVar \
+	convertLine \
+	interpreter \
+	redirection \
+	readLine
+
+USER_CFLAGS += -DADATE="\"$(shell date "+%d.%m.%Y")\"" \
+	       -D__DOS_NOLIBBASE__
+
+#MM- workbench-c : workbench-c-shell
+
+#MM- workbench-c-quick : workbench-c-shell-quick
+
+#MM  workbench-c-shell : includes linklibs workbench-libs-dos-catalogs
+
+%build_prog mmake=workbench-c-shell	progname=UserShell-Seg \
+    files=$(FILES) targetdir=$(AROS_FS)	\
+    usestartup="no"
+
+USER_CFLAGS += -DUSE_EMBEDDED_COMMANDS
+OBJDIR := $(OBJDIR).kernel
+
+%build_module mmake=kernel-shell \
+  modname=shell modtype=resource \
+  files="shell_init $(FILES)"
+
+%common

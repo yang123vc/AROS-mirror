@@ -1,0 +1,11 @@
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+#MM- ports-game-koules : ports-game-koules-icons
+
+ICONS     := Koules
+TARGETDIR := $(AROS_CONTRIB)/Games
+
+%build_icons mmake=ports-game-koules-icons \
+    icons=$(ICONS) dir=$(TARGETDIR)

@@ -1,0 +1,20 @@
+#    $Id$
+include $(TOP)/config/make.cfg
+
+FUNCS := \
+    ieeespabs \
+    ieeespadd \
+    ieeespceil \
+    ieeespcmp \
+    ieeespdiv \
+    ieeespfix \
+    ieeespfloor \
+    ieeespflt \
+    ieeespmul \
+    ieeespneg \
+    ieeespsub \
+    ieeesptst
+
+%build_module mmake=workbench-libs-mathieeesingbas \
+  modname=mathieeesingbas modtype=library \
+  files=$(FUNCS)

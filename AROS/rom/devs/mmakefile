@@ -1,0 +1,14 @@
+# $Id$
+
+#MM- kernel-devs : \
+#MM    kernel-console-kobj \
+#MM    kernel-gameport-kobj \
+#MM    kernel-input-kobj \
+#MM    kernel-keyboard-kobj \
+#MM    kernel-fs-con-kobj \
+#MM    kernel-fs-packet-kobj \
+#MM    kernel-fs-nil-kobj \
+#MM    kernel-fs-afs
+
+#MM- includes-generate : \
+#MM      kernel-input-includes

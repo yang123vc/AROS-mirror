@@ -1,0 +1,11 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+USER_INCLUDES := -I$(SRCDIR)/$(CURDIR)/.. -I$(SRCDIR)/rom/timer
+
+%build_archspecific \
+  mainmmake=kernel-timer maindir=rom/timer \
+  arch=pc-x86_64 modulename=timer \
+  files="timer_init beginio ticks readeclock lowlevel getsystime"
+
+%common

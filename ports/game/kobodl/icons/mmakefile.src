@@ -1,0 +1,11 @@
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+#MM- ports-game-kobodl : ports-game-kobodl-icons
+
+ICONS     := KoboDeluxe
+TARGETDIR := $(AROS_CONTRIB)/Games
+
+%build_icons mmake=ports-game-kobodl-icons \
+    icons=$(ICONS) dir=$(TARGETDIR)

@@ -1,0 +1,11 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+FILES := listclass helpfuncs
+
+##MM workbench-gadgets-aroslist : includes linklibs
+
+%build_module mmake=workbench-gadgets-aroslist \
+  modname=aroslist modtype=gadget \
+  files=$(FILES)
+

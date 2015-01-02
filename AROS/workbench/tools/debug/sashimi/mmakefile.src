@@ -1,0 +1,14 @@
+#   $Id$
+#
+#   Makefile for the Workbench:Tools/Debug directory.
+
+include $(TOP)/config/make.cfg
+
+#MM- workbench : workbench-tools
+#MM workbench-tools : includes linklibs
+
+%build_prog mmake=workbench-tools \
+    progname=sashimi targetdir=$(AROSDIR)/Tools/Debug \
+    files=sashimi
+
+%common

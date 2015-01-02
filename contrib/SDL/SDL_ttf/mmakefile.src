@@ -1,0 +1,25 @@
+# Copyright 2004-2009, The AROS Development Team. All rights reserved.
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+USER_INCLUDES:=-I$(AROS_INCLUDES)/SDL
+
+LIBFILES:=SDL_ttf
+FILES:=showfont
+HEADERS:=SDL_ttf.h
+
+#MM- contrib-sdl-sdl-ttf : development-SDL_ttf-test
+
+#MM development-SDL_ttf-test : development-SDL_ttf
+
+#MM development-SDL_ttf : SDL-aros-lib workbench-libs-freetype-linklib
+
+%build_prog mmake=development-SDL_ttf-test progname=sdl_ttf_showfont files=$(FILES) \
+    targetdir=$(AROS_TESTS) uselibs="SDL GL iconv SDL_ttf freetype2"
+
+%build_linklib mmake=development-SDL_ttf libname=SDL_ttf files=$(LIBFILES)
+
+%copy_includes mmake=includes-copy includes=$(HEADERS) path=SDL
+
+%common

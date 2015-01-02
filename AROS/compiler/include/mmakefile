@@ -1,0 +1,107 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+INCSUBDIRS :=	aros				\
+		aros/preprocessor		\
+		aros/preprocessor/facilities	\
+		aros/preprocessor/variadic	\
+		aros/types			\
+		asm				\
+        	bluetooth \
+	        c++ \
+		c++/exec \
+		clib \
+		datatypes \
+		devices \
+		diskfont \
+		dos \
+		exec \
+		gadgets \
+		graphics \
+		hardware \
+		hardware/cpu \
+		hardware/efi \
+		hardware/pic \
+		hidd \
+		intuition \
+	        irda \
+	        libcore				\
+		libraries \
+		midi \
+		pragmas \
+		prefs \
+		proto \
+		resources \
+		rexx \
+		SDI \
+        scsi \
+		utility \
+		workbench
+
+INCLUDES      := $(foreach d,$(INCSUBDIRS),$(wildcard $(d)/*.h) $(wildcard $(d)/*.hpp)) $(wildcard *.h)
+ARCHINCDIR    := $(SRCDIR)/arch/$(CPU)-$(ARCH)/include/
+ARCH_INCLUDES := $(subst $(ARCHINCDIR),,$(foreach d,$(addprefix $(ARCHINCDIR),$(INCSUBDIRS)),$(wildcard $(d)/*.h) $(wildcard $(d)/*.hpp)))
+INCLUDES      := $(filter-out $(ARCH_INCLUDES),$(INCLUDES))
+DEST_INCLUDES := $(foreach f,$(INCLUDES),$(AROS_INCLUDES)/$(f))
+GEN_INCLUDES  := $(foreach f,$(INCLUDES),$(GENINCDIR)/$(f))
+INCL_DIRS     := $(foreach dir,$(INCSUBDIRS),$(AROS_INCLUDES)/$(dir)) \
+                 $(foreach dir,$(INCSUBDIRS),$(GENINCDIR)/$(dir))
+
+#MM- includes : includes-generate
+#MM- includes-generate : includes-generate-deps
+#MM- includes-generate-deps : includes-copy includes-$(ARCH)-$(CPU)
+#MM- includes-copy : compiler-includes includes-copy-$(ARCH)-$(CPU)
+
+#MM- includes-$(ARCH)-$(CPU) : \
+#MM     includes-copy-$(ARCH)-$(CPU) \
+#MM     includes-generate-$(ARCH)-$(CPU)
+#MM- includes-generate-$(ARCH)-$(CPU) : includes-copy-$(ARCH)-$(CPU)
+#MM- includes-copy-$(ARCH)-$(CPU) :
+
+#MM
+compiler-includes : setup $(DEST_INCLUDES) $(GEN_INCLUDES)
+
+$(AROS_INCLUDES)/%.h : %.h
+	@$(ECHO) "Copying    C   includes to $(AROS_INCLUDES)..."
+	@$(CP) $< $@
+
+$(GENINCDIR)/%.h : %.h
+	@$(ECHO) "Copying    C   includes to $(GENINCDIR)..."
+	@$(CP) $< $@
+
+$(AROS_INCLUDES)/%.hpp : %.hpp
+	@$(ECHO) "Copying    C++ includes to $(AROS_INCLUDES)..."
+	@$(CP) $< $@
+
+$(GENINCDIR)/%.hpp : %.hpp
+	@$(ECHO) "Copying    C++ includes to $(GENINCDIR)..."
+	@$(CP) $< $@
+
+setup : $(INCL_DIRS)
+
+$(INCL_DIRS) :
+	@$(ECHO) "Creating   $@..."
+	@$(MKDIR) $@
+
+#MM
+includes-asm_h-$(CPU) : $(GENINCDIR)/aros/$(CPU)/asm.h
+
+.PHONY : includes-asm_h-$(CPU)
+
+$(OBJDIR)/asm.s : asm.c | $(OBJDIR)
+	@$(ECHO) "Compiling  $<..."
+	@$(TARGET_CC) $(CFLAGS) $(PRIV_EXEC_INCLUDES) $(PRIV_KERNEL_INCLUDES) -S $< -o $@
+
+$(GENINCDIR)/aros/$(CPU)/asm.h : $(OBJDIR)/asm.s | $(GENINCDIR)/aros/$(AROS_TARGET_CPU)
+	@$(ECHO) Generating $@...
+	@grep "^[/#][*d]" $< | sed s/[$$]//g >$@
+
+$(OBJDIR) :
+	@$(MKDIR) $@
+
+$(GENINCDIR)/aros/$(CPU) :
+	@$(MKDIR) $@
+
+#MM
+clean :
+	-$(RM) $(AROS_INCLUDES) $(GENINCDIR)

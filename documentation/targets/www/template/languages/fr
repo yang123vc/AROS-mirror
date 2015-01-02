@@ -1,0 +1,72 @@
+[meta]
+
+charset:          iso-8859-15
+
+[titles]
+
+news:             News
+news-archive-for: News archive for
+mirrors:          Mirroirs
+contents:         Contenu
+search:           Recherche
+visitors:         Visiteurs
+sponsors:         Sponsors
+
+[navigation]
+
+home:             Menu principal
+news:             News
+archive:          Archive
+introduction:     Introduction
+status:           Status
+screenshots:      Copies d'écran
+ports:            Ports
+license:          License
+download:         Téléchargement
+documentation:    Documentation
+users:            Utilisateurs
+installation:     Installation
+using:            Utilisation
+shell:            Commandes Shell
+applications:     Applications
+faq:              FAQ
+howto:            HowTo
+hwcompat:         Hardware Compatibility
+developers:       Développeurs
+contribute:       Contributions
+roadmap:          Roadmap
+bug-tracker:      Bug Tracker
+feature-requests: Feature Requests
+working-with-subversion: Travailler avec Subversion
+compiling:        Compilation
+application-development-manual: Manuel de développement d'applications
+zune-application-development-manual: Manuel de développement de Zune
+system-development-manual: Manuel de developpement du système
+debugging-manual: Manuel de Debogage
+reference:        Référence
+specifications:   Spécifications
+ui-style-guide:   UI Style Guide
+documenting:      Documentation
+porting:          Porting
+translating:      Traduction
+summaries:        Résumés
+links:            Liens
+contact:          Contact
+mailing-lists:    Mailing lists
+forums:           Forums
+irc-channels:     IRC channels
+credits:          Crédits
+acknowledgements: Acknowledgements
+pictures:         Images
+developers-together: Développeurs ensemble
+sponsors:         Sponsors
+linking:          Référencement
+
+[misc]
+
+go:               Aller à
+search:           Rechercher
+copyright:        Copyright © 1995-2014, L'équipe de développement AROS. Tous droits réservés.
+trademarks:       Amiga®, AmigaOS®, Workbench et Intuition sont des marques de Amiga Inc. Les autres marques appartiennent à leur propritaires respectifs.
+read-more:        Lire plus...
+large-image:      Plus grand...

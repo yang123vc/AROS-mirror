@@ -1,0 +1,111 @@
+# Copyright © 2008-2013, The AROS Development Team. All rights reserved.
+# $Id$
+
+-include $(TOP)/config/make.cfg
+
+# www.sand-labs.org now points to a .ru malware site.
+# Using www.evillabs.net (Jason McMullan's web site)
+# until we have a more permanent solution
+REPOSITORIES = http://www.evillabs.net/AROS
+ARCHBASE := OWB-r1097
+OWB_SOURCE := $(PORTSDIR)/OWB/$(ARCHBASE)
+OWB_BUILD_DIR := $(GENDIR)/$(CURDIR)
+
+OWB_I18N=GENERIC
+OWB_I18N_OPTS=
+ifneq ($(AROS_TARGET_CPU),arm)
+    ifneq ($(AROS_TARGET_CPU),m68k)
+        ifneq ($(AROS_TARGET_CPU),ppc)
+            OWB_I18N=ICU
+            OWB_I18N_OPTS=-DICU_LIBRARY="-licui18n -licuuc -licudata" \
+            -DICU_INCLUDE="$(AROS_DEVELOPMENT)/include"
+        endif
+    endif
+endif
+
+#MM- aros-tcpip-apps-owb-libs : contrib-fontconfig contrib-curl SDL-aros development-SDL_gfx-quick contrib-sqlite contrib-libxslt aros-tcpip-apps-owb-libs-$(AROS_TARGET_CPU)
+#MM- aros-tcpip-apps-owb-libs-i386: contrib-icu4c
+#MM- aros-tcpip-apps-owb-libs-x86_64: contrib-icu4c
+#MM- aros-tcpip-apps-owb-webview : aros-tcpip-apps-owb-libs aros-tcpip-apps-owb-webview-fetch aros-tcpip-apps-owb-webview-setup aros-tcpip-apps-owb-webview-build aros-tcpip-apps-owb-webview-install
+
+%fetch mmake=aros-tcpip-apps-owb-webview-fetch archive=$(ARCHBASE) destination=$(PORTSDIR)/OWB \
+    location=$(PORTSSOURCEDIR) archive_origins=$(REPOSITORIES) suffixes="tar.gz tar.bz2" \
+    patches_specs=$(ARCHBASE)-aros.diff:$(ARCHBASE):-p1
+
+%create_patch mmake=aros-tcpip-apps-owb-webview-create-patch \
+    archive=$(ARCHBASE) destination=$(PORTSDIR)/OWB
+
+$(OWB_BUILD_DIR)/.configure_flag : $(TOP)/$(CURDIR)/mmakefile
+	$(RM) $@
+	%mkdir_q dir=$(OWB_BUILD_DIR)
+	cd $(OWB_BUILD_DIR); \
+	cmake \
+	-DENABLE_DATABASE:BOOL=ON \
+	-DENABLE_XPATH:BOOL=ON \
+	-DENABLE_XSLT:BOOL=ON \
+	-DENABLE_INSPECTOR:BOOL=ON \
+	-DUSE_I18N:STRING=$(OWB_I18N) \
+	-DCMAKE_MODULE_PATH=$(SRCDIR)/$(CURDIR)/cmake \
+	-DCMAKE_SYSTEM_NAME=AROS \
+	-DCMAKE_SYSTEM_VERSION=1 \
+	-DCMAKE_C_COMPILER=$(CROSSTOOLSDIR)/$(AROS_TARGET_CPU)-aros-gcc \
+	-DCMAKE_C_COMPILER_WORKS:INTERNAL=TRUE \
+	-DCMAKE_CXX_COMPILER=$(TARGET_CXX) \
+	-DCMAKE_CXX_COMPILER_WORKS:INTERNAL=TRUE \
+	-DCMAKE_FIND_ROOT_PATH=$(AROS_DEVELOPMENT) \
+	-DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER \
+	-DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY \
+	-DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY \
+	-DCMAKE_INSTALL_PREFIX=$(AROS_DEVELOPMENT) \
+	-DJPEG_LIBRARY=$(AROS_DEVELOPMENT)/lib/libjpeg.a \
+	-DJPEG_INCLUDE_DIR=$(AROS_DEVELOPMENT)/include/ \
+	-DOWB_BASE_DEPS_LIBRARIES=$(AROS_DEVELOPMENT)/lib/libxml2.a \
+	-DOWB_BASE_DEPS_INCLUDE_DIRS=$(AROS_DEVELOPMENT)/include/libxml2 \
+	-DCURL_LIBRARIES="$(AROS_DEVELOPMENT)/lib/libcurl.a;$(AROS_DEVELOPMENT)/lib/libiconv.a;$(AROS_DEVELOPMENT)/lib/libz.a;$(AROS_DEVELOPMENT)/lib/libssl.a;$(AROS_DEVELOPMENT)/lib/libcrypto.a;" \
+	-DCURL_INCLUDE_DIRS=$(AROS_DEVELOPMENT)/include/ \
+	-DPNG12_LIBRARIES=$(AROS_DEVELOPMENT)/lib/libpng.a \
+	-DPNG12_INCLUDE_DIRS=$(AROS_DEVELOPMENT)/include/ \
+	-DLIBXSLT_LIBRARIES=$(AROS_DEVELOPMENT)/lib/libxslt.a \
+	-DLIBXSLT_INCLUDE_DIRS=$(AROS_DEVELOPMENT)/include/ \
+	-DSDL_LIBRARIES=$(AROS_DEVELOPMENT)/lib/libSDL.a \
+	-DSDL_LDFLAGS=-lSDL \
+	-DSDL_INCLUDE_DIRS=$(AROS_DEVELOPMENT)/include/SDL \
+	-DSDLGFX_LIBRARY=$(AROS_DEVELOPMENT)/lib/libSDL_gfx.a \
+	-DSDLGFX_INCLUDE_DIR=$(AROS_DEVELOPMENT)/include/SDL \
+	-DFREETYPE_LIBRARIES=$(AROS_DEVELOPMENT)/lib/libfreetype2.a \
+	-DFREETYPE_INCLUDE_DIRS=$(AROS_DEVELOPMENT)/include \
+	-DFONTCONFIG_LIBRARIES=$(AROS_DEVELOPMENT)/lib/libfontconfig.a \
+	-DFONTCONFIG_INCLUDE_DIRS=$(AROS_DEVELOPMENT)/include \
+	-DTHREAD_LIBRARIES=$(AROS_DEVELOPMENT)/lib/libthread.a \
+	-DSQLITE3_INCLUDE_DIR=$(AROS_DEVELOPMENT)/include/ \
+	-DSQLITE3_LIBRARIES=$(AROS_DEVELOPMENT)/lib/libsqlite3.a \
+	-DSQLITE3_LDFLAGS=-lsqlite3 \
+	-DCMAKE_LIBRARY_PATH_FLAG=$(AROS_DEVELOPMENT)/lib \
+	-DCMAKE_C_FLAGS="$(CFLAGS) -Wno-error" \
+	-DCMAKE_CXX_FLAGS="$(CFLAGS) -Wno-error" \
+	-DAROS_NETINCLUDE=$(AROS_DEVELOPMENT)/netinclude \
+	$(OWB_I18N_OPTS) \
+	$(OWB_SOURCE)
+	$(TOUCH) $@
+	
+#MM
+aros-tcpip-apps-owb-webview-setup : $(OWB_BUILD_DIR)/.configure_flag
+
+$(OWB_BUILD_DIR)/.build_flag : $(OWB_BUILD_DIR)/.configure_flag
+	$(RM) $@
+	cd $(OWB_BUILD_DIR); \
+	$(MAKE)
+	$(TOUCH) $@
+
+#MM
+aros-tcpip-apps-owb-webview-build : $(OWB_BUILD_DIR)/.build_flag
+
+$(OWB_BUILD_DIR)/.install_flag : $(OWB_BUILD_DIR)/.build_flag
+	$(RM) $@
+	cd $(OWB_BUILD_DIR); \
+	$(MAKE) install; \
+	$(CP) lib/libjsc.a lib/libwebcore.a lib/libwtf.a $(AROS_LIB)
+	$(TOUCH) $@
+
+#MM
+aros-tcpip-apps-owb-webview-install : $(OWB_BUILD_DIR)/.install_flag

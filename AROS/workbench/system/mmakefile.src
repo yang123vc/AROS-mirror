@@ -1,0 +1,17 @@
+#   $Id$
+#
+#   Makefile for the Workbench:System directory.
+
+include $(TOP)/config/make.cfg
+
+FILES	:= \
+    FixFonts \
+    CLI
+
+#MM- workbench : workbench-system
+#MM workbench-system : includes linklibs
+
+%build_progs mmake=workbench-system \
+    files=$(FILES) targetdir=$(AROSDIR)/System
+
+%common

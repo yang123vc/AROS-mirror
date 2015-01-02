@@ -1,0 +1,18 @@
+#   $Id$
+#
+#   Makefile to make FileMaster.
+
+include $(TOP)/config/make.cfg
+
+FILES := untgz
+
+EXEDIR := $(AROS_CONTRIB)/Misc/aminet/C
+
+#MM aminet-util-arc-untgz : includes linklibs
+
+%build_prog mmake=aminet-util-arc-untgz \
+    progname=untgz targetdir=$(EXEDIR) \
+    files=$(FILES) uselibs="z"
+
+%common
+

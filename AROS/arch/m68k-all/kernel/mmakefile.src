@@ -1,0 +1,21 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+FILES=dispatch schedule switch m68k_exception kernel_cpu kernel_intr \
+      platform_init setprotection mapglobal mmu bushandler #kernel_gdb
+
+AFILES=issuper fpusavecontext fpurestorecontext buserror
+
+USER_CFLAGS := $(PRIV_KERNEL_INCLUDES) $(PRIV_EXEC_INCLUDES) \
+	       -I$(GENINCDIR) -I$(AROSDIR)/Development/include \
+	       -DPARANOIA_STACK
+
+USER_AFLAGS := $(PRIV_KERNEL_INCLUDES) $(PRIV_EXEC_INCLUDES) \
+	       -I$(GENINCDIR) -I$(AROSDIR)/Development/include \
+	       -m68060
+
+%build_archspecific \
+  mainmmake=kernel-kernel maindir=rom/kernel arch=m68k \
+  files="$(FILES)" asmfiles="$(AFILES)" compiler=kernel
+
+%common

@@ -1,0 +1,31 @@
+#   $Id$
+
+include $(TOP)/config/make.cfg
+
+#MM contrib-zune-classes-bwin-mcc : includes linklibs workbench-libs-popupmenu
+
+FILES := libinit_aros \
+	 init \
+	 utils \
+	 loc \
+	 sgad \
+	 boopsi \
+	 contents \
+	 class
+
+USER_INCLUDES := -I$(SRCDIR)/$(CURDIR)/../include
+USER_CFLAGS := -DNO_INLINE_STDARG
+USER_CFLAGS += $(PARANOIA_CFLAGS)
+
+%build_module mmake=contrib-zune-classes-bwin-mcc \
+  modname=BWin modtype=mcc moduledir=Extras/Zune/MCC_BWin/Classes/Zune \
+  files=$(FILES) \
+  uselibs="popupmenu"
+
+
+#MM includes-copy
+
+INCLUDE_FILES := ../include/MUI/BWin_mcc.h
+%copy_includes path=mui dir=../include/MUI
+
+%common

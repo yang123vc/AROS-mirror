@@ -1,0 +1,19 @@
+#   $Id$
+
+include $(TOP)/config/make.cfg
+
+#MM contrib-zune-classes-urltext-mcp : includes linklibs workbench-libs-openurl
+
+FILES := libinit-aros \
+	 init \
+	 class \
+	 loc \
+	 utils
+	 
+USER_CFLAGS := $(PARANOIA_CFLAGS)
+	 
+%build_module mmake=contrib-zune-classes-urltext-mcp \
+  modname=Urltext modtype=mcp moduledir=Extras/Zune/MCC_Urltext/Classes/Zune \
+  files=$(FILES)
+
+%common

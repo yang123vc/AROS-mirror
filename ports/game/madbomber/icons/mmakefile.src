@@ -1,0 +1,11 @@
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+#MM- ports-game-madbomber : ports-game-madbomber-icons
+
+ICONS     := MadBomber
+TARGETDIR := $(AROS_CONTRIB)/Games
+
+%build_icons mmake=ports-game-madbomber-icons \
+    icons=$(ICONS) dir=$(TARGETDIR)

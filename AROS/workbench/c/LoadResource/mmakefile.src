@@ -1,0 +1,20 @@
+# Copyright © 2004, The AROS Development Team. All rights reserved.
+
+include $(TOP)/config/make.cfg
+
+FILES := main locale
+
+#MM- workbench-c : workbench-c-loadresource
+#MM workbench-c-loadresource : includes linklibs \
+#MM     workbench-c-loadresource-catalogs 
+
+#MM workbench-c-loadresource-quick : \
+#MM     workbench-c-loadresource-catalogs 
+
+USER_LDFLAGS := -nostdc
+
+%build_prog mmake=workbench-c-loadresource \
+    progname=LoadResource targetdir=$(AROS_C) \
+    files=$(FILES)
+
+%common

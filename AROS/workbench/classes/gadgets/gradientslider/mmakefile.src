@@ -1,0 +1,10 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+FILES := gradientsliderclass support
+
+#MM workbench-gadgets-gradientslider : includes linklibs
+
+%build_module mmake=workbench-gadgets-gradientslider \
+  modname=gradientslider modtype=gadget \
+  files=$(FILES)

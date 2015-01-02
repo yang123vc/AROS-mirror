@@ -1,0 +1,106 @@
+# Copyright © 2003-2013, The AROS Development Team. All rights reserved.
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+FILES := \
+    AddBuffers \
+    AddDataTypes \
+    Automount \
+    Avail \
+    Break \
+    ChangeTaskPri \
+    CheckMem \
+    ConClip \
+    CopyToPAR \
+    Date \
+    Delete \
+    DevList \
+    DiskChange \
+    Eject \
+    Eval \
+    Filenote \
+    IconX \
+    Info \
+    Install \
+    install-i386-pc \
+    Install-grub2-i386-pc \
+    Join \
+    LeakWatch \
+    LibList \
+    List \
+    Load \
+    Lock \
+    MakeDir \
+    MakeLink \
+    Mount \
+    Protect \
+    Reboot \
+    Relabel \
+    Rename \
+    RequestChoice \
+    RequestFile \
+    ResList \
+    Search \
+    SetClock \
+    SetDate \
+    SetDefaultFont \
+    SetLocale \
+    Shutdown \
+    Sort \
+    StackSnoop \
+    SymbolDump \
+    TaskList \
+    Touch \
+    Type \
+    UUIDGen \
+    Version \
+    Wait \
+    WaitForPort \
+    Which
+
+# Files that use AROS_SHx() instead of main()
+SH_FILES := \
+    AROSMonDrvs \
+    Assign \
+    Beep \
+    BindDrivers \
+    Copy \
+    Debug \
+    Dir \
+    GfxControl \
+    LoadWB \
+    Play \
+    Print \
+    SetKeyboard \
+    WaitX
+
+USER_CFLAGS     := -DADATE="\"$(shell date "+%d.%m.%Y")\"" -I$(OBJDIR)
+
+#MM- workbench : workbench-c
+#MM- workbench-quick : workbench-c-quick
+
+#MM workbench-c : includes linklibs workbench-c-sh workbench-c-requeststring workbench-libs-uuid
+#MM workbench-c-quick : workbench-c-sh-quick workbench-c-requeststring-quick
+
+USER_LDFLAGS := -nostdc
+
+%build_progs mmake=workbench-c \
+    files=$(FILES) targetdir=$(AROS_C) \
+    uselibs="uuid debug"
+
+%build_progs mmake=workbench-c-sh \
+    files=$(SH_FILES) targetdir=$(AROS_C) \
+    usestartup=no
+
+USER_LDFLAGS := 
+
+%build_prog mmake=workbench-c-requeststring progname=RequestString \
+    files=RequestString targetdir=$(AROS_C)
+
+$(OBJDIR)/evalParser.tab.c : evalParser.y
+	@$(ECHO) Generating $(notdir $@) from $<...
+	@$(BISON) -o $@ $<
+
+$(OBJDIR)/Eval.o : $(OBJDIR)/evalParser.tab.c
+

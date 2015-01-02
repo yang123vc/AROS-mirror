@@ -1,0 +1,10 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+USER_CFLAGS += -D__DOS_NOLIBBASE__
+
+%build_module mmake=kernel-lddemon \
+  modname=lddemon modtype=resource \
+  files="lddemon" 
+
+%common

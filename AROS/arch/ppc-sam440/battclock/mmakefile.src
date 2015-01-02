@@ -1,0 +1,9 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+USER_CFLAGS 	:= -I$(SRCDIR)/rom/battclock
+%build_archspecific \
+  mainmmake=kernel-battclock maindir=rom/battclock arch=sam440-ppc \
+  files="readbattclock writebattclock" modulename=battclock
+
+#MM- kernel-battclock-sam440-ppc : kernel-battclock-includes

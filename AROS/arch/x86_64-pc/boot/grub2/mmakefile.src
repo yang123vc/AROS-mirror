@@ -1,0 +1,21 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+#MM bootloader-grub2-pc-x86_64 : grub2-dirs bootloader-grub2gfx-common grub2-pc-x86_64
+#MM bootloader-grub2gfx-pc-x86_64 : grub2-dirs bootloader-grub2gfx-common bootloader-grub2gfx-common-livecd grub2-pc-x86_64
+
+#MM- grub2-pc-x86_64: arch-common-grub2 grub2-iso-setup 
+
+bootloader-grub2-pc-x86_64: $(BINDIR)/boot/grub/grub.cfg
+
+bootloader-grub2gfx-pc-x86_64: $(BINDIR)/boot/grub/grub.cfg
+
+ifeq ($(AROS_TARGET_VARIANT),efi)
+    HEAD := grub-efi.cfg.head
+else
+    HEAD := grub.cfg.head
+endif
+
+$(BINDIR)/boot/grub/grub.cfg: $(HEAD) grub.cfg.tail
+	@$(ECHO) Writing $@...
+	@$(CAT) $^ >$@

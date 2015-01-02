@@ -1,0 +1,16 @@
+#   $Id$
+#
+#   Makefile for the Workbench:Tools directory.
+
+include $(TOP)/config/make.cfg
+
+FILES := Calculator GraphicDump InitPrinter PrintFiles WiMP
+
+#MM- workbench : workbench-tools
+#MM workbench-tools : includes linklibs
+
+%build_progs mmake=workbench-tools \
+    files=$(FILES) targetdir=$(AROSDIR)/Tools
+
+%common
+

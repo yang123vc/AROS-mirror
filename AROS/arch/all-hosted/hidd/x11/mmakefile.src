@@ -1,0 +1,90 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+DISK_FILES  := disk_startup
+DISK_EXEDIR := $(AROS_DEVS)/Monitors
+
+#MM devs-monitors-x11 : iconset-$(AROS_TARGET_ICONSET)-x11
+
+%build_prog mmake=devs-monitors-x11 \
+    progname=X11 targetdir=$(DISK_EXEDIR) \
+    files=$(DISK_FILES)
+
+USER_CFLAGS = -DHOST_OS_$(ARCH) -isystem $(GENINCDIR) $(HOST_X11_CFLAGS) $(KERNEL_INCLUDES)
+## The '-Wno-attributes' is here due to a gcc 4.5.x bug
+## where its strcmp() builtin generates a number of spurious
+## complaints with -O1 or higher optimizations enabled.
+USER_CFLAGS += -Wno-attributes
+
+# TODO: What if the system is pure Darwin running a regular PC?
+ifeq ($(ARCH),darwin)
+USER_CFLAGS += -D_FORTIFY_SOURCE=0
+X11KEYMAPTABLE_SRC_FILE := mac-x11-keycode2rawkey.table
+else
+X11KEYMAPTABLE_SRC_FILE := def-x11-keycode2rawkey.table
+endif
+
+X11KEYMAPTABLE_FILE := $(AROS_DEVS)/Keymaps/X11/keycode2rawkey.table
+X11KEYMAPTABLE_ALT_FILE := $(AROS_DEVS)/Keymaps/X11/keycode2rawkey-alt.table
+X11KEYMAPTABLE_ALT_NB_FILE := $(AROS_DEVS)/Keymaps/X11/keycode2rawkey-alt-nb.table
+
+FILES	   := startup x11_hostlib x11_init x11 support x11gfx onbitmap offbitmap \
+              x11kbd x11mouse x11clipboard xshm fullscreen bitmap_common
+
+#MM kernel-x11gfx : x11keymaptable devs-monitors-x11
+#MM kernel-x11gfx-kobj : x11keymaptable devs-monitors-x11
+
+%build_module mmake=kernel-x11gfx \
+  modname=x11gfx modtype=hidd version=$(AROS_TARGET_PLATFORM) \
+  files=$(FILES) uselibs="hiddstubs" archspecific=yes
+
+#MM x11keymaptable
+x11keymaptable : setup-x11keymaptable $(TOOLDIR)/makexkeytable $(X11KEYMAPTABLE_FILE) $(X11KEYMAPTABLE_ALT_FILE) $(X11KEYMAPTABLE_ALT_NB_FILE)
+	@$(NOP)
+
+#MM change-x11keymaptable
+change-x11keymaptable : setup-x11keymaptable $(TOOLDIR)/makexkeytable
+	$(TOOLDIR)/makexkeytable -o $(X11KEYMAPTABLE_FILE)
+
+#MM default-x11keymaptable
+default-x11keymaptable : $(X11KEYMAPTABLE_FILE)
+	@$(NOP)
+
+$(X11KEYMAPTABLE_FILE) : $(X11KEYMAPTABLE_SRC_FILE) setup-x11keymaptable
+	@$(CP) $< $@
+
+$(X11KEYMAPTABLE_ALT_FILE) : alt-x11-keycode2rawkey.table  setup-x11keymaptable
+	@$(CP) $< $@
+
+$(X11KEYMAPTABLE_ALT_NB_FILE) : alt-nb-x11-keycode2rawkey.table setup-x11keymaptable
+	@$(CP) $< $@
+
+#MM backup-x11keymaptable
+backup-x11keymaptable :
+	@$(IF) $(TEST) -f $(X11KEYMAPTABLE_FILE) ; then \
+	    $(CP) $(X11KEYMAPTABLE_FILE) ~/aros-x11-keycode2rawkey.table ; \
+	    $(ECHO) "" ; \
+	    $(ECHO) "Made backup of x11 keymaptable to \"~/aros-x11-keycode2rawkey.table\"" ; \
+	    $(ECHO) "" ; \
+	else \
+	    $(ECHO) "There is no x11 keymaptable existing (\"$(X11KEYMAPTABLE_FILE)\")!?" ; \
+	fi
+
+#MM restore-x11keymaptable
+restore-x11keymaptable : setup-x11keymaptable
+	@$(IF) $(TEST) -f ~/aros-x11-keycode2rawkey.table ; then \
+	    $(CP) ~/aros-x11-keycode2rawkey.table $(X11KEYMAPTABLE_FILE) ; \
+	    $(ECHO) "" ; \
+	    $(ECHO) "Restored x11 keymaptable from \"~/aros-x11-keycode2rawkey.table\"" ; \
+	    $(ECHO) "" ; \
+	else \
+	    $(ECHO) "There is no x11 keymaptable backup existing (\"~/aros-x11-keycode2rawkey.table\")!?" ; \
+	fi
+		
+setup-x11keymaptable :
+	%mkdirs_q $(AROS_DEVS)/Keymaps $(AROS_DEVS)/Keymaps/X11
+		
+$(TOOLDIR)/makexkeytable: makexkeytable.c
+	$(HOST_CC) $(HOST_CFLAGS) $(USER_INCLUDES) $< -o $@ $(HOST_X11_LIBS)
+
+%common

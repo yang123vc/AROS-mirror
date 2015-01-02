@@ -1,0 +1,20 @@
+#   $Id$
+#
+#   Makefile to make FileMaster.
+
+include $(TOP)/config/make.cfg
+
+FILES := decode environ unarj
+
+EXEDIR := $(AROS_CONTRIB)/Misc/aminet/C
+
+#MM aminet-util-arc-unarj : includes linklibs
+
+USER_CFLAGS := $(FORMAT_SECURITY_CFLAGS)
+
+%build_prog mmake=aminet-util-arc-unarj \
+    progname=unarj targetdir=$(EXEDIR) \
+    files=$(FILES)
+
+%common
+

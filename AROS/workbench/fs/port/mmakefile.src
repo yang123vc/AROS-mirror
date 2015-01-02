@@ -1,0 +1,12 @@
+include $(TOP)/config/make.cfg
+
+#MM- workbench-fs-complete : workbench-fs-port
+
+FILES=port-handler
+
+%build_module mmake=workbench-fs-port \
+    modname=port modtype=handler \
+    files="$(FILES)"
+
+
+%common

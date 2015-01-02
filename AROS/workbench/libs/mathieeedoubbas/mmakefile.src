@@ -1,0 +1,28 @@
+# Copyright © 2003, The AROS Development Team. All rights reserved.
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+FILES := mathieeedoubbas_init ieeedpbas_fpu 
+FUNCS := \
+    ieeedpabs \
+    ieeedpadd \
+    ieeedpceil \
+    ieeedpcmp \
+    ieeedpdiv \
+    ieeedpfix \
+    ieeedpfloor \
+    ieeedpflt \
+    ieeedpmul \
+    ieeedpneg \
+    ieeedpsub \
+    ieeedptst
+
+
+#MM- workbench-libs-mathieeedoubbas : includes
+
+USER_LDFLAGS:=--verbose
+
+%build_module mmake=workbench-libs-mathieeedoubbas \
+  modname=mathieeedoubbas modtype=library \
+  files="$(FILES) $(FUNCS)"

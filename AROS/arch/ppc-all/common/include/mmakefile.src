@@ -1,0 +1,7 @@
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+copy_includes includes=multiboot.h dir=aros
+
+%common

@@ -1,0 +1,9 @@
+# Copyright © 2004, The AROS Development Team. All rights reserved.
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+ICONS := Delete
+
+%build_icons mmake=workbench-system-wanderer-tools-delete-icons \
+             icons=$(ICONS) dir=$(AROS_WANDERER)/Tools

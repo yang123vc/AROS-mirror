@@ -1,0 +1,18 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+FILES         := busy
+INCLUDE_FILES := Busy_mcc.h
+
+
+#MM- workbench-classes-zune : workbench-classes-zune-busy
+#MM workbench-classes-zune-busy
+%build_module \
+    mmake=workbench-classes-zune-busy \
+    modname=Busy modtype=mcc \
+    conffile=busy.conf
+    
+%copy_includes path=mui
+    
+%common
+%include_deps

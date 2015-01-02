@@ -1,0 +1,73 @@
+#   $Id$
+#
+#   Makefile for AROS C Library Tests
+
+include $(TOP)/config/make.cfg
+
+FILES := \
+        all-tests \
+        arguments \
+        chdir \
+        chmod \
+        chown \
+        ctype \
+        environ \
+        execl \
+        exit \
+        fchdir \
+        fchmod \
+        fcntl \
+        flock \
+        getfsstat \
+        jmpbuf \
+        lseek \
+        mnt_names \
+        open \
+        opendir \
+        pipe \
+        raise \
+        random \
+        setjmp \
+        snprintf \
+        sprintf \
+        sscanf \
+        statfs \
+        stpblk \
+        strchr \
+        strptime \
+        strtok \
+        strtod \
+        strtol \
+        strtoul \
+        strtoull \
+        system \
+        tmpfile \
+        uname \
+        usleep \
+        vfork \
+        vfork_execl \
+        wait \
+        waitpid \
+        stdin1 stdin2 stdin3 stdin4 \
+        execl2 execl2_vfork execl2_slave \
+        argv0_test1 argv0_test2 argv0_slave \
+        abort \
+        assert \
+        posix_memalign
+
+FILES_NIXC := \
+        argv0_test3 argv0_test4 argv0_slave_nixc
+
+EXEDIR := $(AROS_TESTS)/clib
+
+#MM test-clib : includes includes-copy linklibs kernel
+
+USER_CFLAGS = -ffloat-store
+%build_progs mmake=test-clib \
+    files=$(FILES) targetdir=$(EXEDIR)
+
+# From here on compile with -nix flag
+
+%build_progs mmake=test-clib \
+    files=$(FILES_NIXC) targetdir=$(EXEDIR) nix=yes
+

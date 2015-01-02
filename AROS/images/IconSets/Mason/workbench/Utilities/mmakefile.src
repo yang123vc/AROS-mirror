@@ -1,0 +1,13 @@
+# $Id$
+#
+# Makefile for Mason's workbench icons
+
+include $(TOP)/config/make.cfg
+
+ICONS     := Multiview Clock More Installer
+ICONDIR   := $(AROSDIR)/Utilities
+
+#MM- iconset-Mason-icons : masonworkbenchutilityicons
+
+%build_icons mmake=masonworkbenchutilityicons icons=$(ICONS) \
+             dir=$(ICONDIR)

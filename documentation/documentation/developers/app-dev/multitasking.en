@@ -1,0 +1,82 @@
+==============================================================
+AROS Application Development Manual -- The Multitasking Kernel
+==============================================================
+
+:Authors:   Staf Verhaegen, Sebastian Rittau, Stefan Rieken, Matt Parsons,
+            Adam Chodorowski, Fabio Alemagna, Matthias Rustler
+:Copyright: Copyright © 1995-2006, The AROS Development Team
+:Version:   $Revision$
+:Date:      $Date$
+:Status:    Unfinished; integration started (looong way left to go).
+:ToDo:      Integrate the various parts. Update and revise. Complete...
+
+`Index <index>`__
+
+.. Warning::
+
+   This document is not finished! It is highly likely that many parts are
+   out-of-date, contain incorrect information, or are simply missing
+   altogether. If you want to help rectify this, please contact us.
+
+.. Contents::
+
+
+Background
+==========
+
+There are two kinds of multitasking: Preemptive and Cooperative (sometimes
+indicated as: Non-preemptive). In Preemptive multitasking, a task will get
+a certain amount of CPU time and then another task gets the CPU. In
+Cooperative multitasking, a task has to release the CPU, which will then
+allow another task to run.
+
+Preemptive multitasking (PMT) has these advantages:
+
++ It's simple to understand
++ There is no need to make sure that your task doesn't keep the CPU forever.
+
+and these disadvantages:
+
++ It's complicated to exchange data with other tasks
++ You never know how long you will stay awake
++ The OS must decide which task to run next in a clever way
+
+Cooperative Multitasking (CMT) has these advantages:
+
++ It's very simple to implement
++ It's easy to exchange data
++ You know exactly how long you will stay awake
++ You get most of the CPU
+
+and these disadvantages:
+
++ If a task behaves badly, there is no way to stop it (for example
+  if it keeps the CPU forever, all you can do is turn the computer off).
++ It's hard to make sure that every task gets the CPU now and then
+
+Though it would seem, from the counts of advantages and disadvantages, that
+CMT is better than PMT, that's not exactly true. CMT is better when you
+have only a few tasks and a single user. Powerful OSes, like Unix and AmigaOS,
+have PMT because it's simpler to use. The same holds for AROS.
+
+
+How does preemptive multitasking work?
+======================================
+
+The idea is pretty simple: Every computer has a clock. This clock can
+generate interrupts. An interrupt means that the CPU saves its current
+state on the stack of the current task and starts a special routine
+called the interrupt handler. Basically this handler now checks for
+other tasks which might want to run, selects one of them and switches
+the stack to the one of the newly chosen task. It then finishes and
+tells the CPU to continue where it was before the interrupt. Since the
+CPU knows nothing about all this, it will just load its state from the new
+stack (i.e. the one of the new task) and so the new task will run, while
+the old one will be sleeping.
+
+Looking at it from the perspective of the life of a task: A tasks's life
+consists of birth, waiting, running, and death. In computer terms, the task
+is created, then waits until it gets the CPU, does its work while it has
+the CPU (these two states may switch back and forth several times), and at
+some point it terminates (or is terminated).
+

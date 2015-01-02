@@ -1,0 +1,13 @@
+# $Id$
+#
+# Makefile for Mason's workbench icons
+
+include $(TOP)/config/make.cfg
+
+ICONS     := AutoPoint Blanker ClickToFront Exchange Opaque
+ICONDIR   := $(AROSDIR)/Tools/Commodities
+
+#MM- iconset-Mason-icons : masonworkbenchcxicons
+
+%build_icons mmake=masonworkbenchcxicons icons=$(ICONS) \
+             dir=$(ICONDIR)

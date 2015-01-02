@@ -1,0 +1,9 @@
+#   $Id$
+include $(TOP)/config/make.cfg
+
+FILES	:= pcipc_init driverclass
+
+%build_module mmake=kernel-pci-pcipc \
+    modname=pcipc modtype=hidd \
+    files=$(FILES) \
+    uselibs="rom amiga oop"

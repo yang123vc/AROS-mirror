@@ -1,0 +1,60 @@
+include $(TOP)/config/make.cfg
+
+# -------- Bootstrap part --------
+
+#MM boot-unix: kernel-bootstrap-hosted
+
+BOOTSTRAPCONF := $(AROSARCHDIR)/AROSBootstrap.conf
+
+#MM
+boot-unix: $(BOOTSTRAPCONF)
+
+ifeq ($(AROS_TARGET_VARIANT),android)
+$(BOOTSTRAPCONF): INPUT_FILE := $(SRCDIR)/$(CURDIR)/AROSBootstrap_android.conf
+$(BOOTSTRAPCONF): AROSBootstrap_android.conf
+else ifeq ($(AROS_TARGET_ARCH),darwin)
+$(BOOTSTRAPCONF): INPUT_FILE := $(SRCDIR)/$(CURDIR)/AROSBootstrap_darwin.conf
+$(BOOTSTRAPCONF): AROSBootstrap_darwin.conf
+else
+$(BOOTSTRAPCONF): INPUT_FILE := $(SRCDIR)/$(CURDIR)/AROSBootstrap.conf
+$(BOOTSTRAPCONF): AROSBootstrap.conf
+endif
+$(BOOTSTRAPCONF): mkbootconf.sh | $(AROSARCHDIR)
+	@$(ECHO) "Writing    $@..."
+	@$(SRCDIR)/$(CURDIR)/mkbootconf.sh $(INPUT_FILE) $(AROS_DIR_ARCH) >$@
+
+$(AROSARCHDIR):
+	@$(ECHO) "Making     $@..."
+	@mkdir -p $@
+
+# -------- Kickstart part --------
+
+#MM- kernel-unix: kernel-objs
+
+#MM- kernel-link-unix : \
+#MM     kernel-$(ARCH)-$(AROS_TARGET_VARIANT)   \
+#MM	kernel-kernel-kobj			\
+#MM     kernel-hostlib     			\
+#MM	kernel-battclock     			\
+#MM	kernel-processor     			\
+#MM	kernel-timer     			\
+#MM	kernel-expansion     			\
+#MM	kernel-exec-kobj			\
+#MM     $(UNIXGFX_HIDD_TARGET)		        \
+#MM     kernel-fs-emul                          \
+#MM	kernel-unixio     			\
+#MM	linklibs
+
+# ---- UNIX board support package ----
+
+KDEVS	:= 
+KLIBS   := exec
+KHNDLRS := 
+KHIDDS  := 
+KRSRCS  := 
+
+%link_kickstart mmake=kernel-link-unix file=$(AROSARCHDIR)/kernel \
+	devs=$(KDEVS) handlers=$(KHNDLRS) hidds=$(KHIDDS) libs=$(KLIBS) res=$(KRSRCS) startup=$(KOBJSDIR)/kernel_resource.o \
+	uselibs="hiddstubs"
+
+%common

@@ -1,0 +1,72 @@
+[meta]
+
+charset:          iso-8859-2
+
+[titles]
+
+news:             Zprávy
+news-archive-for: News archive for
+mirrors:          Zrcadla
+contents:         Obsah
+search:           Hledání
+visitors:         Náv¹tìvníci
+sponsors:         Sponzoøi
+
+[navigation]
+
+home:             Domù
+news:             Zprávy
+archive:          Archív
+introduction:     Úvod
+status:           Stav
+screenshots:      Snímky obrazovky
+ports:            Porty
+license:          Licence
+download:         Ke sta¾ení
+documentation:    Dokumentace
+users:            U¾ivatelé
+installation:     Instalace
+using:            Pou¾ití
+shell:            Pøíkazy shellu
+applications:     Aplikace
+faq:              FAQ
+howto:            HowTo
+hwcompat:         Kompatibilita hardware
+developers:       Vývojáøi
+contribute:       Spolupráce
+roadmap:          Plán
+bug-tracker:      Bug tracker
+feature-requests: Feature Requests
+working-with-subversion: Práce s SVN
+compiling:        Kompilace
+application-development-manual: Manuál pro vývoj aplikací
+zune-application-development-manual: Manuál pro vývoj Zune aplikací
+system-development-manual: Manuál pro vývoj systému
+debugging-manual: Manuál pro ladìní
+reference:        Reference
+specifications:   Specifikace
+ui-style-guide:   Popis designu UI
+documenting:      Dokumentace
+porting:          Portace
+translating:      Pøeklad
+summaries:        Shrnutí
+links:            Odkazy
+contact:          Kontakt
+mailing-lists:    Mailing listy
+forums:           Fóra
+irc-channels:     IRC kanály
+credits:          Zásluhy
+acknowledgements: Podìkování
+pictures:         Fotografie
+developers-together: Vývojáøi dohromady
+sponsors:         Sponzoøi
+linking:          Propagace
+
+[misc]
+
+go:               Jít na
+search:           Hledat
+copyright:        Copyright &copy; 1995-2014, The AROS Development Team. All rights reserved.
+trademarks:       Amiga&reg; is a trademark of Amiga Inc. All other trademarks belong to their respective owners.
+read-more:        Více zde...
+large-image:      Zvìt¹it...

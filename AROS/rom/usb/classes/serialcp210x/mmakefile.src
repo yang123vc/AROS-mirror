@@ -1,0 +1,12 @@
+#   $Id$
+include $(TOP)/config/make.cfg
+
+FILES :=    serialcp210x.class dev debug
+
+#MM- kernel-usb-classes-serialcp210x : kernel-usb-usbclass kernel-usb-poseidon-includes
+
+%build_module_library mmake=kernel-usb-classes-serialcp210x \
+    modname=serialcp210x modtype=usbclass modsuffix="class" \
+    files="$(FILES)" 
+
+%common

@@ -1,0 +1,21 @@
+#   $Id$
+#
+#   Makefile to make makedepend.
+
+include $(TOP)/config/make.cfg
+
+FILES  := include main parse pr cppsetup ifparser
+
+EXEDIR := $(AROS_CONTRIB)/Development/Build
+
+USER_CFLAGS := -DAROS -DINCLUDEDIR=\"\" 
+
+#MM- contrib-development : contrib-development-makedepend
+#MM contrib-development-makedepend : setup-contrib-development-makedepend 
+
+%build_prog mmake=contrib-development-makedepend \
+    progname=makedepend targetdir=$(EXEDIR) \
+    files=$(FILES)
+
+%common
+

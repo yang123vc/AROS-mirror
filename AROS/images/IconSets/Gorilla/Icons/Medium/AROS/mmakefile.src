@@ -1,0 +1,19 @@
+# Copyright © 2004, The AROS Development Team. All rights reserved.
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+ICONS := Demos Development Devs Fonts \
+         Libs Locale Prefs Storage System \
+         Tests Tools Utilities WBStartup \
+         Rexxc
+
+#MM- iconset-Gorilla-icons-clean : iconset-Gorilla-icons-aros-clean
+#MM- iconset-Gorilla-icons : iconset-Gorilla-icons-aros
+#MM iconset-Gorilla-icons-aros : iconset-Gorilla-icons-aros-livecd
+
+%build_icons mmake=iconset-Gorilla-icons-aros icons=$(ICONS) dir=$(AROSDIR)
+
+#MM
+iconset-Gorilla-icons-aros-livecd :  
+	@$(ILBMTOICON) $(SRCDIR)/$(CURDIR)/LiveCD.info.src $(SRCDIR)/$(CURDIR)/LiveCD.png $(AROSDIR)/disk.info

@@ -1,0 +1,11 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+FUNCS := allocmiscresource freemiscresource
+
+#MM- kernel-misc : includes linklibs
+
+%build_module mmake=kernel-misc \
+  modname=misc modtype=resource \
+  files="misc_init $(FUNCS)"
+

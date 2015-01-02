@@ -1,0 +1,9 @@
+# Copyright © 2003, The AROS Development Team. All rights reserved.
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+#MM- workbench : workbench-libs-dos-catalogs
+
+%build_catalogs mmake=workbench-libs-dos-catalogs \
+                name=dos subdir=System/Libs

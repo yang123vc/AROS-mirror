@@ -1,0 +1,14 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+IMAGES	    := ArrowUp ArrowDown ArrowLeft ArrowRight ImageButton
+IMAGEFILES  := $(foreach f,$(IMAGES),$(TOP)/$(CURDIR)/$(f)0.h $(TOP)/$(CURDIR)/$(f)1.h)
+
+#MM
+demos-images-setup : $(IMAGEFILES)
+	@$(NOP)
+
+$(TOP)/$(CURDIR)/%.h : %.dat datfilt.awk
+	$(MKDIR) $(TOP)/$(CURDIR)
+	cd $(TOP)/$(CURDIR); ${AWK} -f $(SRCDIR)/$(CURDIR)/datfilt.awk $<
+

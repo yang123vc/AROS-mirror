@@ -1,0 +1,53 @@
+#   $Id$
+#
+#   Makefile to make AMosaic.
+
+include $(TOP)/config/make.cfg
+
+FILES := globals \
+	Boingtransfer \
+	socketbase \
+	version \
+	spinner \
+	picread \
+	mo-www \
+	locale \
+	globalhist \
+	fonts \
+	TextEditField \
+	TO_HTML \
+	NewGroup \
+	HTMLparse \
+	HTMLlists \
+	HTML_img \
+	HTMLformat \
+	HTMLimages \
+	HTML \
+	gui-menubar \
+	main \
+	gui-dialogs \
+	gui-documents \
+	history \
+	htmlamiga \
+	gui \
+	mui \
+
+# These are Motif?
+#	hotlist \
+# ReXX is not yet ported to AROS
+#	rexx
+#
+
+EXEDIR := $(AROS_CONTRIB)/Networking/Apps/AMosaic
+
+USER_INCLUDES := -I$(SRCDIR)/$(CURDIR)/../libwww2
+
+USER_CFLAGS  += -Wno-parentheses -Wno-format-contains-nul
+
+#MM mui-amosaic : includes linklibs linklibs-www2
+
+%build_prog mmake=mui-amosaic \
+    progname=AMosaic targetdir=$(EXEDIR) \
+    files=$(FILES) uselibs="www2 net"
+
+%common

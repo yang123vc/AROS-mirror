@@ -1,0 +1,11 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+FILES := mxclass support
+
+#MM workbench-gadgets-arosmutualexclude : includes linklibs
+
+%build_module mmake=workbench-gadgets-arosmutualexclude \
+  modname=arosmutualexclude modtype=gadget \
+  files=$(FILES)
+

@@ -1,0 +1,17 @@
+#   $Id$
+#
+#   Makefile for building keymap.library
+#
+include $(TOP)/config/make.cfg
+
+#MM- core-linklibs : linklibs-keymap
+
+FILES := defaultkeymap support
+FUNCS := askkeymapdefault mapansi maprawkey setkeymapdefault
+
+#MM kernel-keymap-includes : \
+#MM     kernel-exec-includes
+
+%build_module mmake=kernel-keymap \
+  modname=keymap modtype=library \
+  files="keymap_init $(FUNCS) $(FILES)"

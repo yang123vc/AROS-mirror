@@ -1,0 +1,9 @@
+include $(TOP)/config/make.cfg
+
+EXEDIR := $(AROS_CONTRIB)/Games/Backgammon
+
+%build_prog mmake=aminet-games-board-backgammon \
+    progname=Backgammon targetdir=$(EXEDIR) \
+    files="BackEval BackMenu BackScreen Backgammon"
+
+

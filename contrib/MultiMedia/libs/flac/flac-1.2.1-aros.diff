@@ -1,0 +1,50 @@
+diff -ruN flac-1.2.1/doc/html/Makefile.am flac-1.2.1.aros/doc/html/Makefile.am
+--- flac-1.2.1/doc/html/Makefile.am	2007-09-16 20:14:01.000000000 +0100
++++ flac-1.2.1.aros/doc/html/Makefile.am	2012-06-13 01:17:16.292263500 +0100
+@@ -73,7 +73,7 @@
+ # handle 'api/' specially:
+ install-data-local:
+ 	$(mkinstalldirs) $(DESTDIR)$(docdir)/api
+-	(cd api && $(INSTALL_DATA) * $(DESTDIR)$(docdir)/api)
++#	(cd api && $(INSTALL_DATA) * $(DESTDIR)$(docdir)/api) # breaks the aros build
+ uninstall-local:
+ 	rm -rf $(DESTDIR)$(docdir)/api
+ maintainer-clean-local:
+diff -ruN flac-1.2.1/doc/html/Makefile.in flac-1.2.1.aros/doc/html/Makefile.in
+--- flac-1.2.1/doc/html/Makefile.in	2007-09-16 21:04:58.000000000 +0100
++++ flac-1.2.1.aros/doc/html/Makefile.in	2012-06-13 01:17:16.450272500 +0100
+@@ -597,7 +597,7 @@
+ # handle 'api/' specially:
+ install-data-local:
+ 	$(mkinstalldirs) $(DESTDIR)$(docdir)/api
+-	(cd api && $(INSTALL_DATA) * $(DESTDIR)$(docdir)/api)
++#	(cd api && $(INSTALL_DATA) * $(DESTDIR)$(docdir)/api) # breaks the aros build
+ uninstall-local:
+ 	rm -rf $(DESTDIR)$(docdir)/api
+ maintainer-clean-local:
+diff -ruN flac-1.2.1/src/libFLAC/bitreader.c flac-1.2.1.aros/src/libFLAC/bitreader.c
+--- flac-1.2.1/src/libFLAC/bitreader.c	2007-09-11 05:48:55.000000000 +0100
++++ flac-1.2.1.aros/src/libFLAC/bitreader.c	2012-06-13 01:17:19.035463700 +0100
+@@ -42,6 +42,9 @@
+ #elif defined __MINGW32__
+ #include <winsock.h> /* for ntohl() */
+ #else
++#if defined(__AROS__)
++#include <sys/types.h>
++#endif
+ #include <netinet/in.h> /* for ntohl() */
+ #endif
+ #include "private/bitmath.h"
+diff -ruN flac-1.2.1/src/libFLAC/bitwriter.c flac-1.2.1.aros/src/libFLAC/bitwriter.c
+--- flac-1.2.1/src/libFLAC/bitwriter.c	2007-09-11 00:08:38.000000000 +0100
++++ flac-1.2.1.aros/src/libFLAC/bitwriter.c	2012-06-13 01:17:19.083469800 +0100
+@@ -42,6 +42,9 @@
+ #elif defined __MINGW32__
+ #include <winsock.h> /* for ntohl() */
+ #else
++#if defined(__AROS__)
++#include <sys/types.h>
++#endif
+ #include <netinet/in.h> /* for ntohl() */
+ #endif
+ #if 0 /* UNUSED */

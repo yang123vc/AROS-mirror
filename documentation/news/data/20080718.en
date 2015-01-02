@@ -1,0 +1,63 @@
+=============
+Status update
+=============
+
+:Author:   Paolo Besser and Saimon69
+:Date:     2008-07-18
+
+Latest updates
+--------------
+
+Sorry for this status update being so late, however the AROS team is
+really working hard "under the hood" in order to bring you a better
+operating system. There is much important news to talk about.
+
+Stanislaw Szymczyk has completed the port of linux hosted flavour
+on the x86-64 platform, and is greatly helping AROS self-compilation
+by porting the needed tools. The last one has been the abc-shell, and
+he's gaining some encouraging results.
+
+Krzysztof Smiechowicz is reviewing AROS API completeness, in order to
+keep track of AmigaOS compatibility and the whole project's status. You
+can see the results whenever you want in our updated `status`__ page.
+
+Pavel Fedin has greatly improved HDToolBox functionalities: now it
+can move and resize partitions. These new features, however, still
+need some testing. Pavel has also ported BHFormat and activated
+Wanderer options to format disks.
+
+Pavel Fedin, Krzysztof Smiechowicz and Tomasz Wiszkowski are also
+working hard on our ata.device and ATAPI-related files to get rid of
+compatibility problems which disallowed AROS to boot properly on some
+configurations. 
+
+Michal Schulz is still working on his SAM440EP porting of AROS. He
+recently released a working `initial beta`__ that SAM owners may try
+by themselves. Don't place it on other PPC architectures, though, as
+it won't work.
+
+Gianfranco Gignina has helped detecting and fixing many Zune bugs,
+and started to work on a portable and more independent version of
+Wanderer. The project's goal is to allow easy porting of Wanderer to
+the other AmigaOS-like platforms.
+
+There's a new, valuable implementation of the E language on AROS:
+it's `PortablE`__, and you should definitely give it a try!
+
+Nick Andrews is writing an Intel Gigabit E1000 NIC driver for AROS, which
+will allow networking on a wide range of motherboards that integrate it.
+
+Paolo Besser has released the new 0.8b version of his VmwAROS
+distribution, which introduces improvements in the GUI style and
+a new dual-kernel feature to allow booting on some configurations.
+Once again, the distribution is available in two flavours: a
+`live CD`__ which runs on top of any X86 hardware and can be
+installed on the hard drive, and a `virtual environment`__ for
+VMware.
+
+__ http://aros.sourceforge.net/it/introduction/status/everything.php
+__ http://msaros.blogspot.com/2008/05/try-it-yourself.html
+__ http://cshandley.co.uk/portable
+__ http://live.vmwaros.org
+__ http://ve.vmwaros.org
+

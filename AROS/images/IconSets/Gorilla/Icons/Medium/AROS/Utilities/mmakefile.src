@@ -1,0 +1,11 @@
+# Copyright © 2004-2013, The AROS Development Team. All rights reserved.
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+ICONS := Clock Help Installer More MultiView
+
+#MM- iconset-Gorilla-icons-aros-clean : iconset-Gorilla-icons-aros-utilities-clean
+#MM- iconset-Gorilla-icons-aros : iconset-Gorilla-icons-aros-utilities
+%build_icons mmake=iconset-Gorilla-icons-aros-utilities icons=$(ICONS) \
+             dir=$(AROS_UTILITIES)

@@ -1,0 +1,11 @@
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+#MM- ports-game-penguincommand : ports-game-penguincommand-icons
+
+ICONS     := PenguinCommand
+TARGETDIR := $(AROS_CONTRIB)/Games
+
+%build_icons mmake=ports-game-penguincommand-icons \
+    icons=$(ICONS) dir=$(TARGETDIR)

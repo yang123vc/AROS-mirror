@@ -1,0 +1,11 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+FILES := cycleclass support
+
+#MM workbench-gadgets-aroscycle : includes linklibs
+
+%build_module mmake=workbench-gadgets-aroscycle \
+  modname=aroscycle modtype=gadget \
+  files=$(FILES)
+

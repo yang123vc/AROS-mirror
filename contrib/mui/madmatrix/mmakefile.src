@@ -1,0 +1,19 @@
+# $Id$
+#
+# Makefile to make MadMatrix.
+
+include $(TOP)/config/make.cfg
+
+FILES := main alloctab libs madmatrix
+
+EXEDIR := $(AROS_CONTRIB)/aminet
+
+USER_INCLUDES := -I$(SRCDIR)/$(CURDIR)/../libs/muimaster
+
+#MM contrib-aminet-games-think-madmatrix : includes linklibs
+
+%build_prog mmake=contrib-aminet-games-think-madmatrix \
+    progname=MadMatrix targetdir=$(EXEDIR) \
+    files=$(FILES)
+
+%common

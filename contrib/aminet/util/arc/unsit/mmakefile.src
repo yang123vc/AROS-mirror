@@ -1,0 +1,19 @@
+#   $Id$
+#
+#   Makefile to make FileMaster.
+
+include $(TOP)/config/make.cfg
+
+FILES := unsit updcrc
+
+EXEDIR := $(AROS_CONTRIB)/Misc/aminet/C
+
+USER_CFLAGS := -DAROS -DHAVE_GETOPT=1
+
+#MM aminet-util-arc-unsit : includes linklibs
+
+%build_prog mmake=aminet-util-arc-unsit \
+    progname=unsit targetdir=$(EXEDIR) \
+    files=$(FILES)
+
+%common

@@ -1,0 +1,18 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+EXEDIR  := $(AROSDIR)/boot
+
+FILES         := hostinterface hostlib kickstart kputc memory shutdown support
+USER_INCLUDES := -I$(SRCDIR)/arch/all-hosted/bootstrap \
+		 -I$(SRCDIR)/arch/all-unix/kernel   \
+		 -I$(GENINCDIR) \
+		 -isystem $(SRCDIR)/bootstrap/include \
+		 -DAROS_ARCHITECTURE="\"$(AROS_TARGET_PLATFORM)\""
+USER_CFLAGS   := -DARCH=\"$(AROS_DIR_ARCH)\"
+
+%build_archspecific \
+	mainmmake=kernel-bootstrap-hosted maindir=arch/all-hosted/bootstrap arch=unix \
+	files=$(FILES) compiler=kernel
+
+%common

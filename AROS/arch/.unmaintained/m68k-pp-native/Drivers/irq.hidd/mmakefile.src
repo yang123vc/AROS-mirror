@@ -1,0 +1,20 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+#MM kernel-pp-m68k-irq-kobj : hidd-irq-stubs
+#MM kernel-pp-m68k-irq : hidd-irq-stubs
+
+FILES       := irqclass servers
+
+USER_INCLUDES := -I$(TOP)/workbench/hidds/graphics
+%build_module_macro mmake=kernel-pp-m68k-irq \
+	modname=irq modtype=hidd \
+        files=$(FILES) \
+	conffile=lib.conf \
+	genfunctable=yes
+
+#MM
+setup-pp-m68k :
+        %mkdirs_q $(OBJDIR)
+
+%common

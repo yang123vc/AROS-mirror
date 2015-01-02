@@ -1,0 +1,15 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+FILES	:= lazymines button counter field highscores images layout \
+	    localize requesters timer tooltypes lazymines_strings
+
+EXEDIR	:= $(AROS_CONTRIB)/Games/LazyMines
+
+#MM aminet-games-think-lazymines : aminet-dev-src-chunkyiclass setup-aminet-lazymines-catalogs
+
+%build_prog mmake=aminet-games-think-lazymines \
+    progname=LazyMines targetdir=$(EXEDIR) \
+    files=$(FILES) uselibs="chunkyiclass"
+
+%common

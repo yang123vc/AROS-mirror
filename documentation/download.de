@@ -1,0 +1,91 @@
+========
+Download
+========
+.. Note::
+
+   Falls Du ein **Anwender** bist, der AROS ausprobieren will, verwende
+   bitte die Links im **Distributionen**-Abschnitt, um eine gut
+   ausgestattete AROS-Distribution herunterzuladen. Die 'Nightly Builds',
+   die Du am Ende dieser Seite findest, sind nur für Entwickler und Tester
+   gedacht. Die 'Nightly Builds' sind nicht für Anwender konfiguriert,
+   sie sind manchmal instabil und es fehlen die ganzen Programme, die
+   die Verwendung von AROS für Endbenutzer interessant machen.
+
+.. Contents::
+
+.. Include:: download-abstract.de
+
+Icaros Desktop LIVE!
+--------------------
+
+.. image:: /images/icaroslive_logo.png
+   :align: left
+
+`Icaros Desktop LIVE!`__ ist eine vollständige Distribution des
+AROS-Betriebssystems. Sie kommt auf einer boot-fähigen DVD-ROM und läuft
+direkt auf Deinem PC (die Hardware muss von AROS unterstützt werden) oder
+in einer virtuellen Maschine wie VMWare oder `VirtualBox`__. Sie
+kann auf eine Festplatte in eine eigene Partition installiert werden und
+kann mit anderen Betriebssystemen wie Microsoft Windows koexistieren. Eine
+Kurzreferenz und ein paar PDF-Handbücher sind enthalten.
+
+__ http://live.icarosdesktop.org/
+__ https://www.virtualbox.org/
+
+
+Snapshots
+=========
+
+'Snapshots' sind in unregelmäßigen Abständen manuell gebaute Versionen
+von AROS. Sie werden von Entwicklern erzeugt, die aus technischen oder
+politischen Gründen keine 'Nightly Builds' erstellen können.
+
+Verwende bitte den `Bug Tracker`__ um Fehler zu melden.
+
+.. raw:: html
+
+   <?php virtual( "/cgi-bin/files?type=snapshots&lang=de" ); ?>
+
+__ http://sourceforge.net/p/aros/bugs/
+
+Nightly builds
+==============
+
+'Nightly Builds' werden, wie der Name schon sagt, automatische jede Nacht
+aus dem Subversion-Baum erstellt. Sie enthalten den neusten Kode. Jedoch
+wurden sie nicht getestet und können fehlerhaft sein. Aber meistens
+funktionieren sie ganz gut.
+
+Melde bitte Fehler, die Du beim Benutzen der 'Nightly Builds' entdeckst, an
+den `bug tracker`__. Für andere Anforderungen bitte die Foren von
+`AROS-Exec`__ verwenden.
+
+.. Note::
+
+   Zum Herunterladen von 'Nightly Builds' oder 'Snapshots' brauchst Du einen
+   Downloadmanager, der einen unterbrochenen Download fortsetzen kann, oder
+   ein Shellprogramm wie wget (Du kannst mit "wget -c" den Rest einer von
+   einem anderen Programm nur teilweise heruntergeladen Datei anfordern)
+
+.. raw:: html
+
+   <?php virtual( "/cgi-bin/files?type=nightly&lang=de" ); ?>
+
+__ http://sourceforge.net/tracker/?atid=439463&group_id=43586&func=browse
+__ http://aros-exec.org/
+
+
+Nightly builds (ABIv1)
+======================
+
+AROS befindet sich zur Zeit im Übergang zu einer neuen `ABI`__. Ein
+zusätzlicher Satz Nightly Builds wird auf Basis dieses experimentellen
+Source-Baumes erstellt, aber `diese Builds`__ sind nur für Entwickler
+interessant, die den Fortschritt mitverfolgen wollen. **Sie sind nicht
+kompatibel zu bestehenden AROS-Distributionen oder mit AROS-Software aus
+dem AROS-Archive und dem Aminet**. Anwender, die neue Funktionen und
+Fehlerbereinigungen ausprobieren wollen sollten nur die normalen
+Nightly Builds verwenden.
+
+__ http://en.wikipedia.org/wiki/Application_binary_interface
+__ download2

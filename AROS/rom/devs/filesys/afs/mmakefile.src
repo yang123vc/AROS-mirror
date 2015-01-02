@@ -1,0 +1,37 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+ifneq ($(FLAVOUR),palmnative)
+FILES := main \
+	bitmap \
+	cache \
+	checksums \
+	error \
+	extstrings \
+	filehandles1 \
+	filehandles2 \
+	filehandles3 \
+	hashing \
+	misc \
+	os_aros_support \
+	volumes \
+   validator
+else
+FILES :=
+endif
+
+#MM- kernel-fs-afs : includes linklibs
+
+USER_CFLAGS := -DDEBUG=0 \
+	       -D__INTUITION_NOLIBBASE__
+
+ifeq ($(AROS_TARGET_ARCH)-$(AROS_TARGET_CPU),amiga-m68k)
+CONFFILE := $(SRCDIR)/$(CURDIR)/afs_amiga-m68k.conf
+else
+CONFFILE := $(SRCDIR)/$(CURDIR)/afs.conf
+endif
+
+%build_module mmake=kernel-fs-afs \
+    modname=afs modtype=device modsuffix=handler \
+    files="arosdevice $(FILES)" uselibs="rom" \
+    conffile="$(CONFFILE)"

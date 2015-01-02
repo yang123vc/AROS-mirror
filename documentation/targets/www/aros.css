@@ -1,0 +1,53 @@
+@import url(docutils.css);
+
+body {
+    font-family: arial, verdana, helvetica, sans-serif
+}
+
+.tree {
+    font-size:   13px ;
+    color:       #000000 }
+
+.tree :link {
+    text-decoration: none    ;
+    color:           #000000 }
+    
+.tree :link:hover {
+    text-decoration: underline }
+    
+.tree :visited {
+    text-decoration: none    ;
+    color:           #000000 }
+
+.tree :visited:hover {
+    text-decoration: underline }
+
+div.document {
+    padding: 0px 10px 0px 10px }
+    
+/*h1 {
+    padding:            2px              ;
+    border:             thin solid black ;
+    color:              #b83939;
+    background:         #ded19d}
+*/
+
+h1.title {
+    text-align: left    }
+    
+    /*background: #b83939  } */
+    /*
+h2 {
+    padding:            2px               ;
+    border:             thin dotted black ;
+    color:              #000000           ;
+    background:         #d67171           }
+  */  
+
+table.layout {
+  margin-top:    0 ;
+  margin-bottom: 0 }
+
+td.layout, th.layout {
+  padding-left:  0 ;
+  padding-right: 0 }

@@ -1,0 +1,5 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+%build_linklib mmake=aminet-dev-src-chunkyiclass \
+    libname=chunkyiclass files=chunkyiclass

@@ -1,0 +1,20 @@
+#   $Id$
+#
+
+include $(TOP)/config/make.cfg
+
+FILES := fireworks async message timer libopen stubs fwmodes linear parabolic
+
+EXEDIR := $(AROS_CONTRIB)/Misc/aminet
+
+# -DNO_INLINE_STDARG
+
+#MM aminet-mus-midi-CAMD_Toolkit-Fireworks : setup-aminet-mus-midi-CAMD_Toolkit-Fireworks
+
+%build_prog mmake=aminet-mus-midi-CAMD_Toolkit-Fireworks \
+    progname=Fireworks targetdir=$(EXEDIR) \
+    files=$(FILES)
+
+%common
+
+

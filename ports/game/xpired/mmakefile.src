@@ -1,0 +1,54 @@
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+#MM- ports-game : ports-game-xpired
+
+#MM- ports-game-xpired : ports-game-xpiredbin ports-game-xpiredit \
+#MM  ports-game-xpired-cpy \
+#MM  ports-game-xpired-img ports-game-xpired-snd ports-game-xpired-fetch
+
+#MM  ports-game-xpiredbin : includes linklibs contrib-sdl \
+#MM    contrib-sdl-sdl-image contrib-sdl-sdl-gfx ports-game-xpired-fetch
+
+#MM  ports-game-xpiredit : includes linklibs contrib-sdl \
+#MM    contrib-sdl-sdl-image contrib-sdl-sdl-gfx ports-game-xpired-fetch
+
+#MM  ports-game-xpired-img : ports-game-xpired-fetch
+
+#MM  ports-game-xpired-snd : ports-game-xpired-fetch
+
+#MM-  ports-game-xpired-quick : ports-game-xpiredbin-quick ports-game-xpiredit-quick
+
+#MM-  ports-game-xpired-clean : ports-game-xpiredbin-clean ports-game-xpiredit-clean
+
+REPOSITORIES := sf://xpired
+ARCHBASE     := xpired-1.22
+TARGETDIR    := $(AROS_CONTRIB)/Games/Xpired
+SDL_PREFIX   := $(AROS_DEVELOPMENT)
+USER_CFLAGS  := $(shell $(SDL_PREFIX)/bin/sdl-config --prefix=$(SDL_PREFIX) --cflags) -DUNIX -DSHARE_PREFIX=\"PROGDIR:data\"
+
+%build_prog mmake=ports-game-xpiredbin progname=Xpired \
+    files="$(PORTSDIR)/xpired/$(ARCHBASE)/src/xpired" targetdir=$(TARGETDIR) nix=yes \
+    uselibs="SDL_image SDL_gfx png jpeg SDL_mixer vorbisfile vorbis ogg SDL GL z"
+
+%build_prog mmake=ports-game-xpiredit progname=XpirEdit \
+    files="$(PORTSDIR)/xpired/$(ARCHBASE)/src/xpiredit" targetdir=$(TARGETDIR) nix=yes \
+    uselibs="SDL_image SDL_gfx png jpeg SDL GL z"
+
+%fetch mmake=ports-game-xpired-fetch archive=$(ARCHBASE)-linux_source destination=$(PORTSDIR)/xpired/$(ARCHBASE) \
+    location=$(PORTSSOURCEDIR) archive_origins=$(REPOSITORIES) suffixes="tar.gz" \
+    patches_specs=xpired-1.22-aros.diff:$(ARCHBASE):-p1
+
+%copy_dir_recursive mmake=ports-game-xpired-img src=$(PORTSDIR)/xpired/$(ARCHBASE)/src/img \
+dst=$(TARGETDIR)/data/img
+
+%copy_dir_recursive mmake=ports-game-xpired-snd src=$(PORTSDIR)/xpired/$(ARCHBASE)/src/snd \
+    dst=$(TARGETDIR)/data/snd
+
+CPYFILES := xpired.lvl xpired.cfg bgimages.txt readme.txt xpired.dmo
+
+%copy_files_q mmake=ports-game-xpired-cpy files=$(CPYFILES) src=$(PORTSDIR)/xpired/$(ARCHBASE)/src \
+    dst=$(TARGETDIR)/data
+
+%common

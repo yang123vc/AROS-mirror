@@ -1,0 +1,36 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+INCLUDES      := $(call WILDCARD, *.h arpa/*.h bsdsocket/*.h clib/*.h defines/*.h libraries/*.h net/*.h netinet/*.h proto/*.h sys/*.h)
+DEST_INCLUDES := $(foreach f,$(INCLUDES),$(AROS_INCLUDES)/$(f))
+DIRS          := $(AROS_INCLUDES) \
+                 $(AROS_INCLUDES)/arpa \
+                 $(AROS_INCLUDES)/bsdsocket \
+                 $(AROS_INCLUDES)/clib \
+                 $(AROS_INCLUDES)/defines \
+                 $(AROS_INCLUDES)/libraries \
+                 $(AROS_INCLUDES)/net \
+                 $(AROS_INCLUDES)/netinet \
+                 $(AROS_INCLUDES)/proto \
+                 $(AROS_INCLUDES)/sys
+
+#MM- includes-copy : arostcp-includes
+
+#MM- arostcp-includes : arostcp-includes-setup arostcp-includes-copy
+
+#MM
+arostcp-includes-setup : $(DIRS)
+	@$(NOP)
+
+#MM
+arostcp-includes-copy : $(DEST_INCLUDES)
+	@$(NOP)
+
+$(DIRS):
+	$(IF) $(TEST) ! -d "$@" ; then $(MKDIR) "$@" ; else $(NOP) ; fi
+
+$(AROS_INCLUDES)/%.h : %.h
+	@$(CP) $< $@
+
+$(AROS_INCLUDES)/%.def : %.def
+	@$(CP) $< $@

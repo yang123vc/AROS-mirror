@@ -1,0 +1,12 @@
+# Copyright 2009-2010, The AROS Development Team. All rights reserved.
+# $Id: mmakefile.src 32720 2010-02-23 18:23:08Z neil $
+
+-include $(TOP)/config/make.cfg
+
+#MM- contrib-multimedia : development-libmikmod
+#MM- development-libmikmod : tools-crosstools
+
+TARGET_CC := $(CROSSTOOLSDIR)/$(AROS_TARGET_CPU)-aros-gcc
+
+%fetch_and_build_gnu_development package=libmikmod version=3.3.2 patch=yes \
+    package_repo=sf://mikmod suffixes="tar.gz"

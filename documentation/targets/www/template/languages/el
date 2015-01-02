@@ -1,0 +1,72 @@
+[meta]
+
+charset:          iso-8859-7
+
+[titles]
+
+news:             Ειδήσεις
+news-archive-for: News archive for
+mirrors:          Mirrors
+contents:         Περιεχόμενα
+search:           Αναζήτηση
+visitors:         Επισκέπτες
+sponsors:         Σπόνσορες
+
+[navigation]
+
+home:             Κεντρική
+news:             Ειδήσεις
+archive:          Αρχείο
+introduction:     Εισαγωγή
+status:           Κατάσταση
+screenshots:      Screenshots
+ports:            Μεταφορές
+license:          Αδεια
+download:         Λήψη
+documentation:    Τεκμηρίωση
+users:            Χρήστες
+installation:     Εγκατάσταση
+using:            Χρήση
+shell:            Εντολές κελύφους
+applications:     Εφαρμογές
+faq:              Συχνές Ερωτήσεις
+howto:            HowTo
+hwcompat:         Hardware Compatibility
+developers:       Υπεύθυνοι ανάπτυξης
+contribute:       Συνεισφέροντας
+roadmap:          Roadmap
+bug-tracker:      Ανιχνευτής Σφαλμάτων
+feature-requests: Feature Requests
+working-with-subversion: Εργασία με Subversion
+compiling:        Compiling
+application-development-manual: Οδηγός ανάπτυξης εφαρμογών
+zune-application-development-manual: Οδηγός ανάπτυξης εφαρμογών Zune
+system-development-manual:      Οδηγός ανάπτυξης συστήματος
+debugging-manual: Οδηγός Debugging
+reference:        Αναφορά
+specifications:   Προδιαγραφές
+ui-style-guide:   Οδηγός στυλ διασύνδεσης χρήστη
+documenting:      Τεκμηριώνοντας
+porting:          Μεταφέροντας
+translating:      Μεταφράζοντας
+summaries:        Περιλήψεις
+links:            Συνδέσεις
+contact:          Επικοινωνία
+mailing-lists:    Λίστες ηλεκτρονικού ταχυδρομείου
+forums:           Φόρουμς
+irc-channels:     Κανάλια IRC
+credits:          Συντελεστές
+acknowledgements: Αναγνωρίσεις
+pictures:         Φωτογραφίες
+developers-together: Οι υπεύθυνοι ανάπτυξης μαζί
+sponsors:         Σπόνσορες
+linking:          Συνδεθείτε μαζί μας
+
+[misc]
+
+go:               Εμπρός
+search:           Αναζήτηση
+copyright:        Πνευματικά Δικαιώματα © 1995-2014, Η Ομάδα Ανάπτυξης του AROS (The AROS Development Team). All rights reserved.
+trademarks:       Amiga&reg; is a trademark of Amiga Inc. All other trademarks belong to their respective owners.
+read-more:        Διαβάστε περισσότερα...
+large-image:      Μεγαλύτερη έκδοση...

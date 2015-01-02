@@ -1,0 +1,18 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+FILES=cause cli sti kernel_debug kernel_timer maygetchar amiga_irq \
+      getbootinfo kernel_globals obtaininput releaseinput
+
+AFILES=
+
+USER_CFLAGS := $(PRIV_KERNEL_INCLUDES) $(PRIV_EXEC_INCLUDES) \
+	       -I$(GENINCDIR) -I$(AROSDIR)/Development/include \
+	       -DPARANOIA_STACK
+
+USER_AFLAGS := $(PRIV_KERNEL_INCLUDES) $(PRIV_EXEC_INCLUDES) \
+	       -I$(GENINCDIR) -I$(AROSDIR)/Development/include
+
+%build_archspecific \
+  mainmmake=kernel-kernel maindir=rom/kernel arch=m68k \
+  files="$(FILES)" asmfiles="$(AFILES)" compiler=kernel

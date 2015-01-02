@@ -1,0 +1,12 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+FILES := serial_support serial_interrupthandlers
+
+#MM- workbench-devs-complete : workbench-devs-serial
+#MM- workbench-devs-serial : include linklibs workbench-devs-serial-module
+
+%build_module mmake=workbench-devs-serial \
+    modname=serial modtype=device \
+    files="serial_init $(FILES)" uselibs="hiddstubs"
+

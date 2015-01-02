@@ -1,0 +1,19 @@
+#   $Id$
+#
+#   Makefile to make lha.
+
+include $(TOP)/config/make.cfg
+
+FILES := append extract larc lhext maketree slide crcio header lhadd\
+lhlist patmatch dhuf huf lharc maketbl shuf util
+
+EXEDIR := $(AROS_CONTRIB)/Misc/aminet/C
+
+USER_CFLAGS := -DAROS
+
+%build_prog mmake=aminet-util-arc-lha \
+    progname=lha targetdir=$(EXEDIR) \
+    files=$(FILES)
+
+%common
+

@@ -1,0 +1,13 @@
+# Copyright © 2004, The AROS Development Team. All rights reserved.
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+#MM- workbench-complete : iconset-Gorilla-icons-ahiprefs
+
+ICONS := AHI
+
+#MM- iconset-Gorilla-icons-clean : iconset-Gorilla-icons-ahiprefs-clean
+#MM- iconset-Gorilla-icons : iconset-Gorilla-icons-ahiprefs
+%build_icons mmake=iconset-Gorilla-icons-ahiprefs icons=$(ICONS) dir=$(AROS_PREFS)
+

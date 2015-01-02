@@ -1,0 +1,10 @@
+# Copyright © 2009, The AROS Development Team. All rights reserved.
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+#MM- iconset-Gorilla-contrib-icons-owb : iconset-Gorilla-contrib-icons-owb-app
+
+ICONS := OWB
+
+%build_icons mmake=iconset-Gorilla-contrib-icons-owb-app icons=$(ICONS) dir=$(AROS_CONTRIB)/Networking/Apps/OWB

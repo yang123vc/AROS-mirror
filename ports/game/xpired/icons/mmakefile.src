@@ -1,0 +1,11 @@
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+#MM- ports-game-xpired : ports-game-xpired-icons
+
+ICONS     := Xpired
+TARGETDIR := $(AROS_CONTRIB)/Games
+
+%build_icons mmake=ports-game-xpired-icons \
+    icons=$(ICONS) dir=$(TARGETDIR)

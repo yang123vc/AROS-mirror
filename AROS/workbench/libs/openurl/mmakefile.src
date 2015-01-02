@@ -1,0 +1,9 @@
+#   $Id$
+#
+#   Makefile for OpenURL
+
+include $(TOP)/config/make.cfg
+
+#MM- workbench-libs-openurl : workbench-libs-openurl-prefs workbench-libs-openurl-cmd
+
+%common

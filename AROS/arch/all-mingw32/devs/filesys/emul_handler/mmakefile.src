@@ -1,0 +1,27 @@
+#   $Id$
+include $(TOP)/config/make.cfg
+
+#MM- kernel-fs-emul-mingw32: kernel-fs-emul-mingw32-native
+#MM- kernel-fs-emul-mingw32-kobj: kernel-fs-emul-mingw32-native
+
+USER_INCLUDES := -I$(SRCDIR)/$(CURDIR) -I$(SRCDIR)/arch/all-hosted/devs/filesys/emul_handler
+
+%build_archspecific mainmmake=kernel-fs-emul \
+  maindir=arch/all-hosted/devs/filesys/emul_handler \
+  arch=mingw32 files="emul_host filenames"
+
+NATIVE_BINDIR := $(BINDIR)/Libs/Host
+NATIVE_LIBDIR := $(AROS_DEVELOPMENT)/$(CPU)-mingw32/lib
+
+NATIVE_FILES  := emul_handler_native
+
+NATIVE_LDFLAGS := -shared -L$(NATIVE_LIBDIR)
+
+USER_INCLUDES := -I$(AROS_DEVELOPMENT)/$(CPU)-mingw32/include
+
+%build_prog mmake=kernel-fs-emul-mingw32-native \
+    progname=emul_handler.dll targetdir=$(NATIVE_BINDIR) \
+    files=$(NATIVE_FILES) compiler=kernel uselibs=aroskernel \
+    ldflags=$(NATIVE_LDFLAGS)
+
+%common

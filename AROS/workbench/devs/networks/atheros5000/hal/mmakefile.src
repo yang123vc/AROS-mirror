@@ -1,0 +1,21 @@
+# Makefile to build the Atheros HAL.
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+ifeq ($(CPU),ppc)
+CPU=powerpc-be
+endif
+
+HALTARGET=$(CPU)-elf
+
+include $(SRCDIR)/$(CURDIR)/amigaos/makefile.inc
+
+oldCC:=$(CC)
+include $(SRCDIR)/$(CURDIR)/public/$(CPU)-elf.inc
+CC:=$(oldCC)
+
+USER_CFLAGS += -I$(SRCDIR)/$(CURDIR)
+
+%build_linklib mmake=workbench-devs-networks-atheros5000-hal libname="athhal" \
+ files="$(basename $(HAL_SRCS))"

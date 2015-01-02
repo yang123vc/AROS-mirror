@@ -1,0 +1,31 @@
+#   $Id$
+#
+#   Makefile to make Soliton.
+
+include $(TOP)/config/make.cfg
+
+FILES := About \
+    	 CButton \
+	 Locales \
+	 MUITools \
+	 ProfileManager \
+	 BoardWindow \
+	 CSolitaire \
+	 Main \
+	 Settings \
+	 Soliton \
+	 Statistics \
+	 Cardgame
+
+EXEDIR := $(AROS_CONTRIB)/Games/Soliton
+USER_INCLUDES := -I$(SRCDIR)/$(CURDIR)/../images
+
+USER_CFLAGS := -DUSE_ZUNE
+
+#MM aminet-games-think-soliton-program : setup-soliton-catalogs
+
+%build_prog mmake=aminet-games-think-soliton-program \
+    progname=Soliton targetdir=$(EXEDIR) \
+    files=$(FILES)
+
+%common

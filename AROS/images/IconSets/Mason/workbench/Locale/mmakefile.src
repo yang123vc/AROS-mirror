@@ -1,0 +1,13 @@
+# $Id$
+#
+# Makefile for Mason's workbench icons
+
+include $(TOP)/config/make.cfg
+
+ICONS   := Help 
+ICONDIR := $(AROS_LOCALE)
+
+#MM- iconset-Mason-icons : masonworkbenchlocaleicons
+
+%build_icons mmake=masonworkbenchlocaleicons icons=$(ICONS) \
+             dir=$(ICONDIR)

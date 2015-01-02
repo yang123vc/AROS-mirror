@@ -1,0 +1,9 @@
+include $(TOP)/config/make.cfg
+
+#MM demo-dawafire : demo-dawafire-icons
+
+DESTDIR := $(AROS_CONTRIB)/Demos/DawaFire
+
+%build_prog mmake=demo-dawafire \
+    progname=DawaFire targetdir=$(DESTDIR) \
+    files=dawafire

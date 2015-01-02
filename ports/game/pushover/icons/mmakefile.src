@@ -1,0 +1,11 @@
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+#MM- ports-game-pushover : ports-game-pushover-icons
+
+ICONS     := Pushover
+TARGETDIR := $(AROS_CONTRIB)/Games
+
+%build_icons mmake=ports-game-pushover-icons \
+    icons=$(ICONS) dir=$(TARGETDIR)

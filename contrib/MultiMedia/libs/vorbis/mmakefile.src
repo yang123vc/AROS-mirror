@@ -1,0 +1,12 @@
+# Copyright 2009, The AROS Development Team. All rights reserved.
+# $Id$
+
+-include $(TOP)/config/make.cfg
+
+#MM- contrib-multimedia : development-libvorbis
+
+#MM- development-libvorbis : development-libogg
+
+%fetch_and_build_gnu_development package=libvorbis version=1.2.3 patch=yes \
+    package_repo=http://downloads.xiph.org/releases/vorbis/
+

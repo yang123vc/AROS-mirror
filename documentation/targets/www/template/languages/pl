@@ -1,0 +1,72 @@
+[meta]
+
+charset:          iso-8859-2
+
+[titles]
+
+news:             Newsy
+news-archive-for: News archive for
+mirrors:          Serwery lustrzane
+contents:         Na stronach
+search:           Szukaj
+visitors:         Odwiedzaj±cy
+sponsors:         Sponsorzy
+
+[navigation]
+
+home:             Strona g³ówna
+news:             Newsy
+archive:          Archiwum
+introduction:     Wprowadzenie
+status:           Status
+screenshots:      Zrzuty ekranu
+ports:            Porty
+license:          Licencja
+download:         Download
+documentation:    Dokumentacja
+users:            U¿ytkownicy
+installation:     Instalacja
+using:            U¿ytkowanie
+shell:            Komendy shella
+applications:     Applications
+faq:              FAQ
+howto:            HowTo
+hwcompat:         Kompatybilny sprzêt
+developers:       Programi¶ci
+contribute:       Wspó³praca
+roadmap:          Roadmap
+bug-tracker:      Bug Tracker
+feature-requests: Feature Requests
+working-with-subversion: Praca z SVN
+compiling:        Kompilowanie
+application-development-manual: Podrêcznik programisty
+zune-application-development-manual: Zune - podrêcznik programisty
+system-development-manual:      System Development Manual
+debugging-manual: Debugging Manual
+reference:        Reference
+specifications:   Specyfikacje
+ui-style-guide:   UI Style Guide
+documenting:      Documenting
+porting:          Porting
+translating:      T³umaczenie
+summaries:        Summaries
+links:            Linki
+contact:          Kontakt
+mailing-lists:    Listy dyskusyjne
+forums:           Forum
+irc-channels:     Kana³y IRC
+credits:          Credits
+acknowledgements: Acknowledgements
+pictures:         Obrazy
+developers-together: Developers en Masse
+sponsors:         Sponsorzy
+linking:          Linkowanie
+
+[misc]
+
+go:               Go
+search:           Szukaj
+copyright:        Copyright (C) 1995-2014, The AROS Development Team. Wszystkie prawa zastrze¿one.
+trademarks:       Amiga(R), AmigaOS(R), Workbench i Intuition are znakami towarowymi Amiga Inc. Wszystkie inne znaki towarowe nale¿± do ich prawnych w³a¶cicieli.
+read-more:        Czytaj wiêcej...
+large-image:      Powiêkszenie...

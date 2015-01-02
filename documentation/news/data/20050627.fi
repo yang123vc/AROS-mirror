@@ -1,0 +1,11 @@
+==============
+Tilannekatsaus
+==============
+
+:Author:   Paolo Besser
+:Date:     2005-06-27
+
+AROS tukee nyt uutta verkkokorttia: Neil Cafferkey lisäsi langattoman Prism2
+adapterin ajurin eilen. Joten nyt voit käyttää myös tähän piirisarjaan
+perustuvia verkkokortteja liittämään AROS:in verkkoon. AROS on jo yhteensopiva
+3com ja NE2000 verkkokorttien kanssa.

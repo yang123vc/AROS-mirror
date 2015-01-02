@@ -1,0 +1,61 @@
+# Copyright © 2008-2013, The AROS Development Team. All rights reserved.
+# $Id$
+
+-include $(TOP)/config/make.cfg
+
+REPOSITORIES = http://www.openssl.org/source
+ARCHBASE := openssl-1.0.1g
+OPENSSL_SOURCE := $(PORTSDIR)/openssl/$(ARCHBASE)
+OPENSSL_BUILD_DIR := $(GENDIR)/$(CURDIR)
+
+#MM- contrib-openssl : contrib-openssl-fetch contrib-openssl-setup contrib-openssl-configure contrib-openssl-build contrib-openssl-install
+
+
+%fetch mmake=contrib-openssl-fetch archive=$(ARCHBASE) destination=$(PORTSDIR)/openssl \
+    location=$(PORTSSOURCEDIR) archive_origins=$(REPOSITORIES) suffixes="tar.gz" \
+    patches_specs=$(ARCHBASE)-aros.diff:$(ARCHBASE):-p1
+
+# After patch creation remove diff about test/ssltest.c and include/openssl/e_os2.h
+# These are sym linked files and would be patched twice. They cannot easily
+# be excluded without breaking other things
+%create_patch mmake=contrib-openssl-create-patch \
+    archive=$(ARCHBASE) destination=$(PORTSDIR)/openssl \
+    excludes="fips_aes_data Makefile.org.orig include"
+
+$(OPENSSL_BUILD_DIR)/.links-created : $(TOP)/$(CURDIR)/mmakefile
+	$(RM) $@
+	%mkdir_q dir=$(OPENSSL_BUILD_DIR)
+	cd $(OPENSSL_SOURCE); \
+	find . -type d -exec mkdir -p $(OPENSSL_BUILD_DIR)/\{\} \;;\
+	find . -type f -exec ln -fs $(OPENSSL_SOURCE)/\{\} $(OPENSSL_BUILD_DIR)/\{\} \;; 
+	$(TOUCH) $@;
+
+#MM
+contrib-openssl-setup : $(OPENSSL_BUILD_DIR)/.links-created
+
+$(OPENSSL_BUILD_DIR)/.build-configured : $(OPENSSL_BUILD_DIR)/.links-created
+	$(RM) $@
+	cd $(OPENSSL_BUILD_DIR); \
+	env -i PATH=$(PATH) AROS_CC="$(TARGET_CC)" AROS_CFLAGS="$(CONFIG_CFLAGS) $(UNUSED_BUT_SET_VARIABLE_CFLAGS) -Wno-unused-variable $(FORMAT_SECURITY_CFLAGS)" AROS_RANLIB="$(RANLIB)" ./Configure "aros-$(AROS_TARGET_CPU)-cross" no-threads no-sse2 --prefix=/Development --openssldir=/Development/etc/ssl
+	$(TOUCH) $@;
+
+#MM
+contrib-openssl-configure : $(OPENSSL_BUILD_DIR)/.build-configured
+
+$(OPENSSL_BUILD_DIR)/.build-flag : $(OPENSSL_BUILD_DIR)/.build-configured
+	$(RM) $@
+	cd $(OPENSSL_BUILD_DIR); \
+	env -i PATH=$(PATH) HOME=$(HOME) make
+	$(TOUCH) $@
+
+#MM
+contrib-openssl-build : $(OPENSSL_BUILD_DIR)/.build-flag
+
+$(OPENSSL_BUILD_DIR)/.install-flag : $(OPENSSL_BUILD_DIR)/.build-flag
+	$(RM) $@
+	cd $(OPENSSL_BUILD_DIR); \
+	env -i PATH=$(PATH) make install INSTALL_PREFIX=$(AROS_DEVELOPMENT)/../
+	$(TOUCH) $@
+
+#MM
+contrib-openssl-install : $(OPENSSL_BUILD_DIR)/.install-flag

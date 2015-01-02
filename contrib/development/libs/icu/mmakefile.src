@@ -1,0 +1,32 @@
+# Copyright © 2009, The AROS Development Team. All rights reserved.
+# $Id$
+
+-include $(TOP)/config/make.cfg
+
+#MM- contrib-icu4c : contrib-icu4c-complete
+#MM- contrib-icu4c-complete : tools-crosstools-icu
+
+ICU_VERSION := 4.2.1
+ICU_PKGNAME := icu4c
+ICU_PKGVERSION := $(subst .,_,$(ICU_VERSION))
+ICU_REPOSITORY := http://download.icu-project.org/files/$(ICU_PKGNAME)/$(ICU_VERSION)
+ARCHBASE := $(ICU_PKGNAME)-$(ICU_VERSION)-src
+
+ICU_EXTRA_OPTS := \
+        --disable-dyload \
+        --enable-static \
+        --enable-shared=no \
+        --enable-tests=no \
+        --enable-samples=no \
+        --enable-extras=no \
+        --enable-threads=no \
+        --with-data-packaging=static \
+        --host=$(AROS_TARGET_CPU)-aros \
+        --with-cross-build=$(CROSSTOOLSDIR)/tools/crosstools/$(ICU_PKGNAME)
+
+TARGET_CXXFLAGS := $(subst -Wno-pointer-sign,, $(subst -Werror-implicit-function-declaration,, $(TARGET_CXXFLAGS)))
+
+%fetch_and_build mmake=contrib-icu4c-complete package=$(ICU_PKGNAME) version=$(ICU_PKGVERSION)-src \
+	package_repo="$(ICU_REPOSITORY)" suffixes="tgz" \
+	patch=yes srcdir=icu builddir=source prefix=$(AROS_DEVELOPMENT) aros_prefix=/Development nix=yes \
+	extraoptions="$(ICU_EXTRA_OPTS)"

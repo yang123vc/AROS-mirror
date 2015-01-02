@@ -1,0 +1,23 @@
+#   $Id$
+include $(TOP)/config/make.cfg
+
+
+FILES	:=  support consoleclass stdconclass charmapconclass charmap snipmapconclass consoletask
+FUNCS	:=  cdinputhandler rawkeyconvert setconsnip getconsnip addconsniphook remconsniphook
+
+#MM- kernel-console : includes linklibs
+
+USER_CFLAGS := -D__GRAPHICS_NOLIBBASE__ \
+               -D__INTUITION_NOLIBBASE__ \
+               -D__KEYMAP_NOLIBBASE__ \
+               -D__UTILITY_NOLIBBASE__
+
+%build_module mmake=kernel-console \
+  modname=console modtype=device \
+  files="console $(FUNCS) $(FILES)"
+
+#MM includes-copy
+
+INCLUDE_FILES := $(call WILDCARD, include/*.h)
+%copy_includes path=devices dir=include
+

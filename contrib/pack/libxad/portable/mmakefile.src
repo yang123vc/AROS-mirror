@@ -1,0 +1,48 @@
+# Copyright © 2011, The AROS Development Team. All rights reserved.
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+HFILES   = \
+    include/ConvertE
+
+CHARSET = \
+    cs_atarist_to_unicode \
+    cs_c64_to_unicode \
+    cs_ibmcp437_to_unicode \
+    cs_macroman_to_unicode \
+    cs_unicode_to_iso8859-1 \
+    cs_windowscp1252_to_unicod
+
+FILES = \
+    clientfunc \
+    copymem \
+    crc \
+    dates \
+    diskfile \
+    diskunarc \
+    error \
+    filename \
+    fileunarc \
+    hook \
+    amiga/hook_disk \
+    hook_diskarc \
+    amiga/hook_fh \
+    hook_mem \
+    hook_splitted \
+    hook_stream \
+    info \
+    objects \
+    protection \
+    $(HFILES) \
+    $(CHARSET)
+
+USER_CFLAGS := -D__DOS_NOLIBBASE__ -D__UTILITY_NOLIBBASE__ -Wno-uninitialized -Wno-parentheses -I$(AROS_INCLUDES)/SDI -I$(SRCDIR)/$(CURDIR)/include -I$(SRCDIR)/$(CURDIR)/ -I$(SRCDIR)/$(CURDIR)/amiga
+
+#MM- contrib-pack-xadmaster : xadmaster-library
+#MM- xadmaster-library : includes xadmaster-includes
+#MM- xadmaster-includes : xadmaster-library-includes
+
+%build_module mmake=xadmaster-library \
+  modname=xadmaster modtype=library \
+  files="xadmaster_init $(FILES) clients" uselibs=rom

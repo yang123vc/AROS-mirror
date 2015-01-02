@@ -1,0 +1,40 @@
+#   $Id$
+include $(TOP)/config/make.cfg
+
+USER_INCLUDES := -I.
+
+CFLAGS := $(CFLAGS) -D__KERNEL__
+
+FILES	:= pci_init pcidriverclass pcideviceclass pciclass pciutil
+
+#MM kernel-pci : kernel-pci-ids
+#MM kernel-pci-kobj : kernel-pci-ids
+
+#MM
+includes-copy : $(AROS_INCLUDES)/hidd/pci.h $(GENINCDIR)/hidd/pci.h $(AROS_INCLUDES)/libraries/pci.h $(GENINCDIR)/libraries/pci.h
+
+$(AROS_INCLUDES)/hidd/pci.h: include/pci_hidd.h
+	$(CP) $< $(AROS_INCLUDES)/hidd/pci.h
+
+$(GENINCDIR)/hidd/pci.h: include/pci_hidd.h
+	$(CP) $< $(GENINCDIR)/hidd/pci.h
+
+$(AROS_INCLUDES)/libraries/pci.h: include/pci_lib.h
+	$(CP) $<  $(AROS_INCLUDES)/libraries/pci.h
+
+$(GENINCDIR)/libraries/pci.h: include/pci_lib.h
+	$(CP) $<  $(GENINCDIR)/libraries/pci.h
+
+#MM
+kernel-pci-ids : $(AROS_DEVS)/pci.ids
+
+$(AROS_DEVS)/pci.ids : pci.ids
+	%mkdirs_q $(AROS_DEVS)
+	@$(CP) $^ $@
+
+#unused MM- kernel-objs: kernel-pci-kobj
+
+%build_module mmake=kernel-pci \
+    modname=pci modtype=hidd \
+    files="$(FILES)" \
+    uselibs="oop rom amiga"

@@ -1,0 +1,629 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+#
+#   This is a rather special makefile. It builds both a shared library
+#   and a link library from the same source, with only a small amount of
+#   overlap.
+#
+USER_CFLAGS :=  -I$(SRCDIR)/$(CURDIR) -I$(SRCDIR)/$(CURDIR)/include -I$(SRCDIR)/rom/exec -I$(GENDIR)/rom/exec	\
+	-D__mb_cur_max=MB_CUR_MAX		\
+	-DEFTYPE=EINVAL -fno-builtin
+USER_CFLAGS += $(PARANOIA_CFLAGS)
+
+# FIXME: temporary fix for local/xxx.c
+USER_CFLAGS += -D__BSD_VISIBLE=1
+
+# We are trying to build:
+#   $(AROS_LIBS)/arosc.library	  from $(SHARED)
+#   $(AROS_LIB)/libarosc.a        from $(COMMON) and $(STUBS)
+#
+#   It turns out that some of $(SHARED) refer to things in $(COMMON), so
+#   I've put that into the arosc.library as well.
+MODULE	    :=	arosc.library
+SHARED_LIB  :=	$(AROS_LIB)/libarosc.a
+
+# New: Also trying to build
+#   $(AROS_LIB)/librom.a	    from $(COMMON) and $(ROMONLY)
+#
+#   This is a library that is allowed to be used inside modules and the
+#   kernel. It must include no code which refers to global variables.
+#
+#   Currently the main difference is that it includes a different __assert()
+#   function to handle asserts in the kernel.
+ROM_LIB	    :=	$(AROS_LIB)/librom.a
+ROM_LIB32   :=  $(GENDIR)/lib32/librom.a
+OBJDIR32    :=  $(OBJDIR)/32bit
+CFLAGS32    := -m32
+
+# All of the above
+LIB	    := $(SHARED_LIB) $(ROM_LIB) $(AROS_LIBS)/$(MODULE)
+
+TESTDIR := $(BINDIR)/Tests
+
+# Lists of files
+#   - Common always exist in the link library.
+
+COMMON	:= \
+	__alloca \
+	__filesystem_support \
+	__isinf \
+	bcmp \
+	bcopy \
+	bzero \
+	div \
+	getopt \
+	getopt_long \
+	isinf \
+	ldiv \
+	lldiv \
+	mblen \
+        mbtowc \
+        mbstowcs \
+        memchr \
+	memcmp \
+	memcpy \
+	memmove \
+	memset \
+	putchar \
+	stccpy \
+	stpblk \
+	stpcpy \
+	stpsym \
+	strcasecmp \
+	strcasestr \
+	strcat \
+	strchr \
+	strcmp \
+        strcoll \
+	strcpy \
+	strcspn \
+	strdup \
+	strlcat \
+	strlcpy \
+	strlen \
+	strlwr \
+	strncasecmp \
+	strncat \
+	strncmp \
+	strncpy \
+	strpbrk \
+	strrchr \
+	strrev \
+	strsep \
+	strspn \
+	strstr \
+	strtod \
+	strtok \
+	strupr \
+	strxfrm \
+	swab \
+        wctomb \
+        wcstombs
+
+COMMON_ARCH := \
+	longjmp \
+	setjmp
+
+#   - Shared are in either the shared linklib, or the arosc.library module
+SHARED	:= \
+        __arosc_nixmain \
+        __arosc_startup \
+	__arosc_userdata \
+	__assert \
+	__ctype \
+	__get_default_file \
+	__env \
+	__exitfunc \
+        __fdesc \
+	__ioerr2errno \
+	__rand48 \
+	__spawnv \
+	__stat \
+	__stdio \
+	__upath \
+	__vcformat \
+	__vcscan \
+	__vfork \
+	abort \
+	abs \
+	access \
+	asctime \
+        asctime_r \
+	atexit \
+	atof \
+	atoi \
+	atol \
+	basename \
+	bsearch \
+	calloc \
+	cfgetispeed \
+	cfgetospeed \
+	cfsetispeed \
+	cfsetospeed \
+	chdir \
+	chmod \
+	chown \
+	clearerr \
+	ctime \
+        ctime_r \
+	clock \
+	close \
+	closedir \
+	creat \
+	difftime \
+	dirfd \
+	dirname \
+	drand48 \
+	dup \
+	dup2 \
+	endgrent \
+	endpwent \
+	erand48 \
+        execl \
+        execlp \
+        execv \
+        execve \
+        execvp \
+        __exec \
+	exit \
+        _exit \
+    fchdir \
+	fchmod \
+	fchown \
+	fclose \
+	fcntl \
+	fdopen \
+	feof \
+	ferror \
+	fflush \
+	fgetc \
+	fgetpos \
+	fgets \
+	fileno \
+	flock \
+	fopen \
+	fprintf \
+	fscanf \
+	fsync \
+        fputc \
+	fputs \
+	fread \
+	free \
+	freopen \
+	fseek \
+	fseeko \
+	fsetpos \
+	fstat \
+	ftell \
+	ftello \
+	ftime \
+	ftruncate \
+	fwrite \
+	gcvt \
+        getc \
+        getchar \
+	getcwd \
+	getenv \
+	getfsstat \
+	statfs \
+        getpid \
+	gettimeofday \
+        getuid \
+        geteuid \
+        getgid \
+        getegid \
+        getgrgid \
+	getgroups \
+	getgrnam \
+	getgrent \
+	getlogin \
+	getpgrp \
+	getppid \
+        getpwent \
+        getpwnam \
+        getpwuid \
+        gets \
+	getw \
+	getloadavg \
+	gmtime \
+    gmtime_r \
+	isatty \
+	ioctl \
+	jrand48 \
+        kill \
+	labs \
+	lcong48 \
+	link \
+	locale/big5		\
+	locale/collate		\
+	locale/collcmp		\
+	locale/euc		\
+	locale/fix_grouping	\
+	locale/gb18030		\
+	locale/gb2312		\
+	locale/gbk		\
+	locale/iswctype		\
+	locale/ldpart		\
+	locale/localeconv	\
+	locale/lmessages	\
+	locale/lmonetary	\
+	locale/lnumeric		\
+	locale/mbrlen		\
+	locale/mbrtowc		\
+	locale/mbsinit		\
+	locale/mbsnrtowcs	\
+	locale/mskanji		\
+	locale/none		\
+	locale/rune		\
+	locale/runetype		\
+	locale/setlocale	\
+	locale/setrunelocale	\
+	locale/table		\
+	locale/tolower		\
+	locale/toupper		\
+	locale/utf8		\
+	locale/wcrtomb		\
+	locale/wcsnrtombs	\
+	locale/wctrans		\
+	locale/wctype		\
+	localtime \
+        localtime_r \
+	lrand48 \
+	lseek \
+        lstat \
+	malloc \
+	mkdir \
+	mknod \
+        mkstemp \
+	mktemp \
+	mktime \
+	mrand48 \
+	nanosleep \
+	nrand48 \
+	on_exit \
+	open \
+	opendir \
+	pathconf \
+	pclose \
+	perror \
+	pipe \
+	popen \
+        posix_memalign \
+	printf \
+	putenv \
+        putc \
+	puts \
+	putw \
+	qsort \
+	raise \
+	rand \
+	random \
+	read \
+	readdir \
+	readlink \
+	realloc \
+	realloc_nocopy \
+	realpath \
+	regex/regerror	\
+	regex/regexec	\
+	regex/regcomp	\
+	regex/regfree	\
+	remove \
+	rename \
+	rewind \
+	rewinddir \
+        rmdir \
+	scanf \
+	seed48 \
+	seekdir \
+	setbuf \
+	setenv \
+	setgid \
+	setgrent \
+	setlinebuf \
+        setpwent \
+	setuid \
+	setvbuf \
+	sharecontextwithchild \
+	sigaction \
+	sigaddset \
+	sigdelset \
+	sigemptyset \
+	sigfillset \
+	sigismember \
+	signal \
+	sigpending \
+	sigprocmask \
+	sigsuspend \
+	sleep \
+	snprintf \
+	spawnv \
+	spawnvp \
+	sprintf \
+	srand48 \
+	sscanf \
+	stat \
+	stcd_l \
+	stcl_d \
+	stcl_h \
+	stcl_o \
+	stch_l \
+	stco_l \
+	stcu_d \
+	stdtime/timelocal	\
+	strftime \
+	strerror \
+	strptime \
+	strtoimax \
+	strtol \
+	strtoll \
+	strtoul \
+	strtoull \
+	strtoumax \
+	sync \
+	sysconf \
+	symlink \
+	system \
+	tcgetattr \
+	telldir \
+	tempnam \
+	time \
+	times \
+	tmpfile \
+	tmpnam \
+	truncate \
+	tcsetattr \
+	ttyname \
+	umask \
+	ungetc \
+	uname \
+	unlink \
+	unsetenv \
+	updatestdio \
+	usleep \
+	utime \
+	utimes \
+	vfprintf \
+	vfscanf \
+	vprintf \
+	vscanf \
+	vsnprintf \
+	vsprintf \
+	vsscanf \
+	wait \
+	waitpid \
+	write
+
+SHARED_ARCH := \
+    vfork \
+    vfork_longjmp
+
+# Note: These files are compiled differently
+#       depending on whether -DAROSC_ROM is used
+#       or not.
+ROM_ONLY := \
+	__ctype \
+	__arosc_userdata \
+	__assert_kernel \
+	__vcformat \
+	__vcscan
+
+ROM_COMMON := \
+	atof \
+	bcmp \
+	bcopy \
+	bzero \
+	div \
+	ldiv \
+	lldiv \
+	mblen \
+	mbtowc \
+	mbstowcs \
+	memchr \
+	memcmp \
+	memcpy \
+	memmove \
+	memset \
+	stccpy \
+	stpblk \
+	stpcpy \
+	strcasecmp \
+	strcasestr \
+	strcat \
+	strchr \
+	strcmp \
+	strcpy \
+	strcspn \
+	strerror_rom \
+	strlen \
+	strlcat \
+	strlcpy \
+	strncasecmp \
+	strncat \
+	strncmp \
+	strncpy \
+	strpbrk \
+	strrchr \
+	strrev \
+	strspn \
+	strstr \
+	strtod \
+	wctomb \
+	wcstombs
+
+ROM_COMMON_ARCH := \
+	longjmp \
+	setjmp
+
+# Objects for rom.lib, from the static build.
+ROM_STATIC := \
+	__filesystem_support \
+	__isinf \
+	abs \
+	atoi \
+	atol \
+	bsearch \
+	isinf \
+	labs \
+	qsort \
+	rand \
+	snprintf \
+	sprintf \
+	sscanf \
+	stcd_l \
+	stch_l \
+	stcl_d \
+	strtol \
+	strtoll \
+	strtoul \
+	strtoull \
+	vsnprintf \
+	vsprintf \
+	vsscanf
+
+#   - The stubs are generated, and are in the shared link library.
+STUBS    := $(wildcard $(OBJDIR)/stubs/*.o)
+
+# Dependencies
+DEPS := $(foreach f,$(COMMON),$(OBJDIR)/$(f).d) \
+	$(foreach f,$(SHARED),$(OBJDIR)/shared/$(f).d) \
+	$(OBJDIR)/shared/arosc_init.d $(OBJDIR)/shared/arosc_functable.d \
+	$(OBJDIR)/shared/arosc_endtag.d
+
+COMMON_OBJ := 	$(foreach f,$(COMMON),$(OBJDIR)/$(f).o) \
+	   	$(foreach f,$(COMMON_ARCH),$(OBJDIR)/arch/$(f).o) 
+ 
+SHARED_OBJ :=	$(COMMON_OBJ) $(STUBS) $(OBJDIR)/arosc_autoinit.o
+
+MODULE_OBJ :=	$(foreach f, $(SHARED), $(OBJDIR)/shared/$(f).o) \
+	   	$(foreach f,$(SHARED_ARCH),$(OBJDIR)/shared/arch/$(f).o) 
+
+ROM_OBJ	   :=	$(foreach f,$(ROM_ONLY),$(OBJDIR)/rom/$(f).o) \
+		$(foreach f,$(ROM_COMMON),$(OBJDIR)/$(f).o) \
+		$(foreach f,$(ROM_COMMON_ARCH),$(OBJDIR)/arch/$(f).o) \
+		$(foreach f,$(ROM_STATIC),$(OBJDIR)/static/$(f).o)
+
+# 32-bit version built on 64-bit machines is very trimmed down,
+# it does not include arch-specific files (for simplicity).
+ROM_OBJ32   :=	$(foreach f,$(ROM_ONLY),$(OBJDIR32)/rom/$(f).o) \
+		$(foreach f,$(ROM_COMMON),$(OBJDIR32)/$(f).o) \
+		$(foreach f,$(ROM_STATIC),$(OBJDIR32)/static/$(f).o)
+
+# These are added to the link step of arosc.library
+LIBS := $(ARCH_LIBS) -L$(AROS_LIB) -larosm -lautoinit 
+DEP_LIBS := arosm autoinit
+
+#MM- linklibs-core : linklibs-clib
+#MM- linklibs : linklibs-clib
+#MM linklibs-clib : setup-clib includes linklibs-mlib linklibs-autoinit \
+#MM			clib-stubs linklibs-amiga linklibs-arossupport
+
+#MM linklibs-clib32 : includes
+
+#MM
+linklibs-clib-quick : linklibs-clib
+
+#MM
+linklibs-clib32-quick : linklibs-clib32
+
+linklibs-clib : setup-clib $(SHARED_LIB) $(ROM_LIB) $(AROS_LIBS)/$(MODULE)
+
+linklibs-clib32 : setup-clib32 $(ROM_LIB32)
+
+$(OBJDIR)/libarosccommon.a: $(COMMON_OBJ)
+	%mklib_q from=$^
+
+$(SHARED_LIB) : $(SHARED_OBJ)
+	%mklib_q from=$^
+
+$(ROM_LIB) : $(ROM_OBJ)
+	%mklib_q from=$^
+
+$(ROM_LIB32) : $(ROM_OBJ32)
+	%mklib_q from=$^
+
+$(AROS_LIBS)/$(MODULE) : $(MODULE_OBJ) $(OBJDIR)/libarosccommon.a
+	%link_module_q \
+	    objs="$(OBJDIR)/shared/arosc_init.o $(OBJDIR)/shared/arosc_functable.o $(MODULE_OBJ)" \
+	    endtag="$(OBJDIR)/shared/arosc_endtag.o" \
+	    ldflags="$(LDFLAGS) -L$(OBJDIR)" \
+	    libs="$(LIBS) -larosccommon"
+
+$(OBJDIR)/static/%.o : %.c
+	%compile_q opt="$(CFLAGS) -DAROSC_STATIC"
+
+$(OBJDIR)/shared/%.o : %.c
+	%compile_q opt="$(CFLAGS) -DAROSC_SHARED"
+
+$(OBJDIR)/rom/%.o : %.c
+	%compile_q opt="$(CFLAGS) -DAROSC_ROM"
+
+$(OBJDIR)/%.o : %.c
+	%compile_q opt="$(CFLAGS)"
+
+$(OBJDIR32)/static/%.o : %.c
+	%compile_q opt="$(CFLAGS32) $(CFLAGS) -DAROSC_STATIC"
+
+$(OBJDIR32)/rom/%.o : %.c
+	%compile_q opt="$(CFLAGS32) $(CFLAGS) -DAROSC_ROM"
+
+$(OBJDIR32)/%.o : %.c
+	%compile_q opt="$(CFLAGS32) $(CFLAGS)"
+
+# Need to copy these files in from the machine dependant build.
+$(OBJDIR)/shared/%jmp.o : $(OBJDIR)/%jmp.o
+	@$(CP) $< $@
+
+# The rules to create the dependancy files.
+$(OBJDIR)/static/%.d : %.c
+	%mkdepend_q flags=$(CFLAGS)
+
+$(OBJDIR)/shared/%.d : %.c
+	%mkdepend_q flags="$(CFLAGS) -include __arosc_privdata.h"
+
+$(OBJDIR)/rom/%.d : %.c
+	%mkdepend_q flags=$(CFLAGS)
+
+$(OBJDIR)/%.d : %.c
+	%mkdepend_q flags=$(CFLAGS)
+
+$(OBJDIR32)/static/%.d : %.c
+	%mkdepend_q flags=$(CFLAGS)
+
+$(OBJDIR32)/rom/%.d : %.c
+	%mkdepend_q flags=$(CFLAGS)
+
+$(OBJDIR32)/%.d : %.c
+	%mkdepend_q flags=$(CFLAGS)
+
+#MM
+setup-clib :
+	%mkdirs_q $(AROS_INCLUDES)/sys $(OBJDIR)
+	%mkdirs_q $(OBJDIR)/static $(OBJDIR)/shared $(OBJDIR)/rom
+	%mkdirs_q $(AROS_LIB) $(AROS_LIBS)
+
+#MM
+setup-clib32 :
+	%mkdirs_q $(AROS_INCLUDES)/sys $(OBJDIR32)
+	%mkdirs_q $(OBJDIR32)/static $(OBJDIR32)/rom
+	%mkdirs_q $(GENDIR)/lib32
+
+#MM
+check : $(TESTDIR)/snprintf
+
+$(TESTDIR)/snprintf : snprintf.c $(LIBDIR)/startup.o $(DEPLIBS)
+	$(CC) -DTEST $(ILDFLAGS) $< -o $@ $(LIBS)
+
+#MM
+clean ::
+	-$(RM) $(OBJDIR) *.err $(LIB)
+
+%common
+%include_deps
+
+# Fix up the deps, these won't end up in $^, but they'll make it work.
+$(AROS_LIBS)/$(MODULE) : $(OBJDIR)/shared/arosc_init.o $(OBJDIR)/shared/arosc_functable.o $(OBJDIR)/shared/arosc_endtag.o
+$(AROS_LIBS)/$(MODULE) : $(foreach f,$(DEP_LIBS),$(AROS_LIB)/lib$(f).a)
+$(OBJDIR)/shared/arosc_init.o $(OBJDIR)/shared/arosc_functable.o: $(AROS_INCLUDES)/sys/syscall.def
+

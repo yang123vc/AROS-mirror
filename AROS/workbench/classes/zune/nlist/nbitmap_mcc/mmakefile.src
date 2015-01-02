@@ -1,0 +1,28 @@
+#   $Id$
+include $(TOP)/config/make.cfg
+
+#MM classes-zune-nbitmap-class : includes linklibs
+#MM classes-zune-nbitmap-test : includes linklibs classes-zune-nbitmap-test-cpy
+
+USER_INCLUDES := -idirafter $(SRCDIR)/$(CURDIR)/../include
+USER_CFLAGS := -DNO_INLINE_STDARG -DAROS_ABI_V1
+USER_CFLAGS += $(PARANOIA_CFLAGS)
+
+FILES := dispatcher Chunky2Bitmap DitherImage NBitmap Debug
+
+%build_module_simple mmake=classes-zune-nbitmap-class \
+  modname=NBitmap modtype=mcc \
+  files="library $(FILES)"
+
+
+%build_prog mmake=classes-zune-nbitmap-test progname=NBitmap-Test \
+    files="NBitmap-Test $(FILES)" targetdir=$(AROS_TESTS)/NList
+
+
+INCLUDE_FILES := ../include/mui/NBitmap_mcc.h
+%copy_includes path=mui dir=../include/mui
+
+
+%copy_files_q mmake=classes-zune-nbitmap-test-cpy files=icon.png src=. dst=$(AROS_TESTS)/NList
+
+%common

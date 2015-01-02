@@ -1,0 +1,72 @@
+[meta]
+
+charset:          windows-1251
+
+[titles]
+
+news:             Новости
+news-archive-for: News archive for
+mirrors:          Зеркала
+contents:         Содержание
+search:           Поиск
+visitors:         Посетители
+sponsors:         Спонсоры
+
+[navigation]
+
+home:             Начало
+news:             Новости
+archive:          Архив
+introduction:     Введение
+status:           Текущее состояние
+screenshots:      Снимки экрана
+ports:            Порты
+license:          Лицензия
+download:         Загрузка (Download)
+documentation:    Документация
+users:            Пользователи
+installation:     Установка
+using:            Использование
+shell:            Команды CLI-shell
+applications:     Applications
+faq:              ЧАВО(FAQ)
+howto:            HowTo
+hwcompat:         Hardware Compatibility
+developers:       Разработчики
+contribute:       Участие
+roadmap:          План развития
+bug-tracker:      Сообщить об ошибке
+feature-requests: Feature Requests
+working-with-subversion: Работа с SVN
+compiling:        Сборка
+application-development-manual: Руководство по разработке приложений
+zune-application-development-manual: Руководство по разработке приложений Zune
+system-development-manual:      Руководство по системной разработке
+debugging-manual: Руководство по отладке
+reference:        Справочная информация
+specifications:   Определения
+ui-style-guide:   Руководство по интерфейсу (UI Style)
+documenting:      Документирование
+porting:          Портирование
+translating:      Перевод
+summaries:        Заметки
+links:            Ссылки
+contact:          Как с нами связаться
+mailing-lists:    Списки рассылки
+forums:           Форумы
+irc-channels:     Каналы IRC
+credits:          Участники проекта
+acknowledgements: Благодарности
+pictures:         Изображения
+developers-together: Разработчики вместе
+sponsors:         Спонсоры
+linking:          Наши баннеры
+
+[misc]
+
+go:               Перейти
+search:           Поиск
+copyright:        Copyright © 1995-2014, The AROS Development Team. Все права защищены.
+trademarks:       Amiga© является торговым знаком Amiga Inc. Все прочие торговые знаки принадлежат их собственникам.
+read-more:        Подробнее...
+large-image:      Увеличить...

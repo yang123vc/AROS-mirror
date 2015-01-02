@@ -1,0 +1,10 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+FILES := paletteclass support
+
+#MM workbench-gadgets-arospalette : includes linklibs
+
+%build_module mmake=workbench-gadgets-arospalette \
+  modname=arospalette modtype=gadget \
+  files=$(FILES)

@@ -1,0 +1,10 @@
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+#MM- ports-scientific-mathx : ports-scientific-mathx-icons
+
+ICONS     := MathX Docs
+TARGETDIR := $(AROS_CONTRIB)/Utilities/Scientific/MathX
+
+%build_icons mmake=ports-scientific-mathx-icons icons=$(ICONS) dir=$(TARGETDIR)

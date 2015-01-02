@@ -1,0 +1,23 @@
+include $(TOP)/config/make.cfg
+
+FILES := Quad
+DESTDIR :=$(AROS_CONTRIB)/Games/Kiel
+
+#MM- contrib-games : games-kiel-quad
+
+%build_prog mmake=games-kiel-quad \
+    progname=Quad targetdir=$(DESTDIR) \
+    files=$(FILES)
+
+
+INFO := $(foreach f,$(FILES), $(DESTDIR)/$(f).info)
+
+#MM
+games-kiel-quad : $(INFO)
+
+$(INFO) : | $(DESTDIR)
+
+$(DESTDIR)/%.info : %.info
+	$(CP) $? $(DESTDIR)
+
+%common

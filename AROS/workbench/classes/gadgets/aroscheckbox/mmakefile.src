@@ -1,0 +1,11 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+FILES := checkboxclass support
+
+#MM workbench-gadgets-aroscheckbox : includes linklibs
+
+%build_module mmake=workbench-gadgets-aroscheckbox \
+  modname=aroscheckbox modtype=gadget \
+  files=$(FILES)
+

@@ -1,0 +1,17 @@
+# Copyright © 2004, The AROS Development Team. All rights reserved.
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+FILES       := args locale main misc prefs smeditor smproperties smselector smattributes
+EXEDIR      := $(AROS_PREFS)
+
+#MM- workbench-prefs : workbench-prefs-screenmode
+#MM workbench-prefs-screenmode : includes linklibs \
+#MM workbench-prefs-screenmode-catalogs
+
+%build_prog mmake=workbench-prefs-screenmode \
+    progname=ScreenMode targetdir=$(EXEDIR) \
+    files=$(FILES)
+
+%common

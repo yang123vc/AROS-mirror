@@ -1,0 +1,101 @@
+[headings]
+
+package: Paquet
+documentation: Documentation
+sources: Sources
+binaries: Fichiers binaires
+development-tools: Outils de développement
+date: Date
+
+[links]
+
+build-logs: build log
+download: Téléchargement
+md5: MD5
+
+[units]
+
+byte-unit: B
+kilobyte-unit: kB
+megabyte-unit: MB
+gigabyte-unit: GB
+decimal-point: ,
+
+[descriptions]
+
+ChangeLog-AROS:
+    Modification du code source d'AROS.
+ChangeLog-contrib:
+    Modification des programmes (contrib).
+ChangeLog-docs:
+    Modification de la documentation.
+source:
+    Sources d'AROS.
+docs-source:
+    Documentation des sources.
+contrib-source:
+    Sources des programmes de contribution.
+docs-html:
+    Documenttion en HTML. Contient tout ce qui est disponible
+    sur le site web, mais adapté à la lecture hors ligne.
+freebsd5-i386-system:
+    Version hôte pour FreeBSD/i386 5.x. Elle ne fonctionnera
+    pas sur FreeBSD 4.x.
+freebsd-i386-system:
+    Version hôte pour FreeBSD/i386 5.x. Elle ne fonctionnera
+    pas sur FreeBSD 4.x.
+linux-i386-system:
+    La version hôste pour Linux/i386. C'est la version la plus
+    complète, ce qui signifie que vous pouvez démarrer tous les
+    programmes et démos inclus avec. Cette archive contient tous
+    les fichiers binaires compilés depuis SVN.
+mingw32-i386-system:
+    The hosted version for Microsoft Windows on i386 platform. Developed
+    and compiled under Windows XP, but should work on all 32-bit Windows
+    versions starting from Windows 98.
+linux-i386-system:
+    La version hôste pour Linux/x86_64. C'est la version la plus
+    complète, ce qui signifie que vous pouvez démarrer tous les
+    programmes et démos inclus avec. Cette archive contient tous
+    les fichiers binaires compilés depuis SVN.
+linux-ppc-system:
+    La version hôste pour Linux/PowerPC. Cette archive contient tous
+    les fichiers binaires compilés depuis SVN.
+pc-i386-boot-floppy:
+    La version native pour PC avec processeur i386 et
+    compatibles. Cette archive contient l'image d'une disquette
+    à partir de laquelle on peut démarrer AROS.
+pc-i386-boot-iso:
+    La version native pour PC avec processeur i386 et
+    compatibles. Cette archive contient l'image du CDROM bootable,
+    ainsi que tous les programmes de contribution.
+pc-x86_64-boot-iso:
+    La version native pour PC avec processeur x86_64.
+    Cette archive contient l'image du CDROM bootable,
+    ainsi que tous les programmes de contribution.
+pc-i386-contrib:
+    Cette archive contient tous les programmes de contribution
+    compilés pour l'architecture i386. Ils fonctionneront à la fois
+    dans les versions hôtes et natives.
+pc-x86_64-contrib:
+    Cette archive contient tous les programmes de contribution
+    compilés pour l'architecture x86_64. Ils fonctionneront à la fois
+    dans les versions hôtes et natives.
+linux-ppc-contrib:
+    Cette archive contient tous les programmes de contribution
+    compilés pour l'architecture PowerPC.
+pc-i386-sdk:
+    Jeu de fichiers et d'outils visant à développer vos programmes
+    pour AROS avec votre machine préférée. Vous aurez également
+    besoin de gcc et des binutils configurés pour produire des
+    exécutables i386-elf.
+linux-ppc-sdk:
+    Jeu de fichiers et d'outils visant à développer vos programmes
+    pour AROS avec votre machine préférée. Vous aurez également
+    besoin de gcc et des binutils configurés pour produire des
+    exécutables ppc-elf.
+pc-x86_64-sdk:
+    Jeu de fichiers et d'outils visant à développer vos programmes
+    pour AROS avec votre machine préférée. Vous aurez également
+    besoin de gcc et des binutils configurés pour produire des
+    exécutables x86_64-elf.

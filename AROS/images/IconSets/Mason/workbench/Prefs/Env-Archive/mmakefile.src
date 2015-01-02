@@ -1,0 +1,13 @@
+# $Id$
+#
+# Makefile for Mason's workbench icons
+
+include $(TOP)/config/make.cfg
+
+ICONS     := def_Disk def_RAM def_Drawer def_Project def_Tool def_Text def_Document def_Harddisk def_CDROM
+ICONDIR   := $(AROSDIR)/Prefs/Env-Archive/SYS
+
+#MM- iconset-Mason-icons : masonworkbenchenvicons
+
+%build_icons mmake=masonworkbenchenvicons icons=$(ICONS) \
+             dir=$(ICONDIR)

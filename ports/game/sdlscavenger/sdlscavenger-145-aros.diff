@@ -1,0 +1,15 @@
+diff -Naur sdlscav-145-orig/scav.c sdlscav-145/scav.c
+--- sdlscav-145-orig/scav.c	2012-07-24 00:04:25.608516781 +0200
++++ sdlscav-145/scav.c	2012-07-24 00:05:40.969715418 +0200
+@@ -1544,7 +1544,11 @@
+    strcpy(libpath,LIBPATH);
+    strcpy(localdirname,LOCALDIRNAME);
+ 
++#ifdef __AROS__
++   p="/PROGDIR";
++#else
+    p=getenv(ENVHOME);
++#endif
+    if(!p)
+    {
+       eprintf("Cannot find %s environment variable!\n",ENVHOME);

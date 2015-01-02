@@ -1,0 +1,14 @@
+include $(TOP)/config/make.cfg
+
+USER_CFLAGS := -DHOST_OS_$(ARCH) -I$(SRCDIR)/arch/all-$(ARCH)/kernel
+ifneq ($(FAMILY),)
+    USER_CFLAGS += -I$(SRCDIR)/arch/all-$(FAMILY)/kernel
+endif
+
+FUNCS := open close getpointer freeerrorstr getinterface dropinterface lock unlock
+
+%build_module mmake=kernel-hostlib \
+    modname=hostlib modtype=resource version=$(AROS_TARGET_PLATFORM) \
+    files="hostlib_init $(FUNCS)" archspecific=yes
+
+%common

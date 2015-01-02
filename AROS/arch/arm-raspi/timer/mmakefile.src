@@ -1,0 +1,11 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+USER_INCLUDES := -I$(SRCDIR)/$(CURDIR) -I$(SRCDIR)/rom/timer
+
+%build_archspecific \
+  mainmmake=kernel-timer maindir=rom/timer \
+  arch=raspi-arm modulename=timer \
+  files="timer_init"
+
+%common

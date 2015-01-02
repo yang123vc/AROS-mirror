@@ -1,0 +1,9 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+%build_archspecific \
+  mainmmake=kernel-battclock maindir=rom/battclock \
+  arch=mingw32 \
+  files="battclock_init readbattclock writebattclock"
+
+%common

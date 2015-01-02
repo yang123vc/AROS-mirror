@@ -1,0 +1,128 @@
+=====
+Links
+=====
+
+:Authors:   Aaron Digulla, Adam Chodorowski, Matthias Rustler
+:Copyright: Copyright (C) 1995-2009, The AROS Development Team
+:Version:   $Revision$
+:Date:      $Date$
+:Status:    Done.
+
+
+.. Contents::
+
+AROS resources
+==============
+
++ `Power2People`__
+
+  Power2People is a grass roots support group for AROS.
+
++ `AROS-Exec`__
+
+  AROS Community website, forums, news, galleries.
+
++ `AROS software archive`__
+
++ `AROS Aminet Section`__
+
++ `AROS on ohloh.net`__
+
+  OHLOH is showing AROS development activity in a nice graphical way.
+
++ `AROS for Amiga`__
+
+  AfA OS replaces AmigaOS core libraries with their more advanced AROS counterparts.
+
++ `AROS World`__
+
+  A new AROS website, intended to be the user community website.
+
++ `AROS on Wikipedia`__
+
++ `AROS documentation on WikiBooks`__
+
+__ http://www.power2people.org/
+__ http://aros-exec.org
+__ http://archives.aros-exec.org/
+__ http://aros.aminet.net/
+__ http://www.ohloh.net/p/aros?p=AROS
+__ http://amidevcpp.amiga-world.de/afa_binarie_upload.php
+__ http://arosworld.org
+__ http://en.wikipedia.org/wiki/AROS_Research_Operating_System
+__ http://en.wikibooks.org/wiki/Aros
+
+
+Articles about AROS
+===================
+
+===============================================  ==================  ==========
+Title                                            Author              Date
+===============================================  ==================  ==========
+`"Onboard the Last Train to Amiga Neverland"`__  Dmitar Butrovski    2006-09-13
+`"Test: AROS"`__ (in German mag. AmigaFuture)    Ingo Schmitz        2005-05-05
+`"If you like Amiga, you'll love AROS"`__        Elwood              Unknown
+===============================================  ==================  ==========
+
+__ http://www.osnews.com/story/15819
+__ http://www.amigafuture.de/kb.php?mode=article&k=1315&page_num=37&start=0
+__ http://elwoodb.free.fr/articles/AROS/
+
+If you know some article about AROS that we haven't mentioned listed, please
+contact_ us so we can add it. Thanks.
+
+
+Articles that mention AROS
+==========================
+
+===============================================  ==============  ==========
+Title                                            Author          Date
+===============================================  ==============  ==========
+`"Climbing the Kernel Mountain"`__               Emmanuel Marty  2002-08-13
+===============================================  ==============  ==========
+
+__ http://www.osnews.com/story/1532&page=1
+
+If you know some article that mentions AROS that we haven't listed here,
+please contact_ us so we can add it. Thanks.
+
+
+Homepages of developers
+=======================
+
++ `Aaron Digulla`__
++ `Adam Chodorowski`__
++ `Krzysztof Smiechowicz`__
++ `Lennard voor den Dag`__
++ `Martin Steigerwald`__
++ `Matthias Rustler`__
++ `Michal Schulz`__
++ `Nic Andrews`__
++ `Oliver Brunner`__
+
+__ http://www.philmann-dark.de/
+__ http://www.chodorowski.com/
+__ http://www.aros3d.org/
+__ http://ldp.home.xs4all.nl/
+__ http://www.lichtvoll.de
+__ http://www.mazze-online.de/
+__ http://msaros.blogspot.com
+__ http://kalamatee.blogspot.com/
+__ http://homes.hallertau.net/~oli/
+
+
+Miscellaneous
+=============
+
++ `Back to the Roots`__
+
+  .. Image:: images/bttr.jpeg
+
+  A great nostalgia site where you can find licensed and free Amiga games.
+
+
+__ http://www.back2roots.org/
+
+
+.. _contact: contact
+

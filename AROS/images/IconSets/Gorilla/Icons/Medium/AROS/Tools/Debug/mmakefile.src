@@ -1,0 +1,11 @@
+# Copyright © 2004-2009, The AROS Development Team. All rights reserved.
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+ICONS := Sashimi Bifteck
+
+#MM- iconset-Gorilla-icons-aros-clean : iconset-Gorilla-icons-aros-tools-debug-clean
+#MM- iconset-Gorilla-icons-aros : iconset-Gorilla-icons-aros-tools-debug
+%build_icons mmake=iconset-Gorilla-icons-aros-tools-debug icons=$(ICONS) \
+             dir=$(AROS_TOOLS)/Debug

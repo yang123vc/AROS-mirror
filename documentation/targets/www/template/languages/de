@@ -1,0 +1,73 @@
+[meta]
+
+charset:          iso-8859-15
+
+[titles]
+
+news:             Neues
+news-archive-for: Nachrichtenarchiv für
+mirrors:          Spiegel
+contents:         Inhalt
+search:           Suche
+visitors:         Besucher
+sponsors:         Sponsoren
+
+[navigation]
+
+home:             Home
+news:             Neues
+archive:          Archiv
+introduction:     Einleitung
+status:           Status
+screenshots:      Screenshots
+ports:            Portierungen
+license:          Lizenz
+download:         Download
+documentation:    Dokumentation
+users:            Benutzer
+installation:     Installation
+using:            Benutzung
+shell:            Shell
+applications:     Anwendungen
+faq:              FAQ
+howto:            HowTo
+hwcompat:         Hardware Compatibility
+developers:       Entwickler
+contribute:       Mitwirken
+roadmap:          Roadmap
+working-with-subversion: Arbeiten mit Subversion
+bug-tracker:      Fehlermeldung
+feature-requests: Funktionsanforderung
+compiling:        Kompilierung
+application-development-manual: Anwendungs Entwicklungs Handbuch
+zune-application-development-manual: Zune Anwendungs Entwicklungs Handbuch
+system-development-manual:      System Entwicklungs Handbuch
+debugging-manual: Debugging Handbuch
+reference:        Referenz
+specifications:   Spezifikationen
+ui-style-guide:   Benutzeroberflächen Richtlinien
+documenting:      Dokumentierung
+porting:          Portierung
+translating:      Übersetzung
+summaries:        Zusammenfassungen
+links:            Links
+contact:          Kontakt
+mailing-lists:    Mailinglisten
+forums:           Foren
+irc-channels:     IRC-Kanäle
+credits:          Danksagung
+acknowledgements: Acknowledgements
+pictures:         Bilder
+developers-together: Entwicklertreffen
+sponsors:         Sponsoren
+linking:          Verlinkung
+
+
+[misc]
+
+go:               Gehe zu
+search:           Suche
+copyright:        Copyright © 1995-2014, The AROS Development Team. All rights reserved.
+trademarks:       Amiga®, AmigaOS®, Workbench und Intuition sind eingetragene Warenzeichen von Amiga Inc. Alle anderen Warenzeichen gehören dem jeweiligen Besitzer.
+read-more:        Mehr dazu...
+large-image:      Originalgröße ...

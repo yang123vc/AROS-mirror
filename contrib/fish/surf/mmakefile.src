@@ -1,0 +1,9 @@
+include $(TOP)/config/make.cfg
+
+FILES := bezpt control fasttrig gadgetdef gadgetuse getfilenames \
+	main mapcalc mapimgpix mapstuff menudef mouse packer poly \
+	readilbm revolve scrndef scrnio scrnops writeilbm
+
+%build_prog mmake=fish-surf \
+    progname=surf targetdir=$(AROS_CONTRIB)/Misc/fish \
+    files=$(FILES)

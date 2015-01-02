@@ -1,0 +1,19 @@
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+#MM- workbench-tools : workbench-tools-sysexplorer
+
+FILES       := main locale computer_page_cl cpu_arm cpu_i386 device_page_cl \
+               generic_window_cl ata_window_cl ataunit_window_cl
+USER_CFLAGS := -DADATE="\"$(shell date '+%d.%m.%Y')\""
+EXEDIR      := $(AROSDIR)/Tools
+
+#MM workbench-tools-sysexplorer : workbench-tools-sysexplorer-catalogs
+#MM workbench-tools-sysexplorer-quick : workbench-tools-sysexplorer-catalogs
+
+%build_prog mmake=workbench-tools-sysexplorer \
+    progname=SysExplorer targetdir=$(EXEDIR) \
+    files=$(FILES)
+
+%common

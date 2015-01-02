@@ -1,0 +1,13 @@
+# $Id$
+#
+# Makefile for Mason's workbench icons
+
+include $(TOP)/config/make.cfg
+
+ICONS     := Keymaps
+ICONDIR   := $(AROSDIR)/Devs
+
+#MM- iconset-Mason-icons : masonworkbenchprefsicons
+
+%build_icons mmake=masonworkbenchprefsicons icons=$(ICONS) \
+             dir=$(ICONDIR)

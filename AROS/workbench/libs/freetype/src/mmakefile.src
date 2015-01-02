@@ -1,0 +1,72 @@
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+FT2FILES := \
+    autofit/autofit \
+    base/ftbase \
+    base/ftbitmap \
+    base/ftinit \
+    ../config/aros/ftsystem \
+    base/ftdebug \
+    base/ftglyph \
+    base/ftbbox \
+    base/ftmm \
+    base/ftstroke \
+    base/ftsynth \
+    base/ftlcdfil \
+    base/ftcid \
+    base/ftgasp \
+    base/ftgxval \
+    base/ftotval \
+    base/ftpfr \
+    base/fttype1 \
+    base/ftwinfnt \
+    base/ftxf86 \
+    cache/ftcache \
+    cff/cff \
+    pshinter/pshinter \
+    psaux/psaux \
+    psnames/psnames \
+    raster/raster \
+    sfnt/sfnt \
+    smooth/smooth \
+    truetype/truetype \
+    type1/type1 \
+    cid/type1cid \
+    type42/type42 \
+    bdf/bdf \
+    pcf/pcf \
+    pfr/pfr \
+    winfonts/winfnt \
+    gzip/ftgzip \
+    lzw/ftlzw \
+    gxvalid/gxvalid \
+    otvalid/otvalid
+
+SHFILES := \
+    aros/ftglyphengine \
+    aros/kerning \
+    aros/glyph \
+    aros/openengine \
+    aros/closeengine \
+    aros/setinfoa \
+    aros/obtaininfoa \
+    aros/releaseinfoa \
+
+USER_INCLUDES := -I. -I$(SRCDIR)/$(CURDIR)/../include $(addprefix -I,$(DIRS))
+
+USER_CFLAGS += -DFT2_BUILD_LIBRARY
+# Unfortunately, this code is not yet gcc 4.6.1 paranoia clean
+USER_CFLAGS += -Wno-error
+
+#MM- workbench-libs : workbench-libs-freetype-module
+#MM workbench-libs-freetype-linklib : workbench-libs-freetype-includes
+#MM workbench-libs-freetype-module : workbench-libs-freetype-includes
+
+%build_linklib mmake=workbench-libs-freetype-linklib libname=freetype2.static \
+    files=$(FT2FILES) objdir=$(OBJDIR)/static
+
+%build_module mmake=workbench-libs-freetype-module modname=freetype2 \
+    modtype=library files="$(SHFILES) $(FT2FILES)" uselibs="stdc"
+

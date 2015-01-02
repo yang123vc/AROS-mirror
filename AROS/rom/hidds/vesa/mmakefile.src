@@ -1,0 +1,12 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+FILES	:=	\
+	vesagfx_init \
+	vesagfxclass \
+	hardware \
+	bitmap
+
+%build_module mmake=kernel-hidd-vesa \
+  modname=vesagfx modtype=hidd \
+  files=$(FILES)

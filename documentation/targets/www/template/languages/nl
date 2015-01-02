@@ -1,0 +1,72 @@
+[meta]
+
+charset:          iso-8859-15
+
+[titles]
+
+news:             Nieuws
+news-archive-for: Nieuwsarchief van
+mirrors:          Mirrors
+contents:         Contents
+search:           Zoeken
+visitors:         Bezoekers
+sponsors:         Sponsors
+
+[navigation]
+
+home:             Home
+news:             Nieuws
+archive:          Archief
+introduction:     Introductie
+status:           Status
+screenshots:      Screenshots
+ports:            Ports
+license:          Licentie
+download:         Downloads
+documentation:    Documentatie
+users:            Gebruikers
+installation:     Installatie
+using:            Gebruik
+shell:            Shell commando's
+applications:     Applications
+faq:              Veel gestelde vragen (FAQ)
+howto:            HowTo
+hwcompat:         Hardware Compatibility
+developers:       Ontwikkelaars
+contribute:       Meehelpen
+roadmap:          Roadmap
+bug-tracker:      Fouten melden
+feature-requests: Feature Requests
+working-with-subversion: Werken met Subversion
+compiling:        Compileren
+application-development-manual: Applicatie Ontwikkeling Gids
+zune-application-development-manual: Zune Applicatie Ontwikkeling Gids
+system-development-manual:      Systeem Ontwikkeling Gids
+debugging-manual: Debugging Gids
+reference:        Referenties
+specifications:   Specificaties
+ui-style-guide:   UI Stijl Gids
+documenting:      Documenteren
+porting:          Overzetten
+translating:      Vertalen
+summaries:        Samenvattingen
+links:            Links
+contact:          Contact
+mailing-lists:    Mailing lijsten
+forums:           Forums
+irc-channels:     IRC kanalen
+credits:          Colofon
+acknowledgements: Acknowledgements
+pictures:         Afbeeldingen
+developers-together: Ontwikkelaars samen
+sponsors:         Sponsors
+linking:          Linken
+
+[misc]
+
+go:               Ga
+search:           Zoek
+copyright:        Copyright © 1995-2014, Het AROS Development Team. Alle rechten voorbehouden.
+trademarks:       Amiga® is een merknaam van Amiga Inc. Alle andere merknamen behoren tot hun respectievelijke eigenaren.
+read-more:        Lees meer...
+large-image:      Grote afbeelding...

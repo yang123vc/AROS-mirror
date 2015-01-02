@@ -1,0 +1,5 @@
+include $(TOP)/config/make.cfg
+
+%build_prog mmake=fish-egypt \
+    progname=egypt targetdir=$(AROS_CONTRIB)/Misc/fish \
+    files=egypt

@@ -1,0 +1,52 @@
+# Copyright © 2003, The AROS Development Team. All rights reserved.
+# $Id$
+
+# Have a look at doc/PATENTS
+
+
+include $(TOP)/config/make.cfg
+
+EXEDIR := $(AROS_CONTRIB)/MultiMedia/Audio/MadAHI
+
+FILES  := madoss \
+	  bit \
+	  decoder \
+	  fixed \
+	  frame \
+	  huffman \
+	  layer12 \
+	  layer3 \
+	  stream \
+	  synth \
+	  timer \
+	  version
+
+CFLAGS += -DHAVE_CONFIG_H -O2 -DFPM_INTEL
+
+#MM sound-madoss : workbench-libs-oss-unix
+
+%build_prog mmake=sound-madoss \
+    progname=madoss targetdir=$(EXEDIR) \
+    files="$(FILES)"
+
+
+FILES  := madahi \
+	  bit \
+	  decoder \
+	  fixed \
+	  frame \
+	  huffman \
+	  layer12 \
+	  layer3 \
+	  stream \
+	  synth \
+	  timer \
+	  version
+
+#MM sound-madahi : workbench-devs-AHI
+
+%build_prog mmake=sound-madahi \
+    progname=madahi targetdir=$(EXEDIR) \
+    files="$(FILES)"
+
+%common

@@ -1,0 +1,15 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+EXEDIR      := $(AROS_TESTS)/HiddGraphics
+
+FILES := hiddmodeid
+
+#MM- test : test-hidd-graphics
+#MM test-hidd-graphics : includes linklibs
+
+%build_progs mmake=test-hidd-graphics \
+    files=$(FILES) targetdir=$(EXEDIR) \
+    uselibs="hiddstubs"
+	
+%common

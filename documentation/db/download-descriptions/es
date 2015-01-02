@@ -1,0 +1,106 @@
+[headings]
+
+package: Paquete
+documentation: Documentación
+sources: Fuentes
+binaries: Binarios
+development-tools: Herramientas de desarrollo
+date: Fecha
+
+[links]
+
+build-logs: Registros de build
+download: Descargar
+md5: MD5
+
+[units]
+
+byte-unit: B
+kilobyte-unit: KB
+megabyte-unit: MB
+gigabyte-unit: GB
+decimal-point: ,
+
+[descriptions]
+
+ChangeLog-AROS:
+    Registro de cambios para los fuentes del núcleo de AROS.
+ChangeLog-contrib:
+    Registro de cambios para los fuentes de los programas contribuidos.
+ChangeLog-docs:
+    Registro de cambios para la documentación.
+source:
+    Fuentes del núcleo de AROS.
+docs-source:
+    Fuentes de la documentación.
+contrib-source:
+    Fuentes de los programas contribuídos.
+docs-html:
+    Documentación en formato HTML. Contiene todo lo que está disponible
+    en el sitio web adaptado para la lectura en desconexión.
+freebsd5-i386-system:
+    La versión alojada en FreeBSD/i386 5.x. Fíjate que no
+    andará en los sistemas FreeBSD 4.x.
+freebsd-i386-system:
+    La versión alojada en FreeBSD/i386 5.x. Fíjate que no
+    andará en los sistemas FreeBSD 4.x.
+linux-i386-system:
+    La versión alojada en Linux/i386. Este es el puerto más
+    completo y maduro, o sea que tú puedes ejecutar todos
+    los programas y demos incluidos en él. Este archivo
+    contiene todos los binarios del sistema AROS compilados
+    del árbol de Subversion.
+mingw32-i386-system:
+    The hosted version for Microsoft Windows on i386 platform. Developed
+    and compiled under Windows XP, but should work on all 32-bit Windows
+    versions starting from Windows 98.
+linux-x86_64-system:
+    La versión alojada en Linux/x86_64. Este es el puerto más
+    completo y maduro, o sea que tú puedes ejecutar todos
+    los programas y demos incluidos en él. Este archivo
+    contiene todos los binarios del sistema AROS compilados
+    del árbol de Subversion.
+linux-ppc-system:
+    La versión alojada en Linux/PowerPC. Este archivo contiene todos
+    los binarios del sistema AROS compilados del árbol de Subversion.
+pc-i386-boot-floppy:
+    La versión nativa para las computadoras PC AT basadas en i386
+    y compatibles. Este archivo contiene la imagen del disquete
+    de arranque que puedes rápidamente escribir a un disquete y
+    arrancar AROS con él.
+pc-i386-boot-iso:
+    La versión nativa para las computadoras PC AT basadas en i386 y
+    compatibles. Ésta es la imagen ISO de CDROM para arrancar,
+    que contiene todo el sistema AROS y los programas contribuídos.
+pc-x86_64-boot-iso:
+    La versión nativa para las computadoras PC de 64-bit (amd64, x86_64).
+    Ésta es la imagen ISO de CDROM de arranque, que 
+    contiene todo el sistema AROS más los programas contribuídos.
+pc-i386-contrib:
+    Este archivo contiene todos los programas contribuídos
+    compilados para la arquitectura i386. Éstos funcionarán en
+    la versión apropiada sea alojada (p.e. i386-linux) o nativa
+    (i386-pc).
+pc-x86_64-contrib:
+    Este archivo contiene todos los programas contribuídos
+    compilados para la arquitectura x86_64, para usar con la
+    versión nativa x86_64.
+linux-ppc-contrib:
+    Este archivo contiene todos los programas contribuídos
+    compilados para la arquitectura PowerPC, para usar con 
+    el puerto Linux/PowerPC.
+pc-i386-sdk:
+    El conjunto de archivos y herramientas para construir tus
+    propios programas AROS en tu máquina preferida. También
+    necesitarás gcc y binutils configurados para producir
+    ejecutables i386-elf.
+linux-ppc-sdk:
+    El conjunto de archivos y herramientas para construir tus
+    propios programas AROS en tu máquina preferida. También
+    necesitarás gcc y binutils configurados para producir
+    ejecutables ppc-elf.
+pc-x86_64-sdk:
+    El conjunto de los archivos y herramientas para armar tus
+    propios programas AROS en tu máquina preferida. También
+    necesitarás gcc y binutils configurados para producir los
+    ejecutables x86_64-elf.

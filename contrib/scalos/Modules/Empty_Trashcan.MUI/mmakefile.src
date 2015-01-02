@@ -1,0 +1,34 @@
+# Metamakefile for AROS build-system
+
+include $(TOP)/config/make.cfg
+
+#MM- contrib-scalos : contrib-scalos-modules-emptytrashcan
+
+#MM contrib-scalos-modules-emptytrashcan : \
+#MM     includes \
+#MM     linklibs \
+#MM     contrib-scalos-modules-emptytrashcan-locale \
+#MM     iconset-Gorilla-contrib-icons-extras-scalos-modules \
+#MM     contrib-scalos-library-includes
+
+FILES := Empty_Trashcan
+
+USER_INCLUDES := -I$(AROS_CONTRIB)/Scalos/Development/include -idirafter $(SRCDIR)/$(CURDIR)/../../include
+SCALOS_LOCALE := Empty_Trashcan_Locale.h
+USER_CFLAGS := -DMUI_OBSOLETE -Wno-parentheses \
+    -D__UTILITY_STDLIBBASE__ -D__LOCALE_STDLIBBASE__ -DSCALOSLOCALE=$(SCALOS_LOCALE)
+
+TARGETDIR := $(AROS_CONTRIB)/Scalos/Modules
+
+%build_prog mmake=contrib-scalos-modules-emptytrashcan progname=Empty_Trashcan.module \
+    files=$(FILES) targetdir=$(TARGETDIR)
+
+
+#MM
+contrib-scalos-modules-emptytrashcan-locale : $(SCALOS_LOCALE)
+
+$(SCALOS_LOCALE) : $(SRCDIR)/$(CURDIR)/Empty_Trashcan.cd $(SRCDIR)/$(CURDIR)/../../CatComp_h.sd
+	@$(ECHO) 'Compile $@ from $<'
+	@$(FLEXCAT) $< $@=$(SRCDIR)/$(CURDIR)/../../CatComp_h.sd
+
+%common

@@ -1,0 +1,7 @@
+# $Id$
+include $(TOP)/config/make.cfg
+
+%build_archspecific \
+  mainmmake=hidd-radeon maindir=workbench/hidds/radeon \
+  arch=sam440-ppc cflags="$(CFLAGS) -I$(SRCDIR)/workbench/hidds/radeon"\
+  files="radeon_bios"

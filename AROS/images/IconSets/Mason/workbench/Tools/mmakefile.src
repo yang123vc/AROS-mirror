@@ -1,0 +1,13 @@
+# $Id$
+#
+# Makefile for Mason's workbench icons
+
+include $(TOP)/config/make.cfg
+
+ICONS     := Debug Commodities Calculator HDToolBox WiMP
+ICONDIR   := $(AROSDIR)/Tools
+
+#MM- iconset-Mason-icons : masonworkbenchtoolicons
+
+%build_icons mmake=masonworkbenchtoolicons icons=$(ICONS) \
+             dir=$(ICONDIR)

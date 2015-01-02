@@ -1,0 +1,13 @@
+include $(TOP)/config/make.cfg
+
+#MM- contrib-development : tools-ilbmtoc
+#MM tools-ilbmtoc : includes linklibs
+
+FILES := ilbmtoc
+EXEDIR := $(AROS_CONTRIB)/Development/Build
+
+%build_prog mmake=tools-ilbmtoc \
+    progname=ilbmtoc targetdir=$(EXEDIR) \
+    files=$(FILES)
+
+%common

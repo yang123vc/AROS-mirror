@@ -1,0 +1,9 @@
+include $(TOP)/config/make.cfg
+
+FILES  := startup sdl_hostlib sdl_init event keymap gfxclass bmclass mouseclass kbdclass
+EXEDIR := $(AROSDIR)/Storage/Monitors
+
+%build_prog mmake=kernel-hidd-sdl \
+  progname=SDL targetdir=$(EXEDIR) \
+  files=$(FILES) cflags="$(CFLAGS) $(SDL_CFLAGS) -I/usr/include" \
+  uselibs="hiddstubs"

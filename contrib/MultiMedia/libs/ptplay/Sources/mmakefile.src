@@ -1,0 +1,22 @@
+include $(TOP)/config/make.cfg
+
+#MM- contrib : contrib-ptplay-lib
+
+#MM contrib-ptplay-lib : includes linklibs
+
+FILES := ptinit ptplay ptplaytest
+
+USER_CFLAGS := -DAMIGA -Wno-parentheses -Wno-missing-braces
+
+%build_module mmake=contrib-ptplay-lib modname=ptplay modtype=library \
+  files=$(FILES) uselibs="stdc"
+
+%copy_includes mmake=includes-copy includes=ptplay.h path=libraries
+
+#MM contrib-ptplay-clean : contrib-ptplay-lib-clean
+
+#MM
+contrib-ptplay-clean :
+	$(RM) $(GENDIR)/contrib/music/libs/ptplay
+
+%common

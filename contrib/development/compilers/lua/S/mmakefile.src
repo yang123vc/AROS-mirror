@@ -1,0 +1,13 @@
+#   $Id$
+include $(TOP)/config/make.cfg
+
+FILES := Package-Startup Package-Shutdown
+
+#MM- contrib-development-lua : workbench-prefs-envarc contrib-development-lua-startupfiles \
+#MM  contrib-development-lua-envpackage
+
+#MM
+contrib-development-lua-envpackage :
+	$(ECHO) "Extras:Development/Lua" >$(AROS_PACKAGES)/Lua
+
+%copy_files_q mmake=contrib-development-lua-startupfiles dst=$(AROS_CONTRIB)/Development/Lua/S

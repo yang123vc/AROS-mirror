@@ -1,0 +1,99 @@
+[headings]
+
+package: Balíèek
+documentation: Dokumentace
+sources: Zdroje
+binaries: Binárky
+development-tools: Vývojové nástroje
+date: Datum
+
+[links]
+
+build-logs: záznamy o sestavení
+download: Download
+md5: MD5
+
+[units]
+
+byte-unit: B
+kilobyte-unit: kB
+megabyte-unit: MB
+gigabyte-unit: GB
+decimal-point: ,
+
+[descriptions]
+
+ChangeLog-AROS:
+    Záznam zmìn zdrojových kódù jádra AROSu.
+ChangeLog-contrib:
+    Záznam zmìn zdrojových kódù programù od pøispìvovatelù.
+ChangeLog-docs:
+    Záznam zmìn dokumentace.
+source:
+    Zdrojové kódy jádra AROSu.
+docs-source:
+    Zdrojové kódy dokumentace.
+contrib-source:
+    Zdrojové kódy programù od pøispìvovatelù.
+docs-html:
+    Dokumentace v HTML formátu. Obsahuje v¹e, co je k dispozici
+    na webových stránkách, ale je uzpùsobena k offline ètení.
+freebsd5-i386-system:
+    Hostovaná verze pro FreeBSD/i386 5.x. Nefunguje
+    na systémech FreeBSD 4.x.
+freebsd-i386-system:
+    Hostovaná verze pro FreeBSD/i386 5.x. Nefunguje
+    na systémech FreeBSD 4.x.
+linux-i386-system:
+    Hostovaná verze pro Linux/i386. Tento archív
+    obsahuje v¹echny binárky systému AROS kompilované z SVN
+    stromu.
+mingw32-i386-system:
+    The hosted version for Microsoft Windows on i386 platform. Developed
+    and compiled under Windows XP, but should work on all 32-bit Windows
+    versions starting from Windows 98.
+linux-x86_64-system:
+    Hostovaná verze pro Linux/x86_64. Tento archív
+    obsahuje v¹echny binárky systému AROS kompilované z SVN
+    stromu.
+linux-ppc-system:
+    Hostovaná verze pro Linux/PowerPC. Tento archív obsahuje v¹echny
+    binárky systému AROS kompilované z SVN stromu.
+pc-i386-boot-floppy:
+    Nativní verze pro poèítaèe i386 a
+    kompatibilní. Tento archív obsahuje obraz
+    diskety, který na ni mù¾e být snadno a rychle zapsán a AROS z nìj poté
+    nabootován.
+pc-i386-boot-iso:
+    Nativní verze pro poèítaèe i386 a
+    kompatibilní. Jedná se o ISO obraz bootovacího CD, které
+    obsahuje celý systém AROS a programy pøispìvovatelù.
+pc-x86_64-boot-iso:
+    Nativní verze pro 64 bitové poèítaèe (x86_64, amd64).
+    Jedná se o ISO obraz bootovacího CD, které
+    obsahuje celý systém AROS a programy pøispìvovatelù.
+pc-i386-contrib:
+    Tento archív obsahuje v¹echny programy pøispìvovatelù
+    kompilované pro architekturu i386. Budou pracovat v
+    obou verzích - hostované (napø. i386-linux) i nativní
+    (i386-pc).
+pc-x86_64-contrib:
+    Tento archív obsahuje v¹echny programy pøispìvovatelù
+    kompilované pro architekturu x86_64, k pou¾ití s
+    x86_64 nativní verzí.
+linux-ppc-contrib:
+    Tento archív obsahuje v¹echny programy pøispìvovatelù
+    kompilované pro architekturu PowerPC, k pou¾ití s
+    Linux/PowerPC portem.
+pc-i386-sdk:
+    Sada souborù a nástrojù k sestavení vlastních AROS programù
+    na tebou preferovaném stroji. Bude¹ také potøebovat gcc a
+    binutils nastavené k vytváøení i386-elf spustitelných souborù.
+linux-ppc-sdk:
+    Sada souborù a nástrojù k sestavení vlastních AROS programù
+    na tebou preferovaném stroji. Bude¹ také potøebovat gcc a
+    binutils nastavené k vytváøení ppc-elf spustitelných souborù.
+pc-x86_64-sdk:
+    Sada souborù a nástrojù k sestavení vlastních AROS programù
+    na tebou preferovaném stroji. Bude¹ také potøebovat gcc a
+    binutils nastavené k vytváøení x86_64-elf spustitelných souborù.

@@ -1,0 +1,16 @@
+# $Id$
+#
+include $(TOP)/config/make.cfg
+
+USER_CFLAGS := -I$(SRCDIR)/rom/processor
+
+FILES := \
+    getcpuinfo \
+    processor_init \
+    processor_util \
+    processor_frequency
+
+%build_archspecific mainmmake=kernel-processor maindir=rom/processor \
+    arch=raspi-arm files=$(FILES)
+
+%common

@@ -1,0 +1,5 @@
+include $(TOP)/config/make.cfg
+
+%build_prog mmake=fish-yachtc \
+    progname=yachtc targetdir=$(AROS_CONTRIB)/Misc/fish \
+    files=yachtc

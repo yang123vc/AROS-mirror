@@ -1,0 +1,5 @@
+#MM- workbench-libs-freetype-complete : \
+#MM     workbench-libs-freetype-linklib \
+#MM     workbench-libs-freetype-module \
+#MM	workbench-libs-freetype-graph \
+#MM	workbench-libs-freetype-demos

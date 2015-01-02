@@ -1,0 +1,30 @@
+#   $Id$
+include $(TOP)/config/make.cfg
+
+#MM workbench-libs-png : workbench-libs-z
+
+FILES := png pngerror \
+	pngget pngmem pngpread pngread pngrio pngrtran pngrutil \
+	pngset pngtrans pngwio pngwrite pngwtran pngwutil
+
+USER_CFLAGS := -Wno-deprecated-declarations
+
+#MM- core-linklibs : linklibs-png
+
+%build_module mmake=workbench-libs-png \
+    modname=png modtype=library \
+    files="$(FILES)" linklibname="png"
+
+
+#MM- linklibs: linklibs-png-nostdio
+
+USER_CFLAGS += -DPNG_NO_STDIO -DPNG_NO_WRITE_tIME -Wno-implicit-function-declaration
+
+%build_linklib mmake=linklibs-png-nostdio libname=png_nostdio \
+	files=$(FILES) objdir=$(OBJDIR)/no_stdio
+
+#MM includes-copy
+INCLUDE_FILES := png.h pngconf.h pnglibconf.h
+%copy_includes
+
+%common

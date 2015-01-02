@@ -1,0 +1,29 @@
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+#MM- ports-game : ports-game-pushover
+
+#MM- ports-game-pushover : \
+#MM     contrib-sdl \
+#MM     contrib-sdl-sdl-mixer \
+#MM     contrib-development-libs-libintl \
+#MM     contrib-development-lua
+
+PACKAGE      := pushover
+VERSION      := 0.0.5
+TARGETDIR    := $(AROS_CONTRIB)/Games/Pushover
+REPOSITORIES := sf://pushover
+
+%fetch_and_build mmake=ports-game-pushover prefix=$(TARGETDIR) \
+    package=$(PACKAGE) version=$(VERSION) suffixes="tar.gz" \
+    patch=yes package_repo=$(REPOSITORIES) nix=yes nix_dir_layout=no \
+    extraoptions="--datarootdir='$$(PROGDIR)/share' --program-transform-name='s/.*/Pushover/' DEPS_CFLAGS='-fexceptions -I$(AROS_DEVELOPMENT)/include/SDL -I$(AROS_DEVELOPMENT)/include/lua' DEPS_LIBS='-lSDL_mixer -lvorbisfile -lvorbis -logg -lpng -llua -lfreetype2 -lintl -liconv -lz -lSDL'"
+
+
+#MM
+ports-game-pushover-clean :
+	$(RM) $(TARGETDIR)
+	$(RM) $(GENDIR)/$(CURDIR)
+
+%common

@@ -1,0 +1,155 @@
+#   Copyright © 1995-2014, The AROS Development Team. All rights reserved.
+#   $Id$
+#
+#   Desc: target.cfg - an autoconf output file for make variables.
+#
+
+# -------------------------------------------------------------------------- 
+# TARGET SECTION
+# -------------------------------------------------------------------------- 
+FAMILY		:= @aros_target_family@
+FLAVOUR		:= @aros_flavour@
+SHARED_MOD	:= @aros_shared_default@
+
+TARGET_CPP	:= @aros_target_cpp@
+KERNEL_CPP	:= @aros_kernel_cpp@
+TARGET_CC	:= @aros_cc_pre@ @aros_target_cc@
+TARGET_GCC_VER  := @target_gcc_version@
+KERNEL_CC	:= @aros_kernel_cc@
+TARGET_CXX	:= @aros_target_cxx@
+TARGET_AS	:= @aros_target_as@
+TARGET_LD	:= @aros_target_ld@
+SHARED_LD	:= @aros_shared_ld@
+KERNEL_LD	:= @aros_kernel_ld@
+GENMAP		:= @aros_target_genmap@
+TARGET_OBJCOPY	:= @aros_target_objcopy@
+
+ifeq ($(DEBUG),yes)
+TARGET_STRIP	:= @NOP@
+else
+TARGET_STRIP	:= @aros_target_strip@ @aros_target_strip_flags@
+endif
+
+TARGET_OBJDUMP	:= @aros_target_objdump@
+KERNEL_RESCOMP  := @aros_kernel_rescomp@
+
+CONFIG_CFLAGS	:= @aros_config_cflags@
+CONFIG_AFLAGS	:= @aros_config_aflags@
+CONFIG_LDFLAGS	:= @aros_config_ldflags@
+SHARED_CFLAGS	:= @aros_shared_cflags@
+SHARED_AFLAGS	:= @aros_shared_aflags@
+SHARED_LDFLAGS	:= @aros_shared_ldflags@
+KERNEL_CFLAGS   := @aros_kernel_cflags@
+KERNEL_OBJCFLAGS := @aros_kernel_objcflags@
+KERNEL_INCLUDES := @aros_kernel_includes@
+KERNEL_LDFLAGS	:= @aros_kernel_ldflags@
+TARGET_CFLAGS   := @aros_target_cflags@
+DEBUG_CFLAGS	:= @aros_debug_cflags@
+DEBUG_AFLAGS	:= @aros_debug_aflags@
+DEBUG_LDFLAGS	:= @aros_debug_ldflags@
+OPTIMIZATION_CFLAGS := @aros_optimization_cflags@
+ISA_FLAGS       := @aros_isa_flags@
+
+NOSTDINC_CFLAGS   := @aros_target_nostdinc_cflags@
+KERNEL_IQUOTE     := @kernel_cflags_iquote@
+KERNEL_IQUOTE_END := @kernel_cflags_iquote_end@
+CFLAGS_IQUOTE     := @aros_cflags_iquote@
+CFLAGS_IQUOTE_END := @aros_cflags_iquote_end@
+NOSTARTUP_LDFLAGS := @aros_target_nostartup_ldflags@
+NIX_LDFLAGS       := @aros_target_nix_ldflags@
+DETACH_LDFLAGS    := @aros_target_detach_ldflags@
+NOSTDLIB_LDFLAGS  := @aros_target_nostdlib_ldflags@
+
+UNUSED_BUT_SET_VARIABLE_CFLAGS := @aros_cflags_unused_but_set_variable@
+ARRAY_BOUNDS_CFLAGS            := @aros_cflags_array_bounds@
+ENUM_COMPARE_CFLAGS            := @aros_cflags_enum_compare@
+STRICT_OVERFLOW_CFLAGS         := @aros_cflags_strict_overflow@
+FORMAT_SECURITY_CFLAGS         := @aros_cflags_format_security@
+
+COMPILER_LIBS   := @aros_compiler_libs@
+ARCH_LIBS	:= @aros_arch_libs@
+
+AR		:= @aros_target_ar@
+AR_PLAIN        := @aros_plain_ar@
+KERNEL_AR	:= @aros_kernel_ar@
+RANLIB		:= @aros_target_ranlib@
+KERNEL_RANLIB   := @aros_kernel_ranlib@
+NM		:= @aros_target_nm@
+NM_PLAIN	:= @aros_plain_nm@
+OBJCOPY		:= @aros_target_objcopy@
+OBJDUMP		:= @aros_target_objdump@
+STRIP_PLAIN     := @aros_target_strip@
+
+# Apple iOS specific
+IOS_PLATFORM    := @aros_ios_platform@
+IOS_OS_VERSION  := @aros_ios_version@
+IOS_SDK_PATH    := @aros_ios_sdk@
+
+# ARM gcc default target
+GCC_DEFAULT_CPU := @gcc_default_cpu@
+GCC_DEFAULT_FPU := @gcc_default_fpu@
+GCC_DEFAULT_FLOAT_ABI := @gcc_default_float_abi@
+
+# --------------------------------------------------------------------------
+# MAGIC: This is needed here for MetaMake to work. mmake will read the
+# configured version of this file to find out a number of variables.
+# --------------------------------------------------------------------------
+HOSTDIR         := $(TOP)/bin/$(AROS_HOST_ARCH)-$(AROS_HOST_CPU)
+TOOLDIR         := $(HOSTDIR)/tools
+GENMF           := $(TOOLDIR)/genmf.py
+ARCH            := $(AROS_TARGET_ARCH)
+CPU             := $(AROS_TARGET_CPU)
+CC		:= $(TARGET_CC)
+AS		:= $(TARGET_AS)
+
+# Bootloader
+AROS_TARGET_BOOTLOADER := @aros_target_bootloader@
+
+# Optional components
+UNIXGFX_HIDD_TARGET   := @unixgfx_hidd_target@
+SDL_HIDD_TARGET       := @sdl_hidd_target@
+PCI_HIDD_TARGET       := @pci_hidd_target@
+OSS_LIBRARY_TARGET    := @oss_library_target@
+CROSSTOOLS_TARGET     := @crosstools_target@
+OBJC_TARGET           := @objc_target@
+
+# Defined as 'yes' if we can build our own toolchain.
+# This is a prerequisite for ObjectiveC and C++ support,
+# since they depend on the AROS C Library
+AROS_TARGET_TOOLCHAIN := @aros_target_toolchain@
+
+HOST_X11_CFLAGS := $(addprefix -I,@aros_host_x11_includes@)
+HOST_X11_LIBS   := $(addprefix -L,@aros_host_x11_libdirs@) -lX11
+HOST_SDL_CFLAGS := @aros_host_sdl_cflags@
+HOST_SDL_LIBS   := @aros_host_sdl_libs@
+
+SDL_CFLAGS      := @SDL_CFLAGS@
+
+# DBUS flags
+ENABLE_DBUS	:= @ENABLE_DBUS@
+DBUS_CFLAGS	:= @DBUS_CFLAGS@
+DBUS_LIBFLAGS	:= @DBUS_LIBFLAGS@
+
+# MMU flags
+USE_MMU		:= @aros_enable_mmu@
+
+# Kernel private includes, in order of precedence:
+PRIV_KERNEL_INCLUDES := -I$(SRCDIR)/arch/$(CPU)-$(ARCH)/kernel \
+	                -I$(SRCDIR)/arch/all-$(ARCH)/kernel
+ifneq ($(FAMILY),)
+PRIV_KERNEL_INCLUDES += -I$(SRCDIR)/arch/all-$(FAMILY)/kernel
+endif
+PRIV_KERNEL_INCLUDES += -I$(SRCDIR)/arch/$(CPU)-all/kernel \
+                        -I$(SRCDIR)/rom/kernel
+
+# Exec private includes, in order of precedence:
+PRIV_EXEC_INCLUDES := -I$(SRCDIR)/arch/$(CPU)-$(ARCH)/exec \
+	              -I$(SRCDIR)/arch/all-$(ARCH)/exec
+ifneq ($(FAMILY),)
+PRIV_EXEC_INCLUDES += -I$(SRCDIR)/arch/all-$(FAMILY)/exec
+endif
+PRIV_EXEC_INCLUDES += -I$(SRCDIR)/arch/$(CPU)-all/exec \
+                      -I$(SRCDIR)/rom/exec
+
+# Android
+AROS_ANDROID_ANTAPK := @aros_android_antapk@

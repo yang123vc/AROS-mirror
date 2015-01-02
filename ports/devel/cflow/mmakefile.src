@@ -1,0 +1,24 @@
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+#MM- ports-devel : ports-devel-cflow
+
+PACKAGE      := cflow
+VERSION      := 1.4
+TARGETDIR    := $(AROS_CONTRIB)/Development/CFlow
+REPOSITORIES := gnu://cflow
+
+%fetch_and_build mmake=ports-devel-cflow prefix=$(TARGETDIR) \
+	package=$(PACKAGE) version=$(VERSION) suffixes="tar.bz2" \
+	patch=yes package_repo=$(REPOSITORIES) \
+	extraoptions=""
+
+
+#MM
+ports-devel-cflow-clean :
+	$(RM) $(TARGETDIR)
+	$(RM) $(GENDIR)/$(CURDIR)
+
+
+%common

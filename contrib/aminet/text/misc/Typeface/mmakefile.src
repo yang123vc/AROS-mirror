@@ -1,0 +1,21 @@
+# $Id$
+#
+# Makefile to make Typeface.
+
+include $(TOP)/config/make.cfg
+
+FILES  := char checkbox error node locale \
+          gadget text fontio typeface
+
+EXEDIR := $(AROS_CONTRIB)/Misc/aminet/Typeface
+
+USER_CFLAGS := -DINTUITION_NO_INLINE_STDARG \
+	       -Wno-unused-function $(FORMAT_SECURITY_CFLAGS)
+
+#MM aminet-text-misc-typeface : setup-typeface-catalogs contrib-bgui
+
+%build_prog mmake=aminet-text-misc-typeface \
+    progname=Typeface targetdir=$(EXEDIR) \
+    files=$(FILES) uselibs="bgui"
+
+%common

@@ -1,0 +1,22 @@
+include $(TOP)/config/make.cfg
+
+FILES := Mine
+DESTDIR := $(AROS_CONTRIB)/Games/Kiel
+
+#MM- contrib-games : games-kiel-mine
+
+%build_progs mmake=games-kiel-mine \
+    files=$(FILES) targetdir=$(DESTDIR)
+
+
+INFO := $(foreach f,$(FILES), $(DESTDIR)/$(f).info)
+
+#MM games-kiel-mine : games-kiel-mine-catalogs
+games-kiel-mine : $(INFO)
+
+$(INFO) : | $(DESTDIR)
+
+$(DESTDIR)/%.info : %.info
+	$(CP) $? $(DESTDIR)
+
+%common

@@ -1,0 +1,84 @@
+## version $VER: SysMon.catalog 1.1 (19.10.2011)
+## language français
+## codeset 0
+;
+;
+;
+MSG_APP_NAME
+SysMon
+;
+MSG_APP_TITLE
+Moniteur Système
+;
+MSG_WINDOW_TITLE
+Moniteur Système
+;
+MSG_LIST_REFRESH
+Rafraîchissement
+;
+MSG_AUTO_REFRESH
+Rafraîchissement auto (1s)
+;
+MSG_USAGE
+Usage
+;
+MSG_FREQUENCY
+Fréquence
+;
+MSG_TAB_TASKS
+Tâches
+;
+MSG_TAB_CPU
+Processeurs
+;
+MSG_SIMULATED_CPU
+Processeur simulé par AROS
+;
+MSG_PROCESSOR
+Processeur #%d: %s
+;
+MSG_TASK
+Tâche
+;
+MSG_PROCESS
+Processus
+;
+MSG_TASK_NAME
+Nom
+;
+MSG_TASK_PRIORITY
+Priorité
+;
+MSG_TASK_TYPE
+Type
+;
+MSG_TAB_SYSTEM
+Système
+;
+MSG_MEMORY_SIZE
+Taille mémoire
+;
+MSG_MEMORY_FREE
+Mémoire libre
+;
+MSG_VIDEO_SIZE
+Taille video
+;
+MSG_VIDEO_FREE
+Video libre
+;
+MSG_TOTAL_RAM
+Mémoire totale
+;
+MSG_CHIP_RAM
+Mémoire Chip
+;
+MSG_FAST_RAM
+Mémoire Fast
+;
+MSG_VIDEO_RAM
+Mémoire Video
+;
+MSG_GART_APER
+Ouverture GART
+;

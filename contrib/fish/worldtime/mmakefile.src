@@ -1,0 +1,11 @@
+include $(TOP)/config/make.cfg
+
+#MM fish-worldtime : fish-worldtime-files
+
+%build_prog mmake=fish-worldtime \
+    progname=WorldTime targetdir=$(AROS_CONTRIB)/Misc/fish/WorldTime \
+    files=main
+
+FILES := worldtime.cfg worldtime.dat
+
+%copy_files_q mmake=fish-worldtime-files files=$(FILES) dst=$(AROS_CONTRIB)/Misc/fish/WorldTime

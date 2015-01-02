@@ -1,0 +1,11 @@
+# Copyright © 2004, The AROS Development Team. All rights reserved.
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+ICONS := Patterns Themes
+
+#MM- iconset-Gorilla-icons-aros-clean : iconset-Gorilla-icons-aros-prefs-presets-clean
+#MM- iconset-Gorilla-icons-aros : iconset-Gorilla-icons-aros-prefs-presets
+%build_icons mmake=iconset-Gorilla-icons-aros-prefs-presets icons=$(ICONS) \
+             dir=$(AROS_PREFS)/Presets

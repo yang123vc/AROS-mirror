@@ -1,0 +1,19 @@
+## version $VER: clock.catalog 1.0 (16.10.2002)
+## codeset 0
+## language français
+;
+MSG_ERROR_CANT_CREATE_APPLICATION
+*** Error: Can not create application object.
+; Error: Can't create application object.
+;
+MSG_WINDOW_TITLE
+Horloge
+; Clock
+;
+MSG_DESCRIPTION
+Une Horloge pour Wanderer
+;
+MSG_OK
+Ok
+; Ok
+;

@@ -1,0 +1,19 @@
+# $Id$
+#
+# Makefile for NTPSync
+
+include $(TOP)/config/make.cfg
+
+FILES  := NTPSync
+
+EXEDIR := $(AROS_CONTRIB)/Networking/Utils/NTPSync
+
+USER_CFLAGS := -Wno-uninitialized -Wno-parentheses -D__BSD_VISIBLE=1
+
+#MM- contrib-networking-utils : contrib-networking-utils-ntpsync
+
+%build_prog mmake=contrib-networking-utils-ntpsync \
+    progname=NTPSync targetdir=$(EXEDIR) \
+    files=$(FILES)
+
+%common

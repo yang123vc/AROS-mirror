@@ -1,0 +1,56 @@
+==========
+Verlinkung 
+==========
+
+:Author:    Adam Chodorowski
+:Copyright: Copyright © 2001-2007, The AROS Development Team
+:Version:   $Revision$
+:Date:      $Date$
+:Status:    Done.
+
+Um Deine Unterstützung für AROS zu zeigen, kannst Du diese Webseite von Deiner
+eigenen verlinken. Du kannst eines der folgenden Banner dafür verwenden:
+
++------------------------------------------+----------------------+
+| Grafik                                   | Autor                |
++==========================================+======================+
+| .. Image:: /images/aros-banner.gif       | Cyb0rg / Resistance  |
+|  :align: center                          |                      |
+|  :class: bannerimage                     |                      |
++------------------------------------------+----------------------+
+| .. Image:: /images/aros-banner2.png      | S33k_100             |
+|  :align: center                          |                      |
+|  :class: bannerimage                     |                      |
++------------------------------------------+----------------------+
+| .. Image:: /images/aros-banner-blue.png  | S33k_100             |
+|  :align: center                          |                      |
+|  :class: bannerimage                     |                      |
++------------------------------------------+----------------------+
+| .. Image:: /images/aros-banner-pb2.png   | Paolo Besser         |
+|  :align: center                          |                      |
+|  :class: bannerimage                     |                      |
++------------------------------------------+----------------------+
+| .. Image:: /images/aros-banner-peta.png  | Petr Novak           |
+|  :align: center                          |                      |
+|  :class: bannerimage                     |                      |
++------------------------------------------+----------------------+
+
+
+Alternativ gibt es diese speziellen Banner für Foren:
+
++------------------------------------------+----------------------+
+| Grafik                                   | Autor                |
++==========================================+======================+
+| .. Image:: /images/aros-sigbar-user.png  | S33k_100             |
+|  :align: center                          |                      |
+|  :class: bannerimage                     |                      |
++------------------------------------------+----------------------+
+| .. Image:: /images/aros-sigbar-coder.png | S33k_100             |
+|  :align: center                          |                      |
+|  :class: bannerimage                     |                      |
++------------------------------------------+----------------------+
+
+
+Verlinke bitte direkt mit http://www.aros.org/ und nicht mit einem der Spiegel,
+da sich diese mit der Zeit ändern können. Mache bitte eine Kopie vom Banner,
+um die Bandbreitenverwendung zu verringern.

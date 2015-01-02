@@ -1,0 +1,33 @@
+# $Id$
+include $(SRCDIR)/$(CURDIR)/../make.cfg
+
+FILES	:= \
+	functions	\
+	simplerequest	\
+	filereq		\
+	strings		\
+	imagery		\
+	borders		\
+	dospaths	\
+	gui		\
+	dos_exec	\
+	listview	\
+	dopus_stuff	\
+	misc		\
+	menus		\
+	language	\
+	wildcard	\
+	dates		\
+	requesters	\
+	data
+
+#MM- dopus-library : setup includes linklibs dopus-includes
+
+USER_CFLAGS := -D__DOPUS_NOLIBBASE__ -I$(DOPUSDIR)/Development/include
+
+# TODO: Remove and clean the compiler warnings!
+USER_CFLAGS += -Wno-error
+
+%build_module mmake=dopus-library \
+    modname=dopus modtype=library prefix=$(DOPUSDIR) \
+    files="dopus_init $(FILES)"

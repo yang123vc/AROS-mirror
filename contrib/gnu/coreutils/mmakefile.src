@@ -1,0 +1,9 @@
+# Copyright © 2008, 2011, The AROS Development Team. All rights reserved.
+# $Id$
+
+-include $(TOP)/config/make.cfg
+
+#MM- contrib-gnu : contrib-gnu-coreutils
+#MM- contrib-gnu-coreutils : development-coreutils
+
+%fetch_and_build_gnu_development package=coreutils version=6.9 patch=yes

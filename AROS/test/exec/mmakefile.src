@@ -1,0 +1,43 @@
+#   $Id$
+#
+#   Makefile for AROS exec.library tests
+
+include $(TOP)/config/make.cfg
+
+FILES :=		\
+    alert		\
+    allocmem		\
+    allocxxx        \
+    avltest		\
+    childstatus		\
+    childwait		\
+    copymem		\
+    dumpmem		\
+    enqueue		\
+    messagetest		\
+    openlib	 	\
+    portsend		\
+    portreceive		\
+    makelib		\
+    pool		\
+    rawdofmt		\
+    semaphoretest	\
+    semtorture		\
+    stackswap 		\
+    signaltest		\
+    supertest		\
+    tasktest		\
+    tasktest2		\
+    traptest		\
+    vblank
+
+EXEDIR := $(AROS_TESTS)/exec
+
+USER_CFLAGS := -D__AROS_GIMME_DEPRECATED_STACKSWAP__
+
+#MM test-exec : includes includes-copy linklibs kernel
+
+%build_progs mmake=test-exec \
+    files=$(FILES) targetdir=$(EXEDIR)
+
+%common

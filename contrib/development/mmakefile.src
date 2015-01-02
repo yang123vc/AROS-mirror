@@ -1,0 +1,15 @@
+# $Id$
+#
+# Makefile to contributed development tools.
+
+include $(TOP)/config/make.cfg
+
+#MM contrib-development : contrib-development-setup
+
+contrib-development : setup
+
+#MM
+contrib-development-setup ::
+	%mkdirs_q $(AROS_CONTRIB)/Development
+	
+%common
