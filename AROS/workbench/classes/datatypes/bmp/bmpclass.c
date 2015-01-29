@@ -1,5 +1,5 @@
 /*
-    Copyright © 1995-2013, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2015, The AROS Development Team. All rights reserved.
     $Id$
 */
 
@@ -57,7 +57,6 @@ typedef struct {
     long                filebufsize;
     UBYTE               *linebuf;
     UBYTE               *linebufpos;
-    long                linebufbytes;
     long                linebufsize;
     
     APTR                codecvars;
@@ -195,9 +194,9 @@ static BOOL LoadBMP(struct IClass *cl, Object *o)
     BmpHandleType           *bmphandle;
     UBYTE                   *filebuf;
     IPTR                    sourcetype;
-    ULONG                   bfSize, bfOffBits;
+    ULONG                   D(bfSize,) bfOffBits;
     ULONG                   biSize, biWidth, biHeight, biCompression;
-    ULONG                   biClrUsed, biClrImportant;
+    ULONG                   biClrUsed D(, biClrImportant);
     UWORD                   biPlanes, biBitCount;
     ULONG                   alignwidth, alignbytes, pixelfmt;
     long                    x = 0, y;
@@ -266,7 +265,7 @@ static BOOL LoadBMP(struct IClass *cl, Object *o)
 	return FALSE;
     }
     /* byte-wise access isn't elegant, but it is endianess-safe */
-    bfSize = (filebuf[5]<<24) | (filebuf[4]<<16) | (filebuf[3]<<8) | filebuf[2];
+    D(bfSize = (filebuf[5]<<24) | (filebuf[4]<<16) | (filebuf[3]<<8) | filebuf[2]);
     bfOffBits = (filebuf[13]<<24) | (filebuf[12]<<16) | (filebuf[11]<<8) | filebuf[10];
     D(bug("bmp.datatype/LoadBMP() --- bfSize %ld bfOffBits %ld\n", bfSize, bfOffBits));
 
@@ -288,7 +287,7 @@ static BOOL LoadBMP(struct IClass *cl, Object *o)
     biBitCount = (filebuf[15]<<8) | filebuf[14];
     biCompression = (filebuf[19]<<24) | (filebuf[18]<<16) | (filebuf[17]<<8) | filebuf[16];
     biClrUsed = (filebuf[35]<<24) | (filebuf[34]<<16) | (filebuf[33]<<8) | filebuf[32];
-    biClrImportant = (filebuf[39]<<24) | (filebuf[38]<<16) | (filebuf[37]<<8) | filebuf[36];
+    D(biClrImportant = (filebuf[39]<<24) | (filebuf[38]<<16) | (filebuf[37]<<8) | filebuf[36]);
     D(bug("bmp.datatype/LoadBMP() --- BMP-Screen %ld x %ld x %ld, %ld (%ld) colors, compression %ld, type %ld\n",
 	  biWidth, biHeight, (long)biBitCount, biClrUsed, biClrImportant, biCompression, biSize));
     if (biSize != 40 || biPlanes != 1 || biCompression != 0)
@@ -314,6 +313,11 @@ static BOOL LoadBMP(struct IClass *cl, Object *o)
 	    alignwidth = (biWidth + 3) & ~3UL;
 	    alignbytes = alignwidth;
 	    break;
+	case 16:
+	    alignbytes = ((biBitCount * biWidth + 31) / 32) * 4;
+	    alignwidth = alignbytes / 2;
+	    pixelfmt = PBPAFMT_RGB;
+	    break;
 	case 24:
 	    alignbytes = ((biBitCount * biWidth + 31) / 32) * 4;
 	    alignwidth = alignbytes / 3;
@@ -332,7 +336,7 @@ static BOOL LoadBMP(struct IClass *cl, Object *o)
     bmhd->bmh_Depth  = biBitCount;
 
     /* get empty colormap, then fill in colormap to use*/
-    if (biBitCount != 24)
+    if (biBitCount <= 8)
     {
 	if( !(GetDTAttrs(o, PDTA_ColorRegisters, (IPTR)&colormap,
 			    PDTA_CRegs, (IPTR)&colorregs,
@@ -343,6 +347,11 @@ static BOOL LoadBMP(struct IClass *cl, Object *o)
 	    BMP_Exit(bmphandle, ERROR_OBJECT_WRONG_TYPE);
 	    return FALSE;
 	}
+
+	/* Zero in the color count field means calculate it based on bits */
+	if (biClrUsed == 0)
+	    biClrUsed = 1 << biBitCount;
+
 	if( !LoadBMP_Colormap(bmphandle, biClrUsed, colormap, colorregs) )
 	{
 	    BMP_Exit(bmphandle, ERROR_OBJECT_WRONG_TYPE);
@@ -370,7 +379,10 @@ static BOOL LoadBMP(struct IClass *cl, Object *o)
 			      TAG_DONE);
 
     /* Now decode the picture data into a chunky buffer; and pass it to Bitmap line-by-line */
-    bmphandle->linebufsize = bmphandle->linebufbytes = alignbytes;
+    if (biBitCount > 8)
+        bmphandle->linebufsize = alignwidth * 3;
+    else
+        bmphandle->linebufsize = alignwidth;
     if (! (bmphandle->linebuf = bmphandle->linebufpos = AllocMem(bmphandle->linebufsize, MEMF_ANY)) )
     {
 	BMP_Exit(bmphandle, ERROR_NO_FREE_STORE);
@@ -383,6 +395,7 @@ static BOOL LoadBMP(struct IClass *cl, Object *o)
     {
 	int r, g, b;
         UBYTE *p;
+	UWORD pixel;
 	
 	bmphandle->linebufpos = bmphandle->linebuf;
 	if (biBitCount == 24)
@@ -403,10 +416,30 @@ static BOOL LoadBMP(struct IClass *cl, Object *o)
 		*(bmphandle->linebufpos)++ = g;
 		*(bmphandle->linebufpos)++ = b;
 	    }
+            bmphandle->filebufpos += alignbytes;
+	}
+	else if (biBitCount == 16)
+	{
+	    if ( (bmphandle->filebufbytes -= alignbytes) < 0 && !LoadBMP_FillBuf(bmphandle, alignbytes) )
+	    {
+		D(bug("bmp.datatype/LoadBMP() --- early end of bitmap data, x %ld y %ld\n", x, y));
+		//BMP_Exit(bmphandle, ERROR_OBJECT_WRONG_TYPE);
+		//return FALSE;
+		cont = 0;
+	    }
+	    for (x=0, p = bmphandle->filebufpos; x<alignwidth; x++)
+	    {
+		pixel = *p++;
+		pixel |= *p++ << 8;
+		*(bmphandle->linebufpos)++ = (pixel & 0x7c00) >> 7;
+		*(bmphandle->linebufpos)++ = (pixel & 0x03e0) >> 2;
+		*(bmphandle->linebufpos)++ = (pixel & 0x1f) << 3;
+	    }
+            bmphandle->filebufpos += alignbytes;
 	}
 	else
 	{
-	    for (x=0, p = bmphandle->filebufpos; x<alignbytes; x++)
+	    for (x=0; x<alignbytes; x++)
 	    {
 		if ( (bmphandle->filebufbytes -= 1) < 0 && !LoadBMP_FillBuf(bmphandle, 1) )
 		{
@@ -416,7 +449,7 @@ static BOOL LoadBMP(struct IClass *cl, Object *o)
 		    cont = 0;
 		    break;              
 		}
-		byte = *p++;
+		byte = *(bmphandle->filebufpos)++;
 		switch (biBitCount)
 		{
 		    case 1:
@@ -457,7 +490,6 @@ static BOOL LoadBMP(struct IClass *cl, Object *o)
 	    BMP_Exit(bmphandle, ERROR_OBJECT_WRONG_TYPE);
 	    return FALSE;
 	}
-        bmphandle->filebufpos += alignbytes;
     }
     //D(bug("bmp.datatype/LoadBMP() --- bytes of %ld (%ld) bytes\n", (long)bmphandle->filebufbytes, (long)(bmphandle->filebufsize-(bmphandle->filebufpos-bmphandle->filebuf)) ));
 
@@ -586,7 +618,7 @@ static BOOL SaveBMP(struct IClass *cl, Object *o, struct dtWrite *dtw )
     /* Now read the picture data from the bitplanes and write it to a chunky buffer */
     /* For now, we use a full picture pixel buffer, not a single line */
     widthxheight = width*height;
-    bmphandle->linebufsize = bmphandle->linebufbytes = widthxheight;
+    bmphandle->linebufsize = widthxheight;
     if (! (bmphandle->linebuf = bmphandle->linebufpos = AllocMem(bmphandle->linebufsize, MEMF_ANY)) )
     {
 	BMP_Exit(bmphandle, ERROR_NO_FREE_STORE);
