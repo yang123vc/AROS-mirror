@@ -2,7 +2,7 @@
 
 include $(TOP)/config/make.cfg
 
-#MM- contrib : contrib-scalos-$(CPU)
+#DISABLED #MM- contrib : contrib-scalos-$(CPU)
 
 #MM- contrib-scalos-i386 : contrib-scalos
 #MM- contrib-scalos-m68k : contrib-scalos
