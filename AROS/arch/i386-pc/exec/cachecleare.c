@@ -1,5 +1,5 @@
 /*
-    Copyright © 1995-2008, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2015, The AROS Development Team. All rights reserved.
     $Id$
 
     Desc: CacheClearE() - Clear the caches with extended control.
@@ -12,75 +12,26 @@
 
 void Exec_Wbinvd();
 
-/*****************************************************************************
-
-    NAME */
 #include <proto/exec.h>
 
-	AROS_LH3(void, CacheClearE,
-
-/*  SYNOPSIS */
-	AROS_LHA(APTR, address, A0),
-	AROS_LHA(ULONG, length, D0),
-	AROS_LHA(ULONG, caches, D1),
-
-/*  LOCATION */
-	struct ExecBase *, SysBase, 107, Exec)
-
-/*  FUNCTION
-	Flush the contents of the CPU instruction or data caches. If some
-	of the cache contains dirty data, push it to memory first.
-
-	For most systems DMA will not effect processor caches. If *any*
-	external (non-processor) event changes system memory, you MUST
-	clear the cache. For example:
-
-	    DMA
-	    Code relocation to run at a different address
-	    Building jump tables
-	    Loading code from disk
-
-    INPUTS
-	address -   Address to start the operation. This address may be
-		    rounded DOWN due to hardware granularity.
-	length	-   Length of the memory to flush. This will be rounded
-		    up, of $FFFFFFFF to indicate that all addresses
-		    should be cleared.
-	caches	-   Bit flags to indicate which caches should be cleared
-
-			CACRF_ClearI	-   Clear the instruction cache
-			CACRF_ClearD	-   Clear the data cache
-
-		    All other bits are reserved.
-
-    RESULT
-	The caches will be flushed.
-
-    NOTES
-	It is possible that on some systems the entire cache will be
-	even if this was not the specific request.
-
-    EXAMPLE
-
-    BUGS
-
-    SEE ALSO
-	CacheClearU(), CacheControl()
-
+AROS_LH3(void, CacheClearE,
+    AROS_LHA(APTR, address, A0),
+    AROS_LHA(ULONG, length, D0),
+    AROS_LHA(ULONG, caches, D1),
+    struct ExecBase *, SysBase, 107, Exec)
+/*
     INTERNALS
-    Due to the strong cache coherency of x86 systems this function
-    is actually not needed. CPU snoops the address lines and 
-    invalidate all cache which is out-of-date. It is valid for both
-    D and I caches). Even a BM-DMA transfer are perfectly safe here.
+        Although this function is not needed for BM-DMA on x86 due to 
+        strong cache coherency (the CPU snoops the address lines and 
+        invalidates all out-of-date cache), it is needed for some other 
+        operations. For example, when updating graphics memory address 
+        translation tables, changes may be invisible to the graphics 
+        card/chip if not explicitly written back from the cache.
 
-    The above statement is not valid (at least) in case of AGP transfers. In
-    such case all operations on GATT table need to be followed by FULL CPU
-    cache flush or they are not visible by the video card.
-
-    ABI_V0 compatibility: This function has been restored as it is required
-    by AGP driver.
-
-******************************************************************************/
+        Drivers performing DMA operations should use 
+        CachePreDMA()/CachePostDMA() instead, which maximise performance 
+        on x86 by doing nothing!
+*/
 {
     AROS_LIBFUNC_INIT
 
